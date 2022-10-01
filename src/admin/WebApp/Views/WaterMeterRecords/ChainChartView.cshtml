@@ -1,0 +1,115 @@
+﻿@model WebApp.Models.WaterMeterRecord
+@{
+  ViewData["Title"] = "水表汇总数据";
+  ViewData["PageName"] = "WaterMeterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  水表汇总数据";
+  ViewData["Category1"] = "数据分析";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="~/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/select2/select2.bundle.css" rel="stylesheet" />
+}
+
+<div class="row">
+  <div class="col-lg-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          水表汇总数据 <span class="fw-300"><i>环比图表</i></span>
+        </h2>
+        <div class="panel-toolbar ">
+          <span style="width:40px">表号:</span>
+          @Html.DropDownList("meterlist", (IEnumerable<SelectListItem>)ViewBag.meterlist, new { @class = "custom-select custom-select-sm", style = "width:100px" })
+        </div>
+      </div>
+      <div class="panel-container show" ">
+
+        <div class="panel-content">
+
+          <div id="chartcontainer" class="w-100 mt-4" style="height: 300px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section ScriptsBlock {
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.0.2/dist/g2.min.js"></script>
+  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
+  <script src="~/Scripts/dependency/moment/moment.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script type="text/javascript">
+    $(document).ready(async function () {
+      const chart = new G2.Chart({
+        container: 'chartcontainer',
+        autoFit: true,
+        height: 300,
+      });
+       
+      await querydata();
+    
+      $('#meterlist').on('change', async function () {
+        await querydata();
+      })
+      
+//---------------------------------------------------------
+ 
+      async function querydata() {
+        var meterid = $('#meterlist').val();
+       const data = await $.get(`/api/WaterChart/GetChainMeterData`, { meterid: meterid });
+        
+        renderChart(data);
+      }
+      
+
+      function renderChart(data) {
+         
+
+        chart.clear();
+        chart.data(data);
+        chart.scale({
+          month: {
+            formatter: (val) => {
+              return +val + '月';
+            },
+          },
+          water: {
+            alias: '流量(吨)',
+            nice: true
+          },
+
+        });
+
+        chart.axis('water', {
+          grid: null,
+          title: {},
+        });
+        ;
+
+
+        chart.tooltip({
+          showCrosshairs: true,
+          shared: true,
+        });
+
+
+        chart
+          .interval()
+          .position('month*water')
+          .color('year')
+          .adjust([
+            {
+              type: 'dodge',
+              marginRatio: 0,
+            },
+          ]);
+        chart.interaction('element-visible-filter');
+        chart.render();
+      }
+      
+    })
+  </script>
+
+}

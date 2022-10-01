@@ -1,0 +1,694 @@
+﻿@{
+  ViewData["Title"] = "综合电子看板";
+  ViewData["PageName"] = "dashboard";
+  ViewData["Category1"] = "可视化数据分析";
+  ViewData["Heading"] = "<i class='subheader-icon fal fa-chart-area'></i> 综合管理 <span class='fw-300'>看板</span>";
+}
+@section HeadBlock {
+  <link href="~/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css" rel="stylesheet" />
+  <link rel="stylesheet" media="screen, print" href="~/Content/css/datagrid/datatables/datatables.bundle.css">
+}
+@section SubheaderBlock {
+  <div class="d-flex mr-4">
+
+  </div>
+  <div class="d-flex mr-0">
+
+  </div>
+}
+
+<div class="row">
+  <div class="col-sm-6 col-xl-4">
+    <div class="p-3 bg-primary-300 rounded overflow-hidden position-relative text-white mb-g">
+      <div class="">
+        <h3 class="display-4 d-block l-h-n m-0 fw-500">
+            @ViewBag.Day1.ToString("N") m3
+          <small class="m-0 l-h-n">前天同时段累计用水 <span class="text-success"> @ViewBag.Day2.ToString("N") m3</span></small>
+          <small class="m-0 l-h-n">
+            较前天同时段
+            @if (ViewBag.DayRatio > 0)
+            {
+              <span class="text-success"> @ViewBag.DayRatio.ToString("N") % <i class="fal fa-arrow-alt-up"></i></span>
+            }
+            else
+            {
+              <span class="text-danger"> @ViewBag.DayRatio.ToString("N") % <i class="fal fa-arrow-alt-down"></i></span>
+            }
+          </small>
+        </h3>
+      </div>
+      <i class="fal fa-cloud-showers position-absolute pos-right pos-bottom opacity-15 mb-n1 mr-n1" style="font-size:6rem"></i>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="p-3 bg-warning-400 rounded overflow-hidden position-relative text-white mb-g">
+      <div class="">
+        <h3 class="display-4 d-block l-h-n m-0 fw-500">
+          @ViewBag.Month1.ToString("N") m3
+          <small class="m-0 l-h-n">上月同时段累计用水 <span class="text-info"> @ViewBag.Month2.ToString("N") m3</span></small>
+          <small class="m-0 l-h-n">
+            较上月用水
+            @if (ViewBag.MonthRatio > 0)
+            {
+              <span class="text-success"> @ViewBag.MonthRatio.ToString("N") % <i class="fal fa-arrow-alt-up"></i></span>
+            }
+            else
+            {
+              <span class="text-danger"> @ViewBag.MonthRatio.ToString("N") % <i class="fal fa-arrow-alt-down"></i></span>
+            }
+          </small>
+        </h3>
+      </div>
+      <i class="fal fa-gem position-absolute pos-right pos-bottom opacity-15  mb-n1 mr-n4" style="font-size: 6rem;"></i>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="p-3 bg-success-200 rounded overflow-hidden position-relative text-white mb-g">
+      <div class="">
+        <h3 class="display-4 d-block l-h-n m-0 fw-500">
+          @ViewBag.Year1.ToString("N") m3
+          <small class="m-0 l-h-n">去年累计用水    @ViewBag.Year2.ToString("N") m3 </small>
+          <small class="m-0 l-h-n">
+            较上年用水
+            @if (ViewBag.YearRatio > 0)
+            {
+              <span > @ViewBag.YearRatio.ToString("N") % <i class="fal fa-arrow-alt-up"></i></span>
+            }
+            else
+            {
+          <span > @ViewBag.YearRatio.ToString("N")  % <i class="fal fa-arrow-alt-down"></i></span>
+            }
+          </small>
+        </h3>
+      </div>
+      <i class="fal fa-lightbulb position-absolute pos-right pos-bottom opacity-15 mb-n5 mr-n6" style="font-size: 8rem;"></i>
+    </div>
+  </div>
+
+</div>
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+
+        <div class="panel-toolbar pr-3 align-self-md-start">
+          <ul id="demo_panel-tabs" class="nav nav-tabs nav-tabs-clean border-bottom-0" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#tab_default-1" role="tab">小时</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#tab_default-2" role="tab">天</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#tab_default-3" role="tab">月</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#tab_default-4" role="tab">年</a>
+            </li>
+          </ul>
+        </div>
+        <h2>
+          <span class="fw-300"><i>用水汇总图表</i></span>
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+
+        </div>
+      </div>
+      <div class="panel-container show">
+        <div class="tab-content p-3">
+
+          <div class="tab-pane fade fade show active poisition-relative " id="tab_default-1">
+            <div class="panel-toolbar d-flex justify-content-end align-items-center">
+
+              <span class="ml-1" style="width:60px">时间区间:</span>
+              <input style="width:180px" type="text" class="form-control" id="datepicker-1" placeholder="Select date" value="01/01/2018 - 01/15/2018">
+
+            </div>
+
+            <div id="hourchart" class="w-100 mt-4" style="height: 300px"></div>
+          </div>
+          <div class="tab-pane fade poisition-relative" id="tab_default-2">
+            <div class="panel-toolbar d-flex justify-content-end align-items-center">
+
+              <span class="ml-1" style="width:60px">时间区间:</span>
+              <input style="width:180px" type="text" class="form-control" id="datepicker-2" placeholder="Select date" value="01/01/2018 - 01/15/2018">
+
+            </div>
+            <div id="daychart" class="w-100 mt-4" style="height: 300px"></div>
+
+          </div>
+          <div class="tab-pane fade poisition-relative" id="tab_default-3">
+            <div class="panel-toolbar d-flex justify-content-end align-items-center">
+
+              <span class="ml-1" style="width:60px">年份:</span>
+              <input style="width:180px" type="number" class="form-control" id="txtyear"  value="@DateTime.Now.Year">
+
+            </div>
+            <div id="monthchart" class="w-100 mt-4" style="height: 300px"></div>
+
+          </div>
+          <div class="tab-pane fade poisition-relative" id="tab_default-4">
+            <div class="panel-toolbar d-flex justify-content-end align-items-center">
+
+             
+            </div>
+            <div id="yearchart" class="w-100 mt-4" style="height: 300px"></div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-6">
+    <div id="panel-2" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          按业态汇总 <span class="fw-300"><i>最近30天用水情况</i></span>
+        </h2>
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content poisition-relative">
+
+          <div id="customertype" style="width:100%; height:300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div id="panel-3" class="panel ">
+      <div class="panel-hdr">
+        <h2>
+          按区域汇总 <span class="fw-300"><i>最近30天用水情况</i></span>
+        </h2>
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content poisition-relative">
+
+          <div id="zonewater" style="width:100%; height:300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+@section ScriptsBlock {
+  <script src="~/Scripts/dependency/moment/moment.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script src="~/Scripts/plugin/numeral/numeral.min.js"></script>
+
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.0.2/dist/g2.min.js"></script>
+  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@("@antv")/g2plot@latest/dist/g2plot.min.js"></script>
+
+  <script type="text/javascript">
+    /* Activate smart panels */
+    $('#js-page-content').smartPanel();
+  </script>
+  <script src="~/Scripts/statistics/peity/peity.bundle.js"></script>
+  <script src="~/Scripts/statistics/flot/flot.bundle.js"></script>
+  <script src="~/Scripts/statistics/easypiechart/easypiechart.bundle.js"></script>
+  <script src="~/Scripts/datagrid/datatables/datatables.bundle.js"></script>
+  <script>
+    var dt1 = moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00');
+    var dt2 = moment().format('YYYY-MM-DD 23:59:59');
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      const id = $(e.target).attr('href');
+  
+      if (id == '#tab_default-1') {
+        dt1 = moment($('#datepicker-1').data('daterangepicker').startDate._d).format('YYYY-MM-DD');
+        dt2 = moment($('#datepicker-1').data('daterangepicker').endDate._d).format('YYYY-MM-DD');
+        Summarywaterbyhour();
+      }
+
+      if (id == '#tab_default-2') {
+        console.log($('#datepicker-2').data('daterangepicker'))
+        dt1 = moment($('#datepicker-2').data('daterangepicker').startDate._d).format('YYYY-MM-DD');
+        dt2 = moment($('#datepicker-2').data('daterangepicker').endDate._d).format('YYYY-MM-DD');
+        console.log(dt1,dt2)
+        Summarywaterbyday();
+      }
+      if (id == '#tab_default-3') {
+        Summarywaterbymonth();
+      }
+      if (id == '#tab_default-4') {
+        Summarywaterbyyear();
+      }
+    })
+
+    $('#txtyear').on('change', function () {
+      Summarywaterbymonth();
+    })
+    const { Column, DualAxes} = G2Plot;
+
+    const columnbyhour = new Column('hourchart', {
+      data: [],
+      color:'l(100) 0:#0288D1 1:#B3E5FC',
+      yAxis: {
+        // format y axis label style
+        label: {
+          formatter: (v) => {
+            return numeral(v).format('0,0') ;
+          },
+          style: {
+            fill: '#FE740C',
+          },
+        },
+      },
+      tooltip: {
+        formatter: (data) => {
+          return { name: '用水量', value: numeral(data.water).format('0,0.0') + ' m3' };
+        },
+      }
+    })
+
+    const columnbyday = new Column('daychart', {
+      data: [],
+      color: 'l(100) 0:#0288D1 1:#B3E5FC',
+      yAxis: {
+        // format y axis label style
+        label: {
+          formatter: (v) => {
+            return numeral(v).format('0,0');
+          },
+          style: {
+            fill: '#FE740C',
+          },
+        },
+      },
+      tooltip: {
+        formatter: (data) => {
+        
+            return { name: '用水量', value: numeral(data.water).format('0,0.0') + ' m3' };
+         
+        },
+      }
+    })
+
+    const dualAxesbymonth = new DualAxes('monthchart', {
+      data: [],
+      xField: 'month',
+      yField: ['water', 'ratio'],
+      tooltip: {
+        formatter: (data) => {
+          if (data.water) {
+            return { name: '用水量', value: numeral(data.water).format('0,0.0') + ' m3' };
+          } else {
+            return { name: '上月环比', value: numeral(data.ratio * 100).format('0.00') + ' %' };
+          }
+        },
+      },
+      legend: {
+        layout: 'horizontal',
+        position: 'top-right',
+       
+        itemName: {
+          formatter: function (text, item, index) {
+            console.log(text, item, index)
+            if (index == 0) {
+              return "用水量(m3)"
+            } else {
+              return "环比"
+            }
+          }
+        },
+        pageNavigator: {
+          marker: {
+            style: {
+              // 非激活，不可点击态时的填充色设置
+              inactiveFill: '#000',
+              inactiveOpacity: 0.45,
+              // 默认填充色设置
+              fill: '#000',
+              opacity: 0.8,
+              size: 12,
+            },
+          },
+          text: {
+            style: {
+              fill: '#ccc',
+              fontSize: 8,
+            },
+          },
+        },
+      },
+      yAxis: {
+        // format y axis label style
+        water: {
+          label: {
+            formatter: (v) => {
+              return numeral(v).format('0,0');
+            },
+            style: {
+              fill: '#FE740C',
+            },
+          },
+        }
+      },
+
+      geometryOptions: [
+        {
+          geometry: 'column',
+        },
+        {
+          geometry: 'line',
+          lineStyle: {
+            lineWidth: 2,
+          },
+        },
+      ],
+    });
+
+    const dualAxesbyyear = new DualAxes('yearchart', {
+      data: [],
+      xField: 'year',
+      yField: ['water', 'ratio'],
+      tooltip: {
+        formatter: (data) => {
+          console.log(data)
+          if (data.water) {
+            return { name: '用水量', value: numeral(data.water).format('0,0.0') + ' m3' };
+          } else {
+            return { name: '上年环比', value: numeral(data.ratio * 100).format('0.00') + ' %' };
+          }
+        },
+      },
+      legend: {
+        layout: 'horizontal',
+        position: 'top-right',
+
+        itemName: {
+          formatter: function (text, item, index) {
+            console.log(text, item, index)
+            if (index == 0) {
+              return "用水量(m3)"
+            } else {
+              return "环比"
+            }
+          }
+        },
+        pageNavigator: {
+          marker: {
+            style: {
+              // 非激活，不可点击态时的填充色设置
+              inactiveFill: '#000',
+              inactiveOpacity: 0.45,
+              // 默认填充色设置
+              fill: '#000',
+              opacity: 0.8,
+              size: 12,
+            },
+          },
+          text: {
+            style: {
+              fill: '#ccc',
+              fontSize: 8,
+            },
+          },
+        },
+      },
+      yAxis: {
+        // format y axis label style
+        water: {
+          label: {
+            formatter: (v) => {
+              return numeral(v).format('0,0');
+            },
+            style: {
+              fill: '#FE740C',
+            },
+          },
+        }
+      },
+
+      geometryOptions: [
+        {
+          geometry: 'column',
+        },
+        {
+          geometry: 'line',
+          lineStyle: {
+            lineWidth: 2,
+          },
+        },
+      ],
+    });
+    function Summarywaterbyhour() {
+      $.post('/WaterChart/GetSummarywaterbyhour', { dt1: dt1, dt2, dt2 }).done(res => {
+        console.log(res);
+        columnbyhour.update({
+          data:res,
+          xField: 'date',
+          yField: 'water',
+          xAxis: {
+            label: {
+              autoRotate: false,
+            },
+          },
+          slider: {
+            start: 0.7,
+            end: 1.0,
+          },
+        });
+
+       
+      });
+      columnbyhour.render();
+    }
+
+    function Summarywaterbyday() {
+      $.post('/WaterChart/GetSummarywaterbyday', { dt1: dt1, dt2, dt2 }).done(res => {
+        console.log(res);
+        columnbyday.update({
+          data: res,
+          xField: 'date',
+          yField: 'water',
+          xAxis: {
+            label: {
+              autoRotate: false,
+            },
+          },
+          slider: {
+            start: 0.1,
+            end: 1,
+          },
+        });
+
+
+      });
+      columnbyday.render();
+    }
+
+
+    function Summarywaterbymonth() {
+      const year = $('#txtyear').val();
+      $.post('/WaterChart/GetSummarywaterbymonth', { year:year }).done(res => {
+        console.log(res);
+        dualAxesbymonth.changeData([res, res]);
+      });
+    }
+
+    function Summarywaterbyyear() {
+      $.post('/WaterChart/GetSummarywaterbyyear').done(res => {
+        console.log(res);
+        dualAxesbyyear.changeData([res, res]);
+      });
+    }
+
+    $(async () => {
+      Summarywaterbyhour() 
+      //总出水图表
+      
+      $('#datepicker-1').daterangepicker(
+        {
+          locale: {
+            applyLabel: '确定',
+            cancelLabel: '取消',
+            fromLabel: '起始时间',
+            toLabel: '结束时间',
+            customRangeLabel: '手动选择',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+              '七月', '八月', '九月', '十月', '十一月', '十二月'
+            ],
+            firstDay: 1
+          },
+          ranges: {
+            '今天': [moment(), moment()],
+            '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '最近7天': [moment().subtract(6, 'days'), moment()],
+            '最近30天': [moment().subtract(29, 'days'), moment()],
+            '当月': [moment().startOf('month'), moment().endOf('month')],
+            '上个月': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            '今年': [moment().startOf('year'), moment().endOf('year')],
+            '去年': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+            '前年': [moment().subtract(2, 'year').startOf('year'), moment().subtract(2, 'year').endOf('year')]
+          },
+          startDate: moment().subtract(30, 'days'),
+          endDate: moment(),
+          opens: 'left'
+        }, async function (start, end, label) {
+          dt1 = moment(start).format('YYYY-MM-DD 00:00');
+          dt2 = moment(end).format('YYYY-MM-DD 23:59:59');
+          Summarywaterbyhour()
+
+        });
+      $('#datepicker-2').daterangepicker(
+        {
+          locale: {
+            applyLabel: '确定',
+            cancelLabel: '取消',
+            fromLabel: '起始时间',
+            toLabel: '结束时间',
+            customRangeLabel: '手动选择',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+              '七月', '八月', '九月', '十月', '十一月', '十二月'
+            ],
+            firstDay: 1
+          },
+          ranges: {
+            '今天': [moment(), moment()],
+            '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '最近7天': [moment().subtract(6, 'days'), moment()],
+            '最近30天': [moment().subtract(29, 'days'), moment()],
+            '当月': [moment().startOf('month'), moment().endOf('month')],
+            '上个月': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            '今年': [moment().startOf('year'), moment().endOf('year')],
+            '去年': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+            '前年': [moment().subtract(2, 'year').startOf('year'), moment().subtract(2, 'year').endOf('year')]
+          },
+          startDate: moment().subtract(120, 'days'),
+          endDate: moment(),
+          opens: 'left'
+        }, async function (start, end, label) {
+          dt1 = moment(start).format('YYYY-MM-DD 00:00');
+          dt2 = moment(end).format('YYYY-MM-DD 23:59:59');
+          Summarywaterbyday();
+
+        });
+       
+
+      const typechart = new G2.Chart({
+        container: 'customertype',
+        autoFit: true,
+        height: 300,
+      });
+      const zonechart = new G2.Chart({
+        container: 'zonewater',
+        autoFit: true,
+        height: 300,
+      });
+      async function getTypeWater() {
+        const d1 = moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00');
+        const d2 = moment().format('YYYY-MM-DD 23:59:59');
+        const data = await $.get(`/WaterChart/GetTypeWater?dt1=${d1}&dt2=${d2}`);
+        rendertypechar(data)
+      }
+      await getTypeWater()
+      async function getZoneWater() {
+        const d1 = moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00');
+        const d2 = moment().format('YYYY-MM-DD 23:59:59');
+        const data = await $.get(`/WaterChart/GetZoneWater?dt1=${d1}&dt2=${d2}`);
+        renderzonechar(data)
+      }
+      await getZoneWater()
+
+      function rendertypechar(data) {
+
+        typechart.data(data);
+        typechart.scale('water', {
+          formatter: (val) => {
+            val = val + 'm³';
+            return val;
+          },
+        });
+        typechart.coordinate('theta', {
+          radius: 0.75,
+          innerRadius: 0.6,
+        });
+        typechart.tooltip({
+          showTitle: false,
+          showMarkers: false,
+          itemTpl: '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
+        });
+        // 辅助文本
+
+        typechart
+          .interval()
+          .adjust('stack')
+          .position('water')
+          .color('type')
+          .label('water', (percent) => {
+            return {
+              content: (data) => {
+                return `${data.type}: ${percent} m³`;
+              },
+            };
+          })
+          .tooltip('type*water', (item, percent) => {
+            percent = percent + 'm³';
+            return {
+              name: item,
+              value: percent,
+            };
+          });
+
+        typechart.interaction('element-active');
+
+        typechart.render();
+
+      }
+      function renderzonechar(data) {
+
+        zonechart.data(data);
+        zonechart.scale('water', {
+          formatter: (val) => {
+            val = val + 'm³';
+            return val;
+          },
+        });
+        zonechart.coordinate('theta', {
+          radius: 0.75,
+          innerRadius: 0.6,
+        });
+        zonechart.tooltip({
+          showTitle: false,
+          showMarkers: false,
+          itemTpl: '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
+        });
+        // 辅助文本
+
+        zonechart
+          .interval()
+          .adjust('stack')
+          .position('water')
+          .color('zone')
+          .label('water', (percent) => {
+            return {
+              content: (data) => {
+                return `${data.zone}: ${percent} m³`;
+              },
+            };
+          })
+          .tooltip('zone*water', (item, percent) => {
+            percent = percent + 'm³';
+            return {
+              name: item,
+              value: percent,
+            };
+          });
+
+        zonechart.interaction('element-active');
+
+        zonechart.render();
+
+      }
+    });
+  </script>
+}

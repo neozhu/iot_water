@@ -1,0 +1,390 @@
+﻿@model WebApp.Models.WaterMeterRecord
+@{
+  ViewData["Title"] = "水表明细数据";
+  ViewData["PageName"] = "WaterMeterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  水表明细数据";
+  ViewData["Category1"] = "数据分析";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="~/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/select2/select2.bundle.css" rel="stylesheet" />
+}
+
+<div class="row">
+  <div class="col-lg-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          水表明细数据 <span class="fw-300"><i>图表</i></span>
+        </h2>
+        <div class="panel-toolbar ">
+          <span style="width:40px">表号:</span>
+          @Html.DropDownList("meterlist", (IEnumerable<SelectListItem>)ViewBag.meterlist, new { @class = "custom-select custom-select-sm", style = "width:100px" })
+          <span class="ml-1" style="width:60px">时间区间:</span>
+          <input style="width:180px" type="text" class="form-control" id="datepicker-1" placeholder="Select date" value="01/01/2018 - 01/15/2018">
+        </div>
+      </div>
+      <div class="panel-container show" ">
+        <div class="panel-content py-2 rounded-top border-faded border-left-0 border-right-0 border-top-0 text-muted d-flex justify-content-center">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label id="monthlabel" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option1"> 月
+            </label>
+            <label id="weeklabel" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option1"> 周
+            </label>
+            <label id="daylabel" class="btn btn-primary waves-effect waves-themed">
+              <input type="radio" name="options" id="option2"> 天
+            </label>
+            <label id="hourlabel" class="btn btn-primary waves-effect waves-themed active">
+              <input type="radio" name="options" id="option3"> 小时
+            </label>
+            <label id="minutelabel" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option4"> 20分钟
+            </label>
+          </div>
+        </div>
+        <div class="panel-content">
+
+          <div id="chartcontainer" class="w-100 mt-4" style="height: 300px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <div id="panel-2" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          水表明细数据 <span class="fw-300"><i>图表</i></span>
+        </h2>
+        <div class="panel-toolbar ">
+          <span style="width:60px">表号:</span>
+          @Html.DropDownList("meterlist2", (IEnumerable<SelectListItem>)ViewBag.meterlist, new { @class = "select2 form-control form-control-sm",  multiple = "multiple" })
+          <span class="ml-1" style="width:100px">时间区间:</span>
+          <input style="width:180px" type="text" class="form-control" id="datepicker-2" placeholder="Select date" value="01/01/2018 - 01/15/2018">
+        </div>
+      </div>
+      <div class="panel-container show" ">
+        <div class="panel-content py-2 rounded-top border-faded border-left-0 border-right-0 border-top-0 text-muted d-flex justify-content-center">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label id="monthlabel2" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option1"> 月
+            </label>
+            <label id="weeklabel2" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option1"> 周
+            </label>
+            <label id="daylabel2" class="btn btn-primary waves-effect waves-themed">
+              <input type="radio" name="options" id="option2"> 天
+            </label>
+            <label id="hourlabel2" class="btn btn-primary waves-effect waves-themed active">
+              <input type="radio" name="options" id="option3"> 小时
+            </label>
+            <label id="minutelabel2" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option4"> 20分钟
+            </label>
+          </div>
+        </div>
+        <div class="panel-content">
+
+          <div id="chartcontainer2" class="w-100 mt-4" style="height: 300px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@section ScriptsBlock {
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.0.2/dist/g2.min.js"></script>
+  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
+  <script src="~/Scripts/dependency/moment/moment.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script type="text/javascript">
+    $(document).ready(async function () {
+      $('.select2').select2();
+      const chart = new G2.Chart({
+        container: 'chartcontainer',
+        autoFit: true,
+        height: 300,
+      });
+      const chart2 = new G2.Chart({
+        container: 'chartcontainer2',
+        autoFit: true,
+        height: 300,
+      });
+      var dt1 = moment(moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00'));
+      var dt2 = moment(moment().format('YYYY-MM-DD 23:59:59'));
+      var dt1_2 = moment(moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00'));
+      var dt2_2 = moment(moment().format('YYYY-MM-DD 23:59:59'));
+      var group = 'hour'
+      var group2 = 'hour'
+      await querydata();
+      $('#datepicker-1').daterangepicker(
+        {
+          locale: {
+            applyLabel: '确定',
+            cancelLabel: '取消',
+            fromLabel: '起始时间',
+            toLabel: '结束时间',
+            customRangeLabel: '手动选择',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+              '七月', '八月', '九月', '十月', '十一月', '十二月'
+            ],
+            firstDay: 1
+          },
+          startDate: dt1,
+          endDate: dt2,
+          opens: 'left'
+        }, async function (start, end, label) {
+          dt1 = moment(start).format('YYYY-MM-DD 00:00');
+          dt2 = moment(end).format('YYYY-MM-DD 23:59:59');
+
+          await querydata();
+      });
+      $('#datepicker-2').daterangepicker(
+        {
+          locale: {
+            applyLabel: '确定',
+            cancelLabel: '取消',
+            fromLabel: '起始时间',
+            toLabel: '结束时间',
+            customRangeLabel: '手动选择',
+            daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+              '七月', '八月', '九月', '十月', '十一月', '十二月'
+            ],
+            firstDay: 1
+          },
+          startDate: dt1_2,
+          endDate: dt2_2,
+          opens: 'left'
+        }, async function (start, end, label) {
+          dt1_2 = moment(start).format('YYYY-MM-DD 00:00');
+          dt2_2 = moment(end).format('YYYY-MM-DD 23:59:59');
+
+          await querydata2();
+      });
+      $('#meterlist2').on('change', async function () {
+        await querydata2();
+      })
+      $('#meterlist').on('change', async function () {
+        await querydata();
+      })
+      $('#hourlabel').on('click', async function () {
+        group = 'hour';
+        await querydata()
+      });
+      $('#minutelabel').on('click', async function () {
+        group = 'minute';
+        await querydata()
+      });
+      $('#daylabel').on('click', async function () {
+        group = 'day';
+        await querydata()
+      });
+      $('#weeklabel').on('click', async function () {
+        group = 'week';
+        await querydata()
+      });
+      $('#monthlabel').on('click', async function () {
+        group = 'month';
+        await querydata()
+      });
+//---------------------------------------------------------
+      $('#hourlabel2').on('click', async function () {
+        group2 = 'hour';
+        await querydata2()
+      });
+      $('#minutelabel2').on('click', async function () {
+        group2 = 'minute';
+        await querydata2()
+      });
+      $('#daylabel2').on('click', async function () {
+        group2 = 'day';
+        await querydata2()
+      });
+      $('#weeklabel2').on('click', async function () {
+        group2 = 'week';
+        await querydata2()
+      });
+      $('#monthlabel2').on('click', async function () {
+        group2 = 'month';
+        await querydata2()
+      });
+      async function querydata() {
+        var meterid = $('#meterlist').val();
+        var data = [];
+        if (group == 'month') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByMonth`, { meterid: meterid, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        } else if (group == 'week') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByWeek`, { meterid: meterid, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        } else if (group == 'day') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByDay`, { meterid: meterid, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        }
+        else if (group == 'hour') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByHour`, { meterid: meterid, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        }
+        else if (group == 'minute') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByMinute`, { meterid: meterid, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        }
+        renderChart(data);
+      }
+      async function querydata2() {
+        var meterid = $('#meterlist2').val();
+        //console.log(meterid, group2);
+        if (meterid.length <= 0) {
+          return;
+        }
+        var data = [];
+        if (group2 == 'month') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByMonthIn`, { meterid: meterid.join(), dt1: moment(dt1_2).format('YYYY-MM-DD 00:00'), dt2: moment(dt2_2).format('YYYY-MM-DD 23:59:59') });
+        } else if (group2 == 'week') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByWeekIn`, { meterid: meterid.join(), dt1: moment(dt1_2).format('YYYY-MM-DD 00:00'), dt2: moment(dt2_2).format('YYYY-MM-DD 23:59:59') });
+        } else if (group2 == 'day') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByDayIn`, { meterid: meterid.join(), dt1: moment(dt1_2).format('YYYY-MM-DD 00:00'), dt2: moment(dt2_2).format('YYYY-MM-DD 23:59:59') });
+        }
+        else if (group2 == 'hour') {
+        
+          data = await $.get(`/api/WaterChart/GetMeterDataByHourIn`, { meterid: meterid.join(), dt1: moment(dt1_2).format('YYYY-MM-DD 00:00'), dt2: moment(dt2_2).format('YYYY-MM-DD 23:59:59') });
+        }
+        else if (group2 == 'minute') {
+          data = await $.get(`/api/WaterChart/GetMeterDataByMinuteIn`, { meterid: meterid.join(), dt1: moment(dt1_2).format('YYYY-MM-DD 00:00'), dt2: moment(dt2_2).format('YYYY-MM-DD 23:59:59') });
+        }
+        renderChart2(data);
+      }
+
+      function renderChart(data) {
+        const ds = new DataSet({
+          state: {
+            start: dt1,
+            end: dt2,
+          },
+        });
+        const dv = ds.createView('origin').source(data);
+        dv.transform({
+          type: 'filter',
+          callback: function callback(obj) {
+            const datetime = moment(obj.datetime); // !注意：时间格式，建议转换为时间戳进行比较
+            //console.log(datetime, ds.state.start, ds.state.end)
+            return datetime >= moment(ds.state.start) && datetime <= moment(ds.state.end);
+          },
+        });
+        //console.log(dv, dv.rows)
+
+        chart.clear();
+        chart.data(dv.rows);
+        chart.scale({
+          datetime: {
+            type: 'time',
+            tickCount: 8,
+            mask: 'MM-DD HH:mm'
+          },
+          increment: {
+            alias: '流量(吨)',
+            nice: true
+          },
+
+        });
+
+        chart.axis('increment', {
+          grid: null,
+          title: {},
+        });
+        ;
+
+
+        chart.tooltip({
+          showCrosshairs: true,
+          shared: true,
+        });
+
+
+        chart.option('slider', {
+          start: 0.1,
+          end: 0.8,
+          trendCfg: {
+            isArea: false,
+          },
+        });
+        chart
+          .interval()
+          .position('datetime*increment')
+          .color('l(100) 0:#0288D1 1:#B3E5FC');
+        chart.interaction('element-visible-filter');
+
+        chart.render();
+      }
+      function renderChart2(data) {
+        //const ds = new DataSet({
+        //  state: {
+        //    start: dt1_2,
+        //    end: dt2_2,
+        //  },
+        //});
+        //const dv = ds.createView('origin').source(data);
+        //dv.transform({
+        //  type: 'filter',
+        //  callback: function callback(obj) {
+        //    const datetime = moment(obj.datetime); // !注意：时间格式，建议转换为时间戳进行比较
+        //    //console.log(datetime, ds.state.start, ds.state.end)
+        //    return datetime >= moment(ds.state.start) && datetime <= moment(ds.state.end);
+        //  },
+        //});
+        //console.log(dv, dv.rows)
+
+        chart2.clear();
+        chart2.data(data);
+        chart2.scale({
+          datetime: {
+            type: 'time',
+            tickCount: 8,
+            mask: 'MM-DD HH:mm'
+          },
+          increment: {
+            alias: '流量(吨)',
+            nice: true
+          },
+
+        });
+
+        chart2.axis('increment', {
+          grid: null,
+          title: {},
+        });
+        ;
+
+
+        chart2.tooltip({
+          showCrosshairs: true,
+          shared: true,
+        });
+
+
+        //chart2.option('slider', {
+        //  start: 0.1,
+        //  end: 0.8,
+        //  trendCfg: {
+        //    isArea: false,
+        //  },
+        //});
+        //chart2
+        //  .area()
+        //  .adjust('stack')
+        //  .position('datetime*increment')
+        //  .color('meterId');
+        chart2
+          .line()
+          //.adjust('stack')
+          .position('datetime*increment')
+          .color('meterId');
+        chart.interaction('element-highlight');
+
+        chart2.render();
+      }
+    })
+  </script>
+
+}

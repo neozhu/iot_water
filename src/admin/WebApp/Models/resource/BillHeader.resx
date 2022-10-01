@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+// <copyright file="BillHeaderMetadata.cs" company="neozhu/MVC5-Scaffolder">
+// Copyright (c) 2021 All Rights Reserved
+// </copyright>
+// <author>neo.zhu</author>
+// <date>2/19/2021 8:30:03 PM </date>
+// <summary>Class representing a Metadata entity </summary>
+  -->
+<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+   <data name="Id" xml:space="preserve">
+    <value>系统主键</value>
+   </data> 
+   <data name="BillNo" xml:space="preserve">
+    <value>账单编号</value>
+   </data> 
+   <data name="CustomerId" xml:space="preserve">
+    <value>用水单位</value>
+   </data> 
+   <data name="CustomerName" xml:space="preserve">
+    <value>单位名称</value>
+   </data> 
+   <data name="Category" xml:space="preserve">
+    <value>客户类型</value>
+   </data> 
+   <data name="WaterPrice" xml:space="preserve">
+    <value>水单价(元/m3)</value>
+   </data> 
+   <data name="ServicePrice" xml:space="preserve">
+    <value>水服务费单价(元/m3)</value>
+   </data> 
+   <data name="Discount" xml:space="preserve">
+    <value>折扣</value>
+   </data> 
+   <data name="BillDate" xml:space="preserve">
+    <value>账单日期</value>
+   </data> 
+   <data name="ReceiptDate" xml:space="preserve">
+    <value>收费日期</value>
+   </data> 
+   <data name="Month" xml:space="preserve">
+    <value>月份</value>
+   </data> 
+   <data name="TotalWater" xml:space="preserve">
+    <value>总水量(m3)</value>
+   </data> 
+   <data name="LastTotalWater" xml:space="preserve">
+    <value>上个月总用水量(m3)</value>
+   </data> 
+   <data name="PerCent" xml:space="preserve">
+    <value>环比(%)</value>
+   </data> 
+   <data name="TotalWaterAmount" xml:space="preserve">
+    <value>总水价(元)</value>
+   </data> 
+   <data name="TotalServiceAmount" xml:space="preserve">
+    <value>总水服务费(元)</value>
+   </data> 
+   <data name="AdjustWater" xml:space="preserve">
+    <value>补扣水量(m3)</value>
+   </data> 
+   <data name="AdjustWaterAmount" xml:space="preserve">
+    <value>补扣水费(元)</value>
+   </data> 
+   <data name="AdjustServiceAmount" xml:space="preserve">
+    <value>补扣服务费(元)</value>
+   </data> 
+   <data name="TotalAmount" xml:space="preserve">
+    <value>总费用(元)</value>
+   </data> 
+   <data name="TotalReceivableAmount" xml:space="preserve">
+    <value>总应收费用(元)</value>
+   </data> 
+   <data name="Status" xml:space="preserve">
+    <value>状态</value>
+   </data> 
+   <data name="Remark" xml:space="preserve">
+    <value>备注</value>
+   </data> 
+</root>

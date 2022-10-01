@@ -1,0 +1,592 @@
+﻿﻿@model WebApp.Models.BillHeader
+<!-- 弹出编辑窗体表单 -->
+<div id="billheaderdetailwindow" class="easyui-window"
+     title="编辑账单信息"
+     data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'fal fa-window',
+                    onRestore:function(){
+                      $billdetaildg.datagrid('resize');
+                    },
+                    onMaximize:function(){
+                      $billdetaildg.datagrid('resize');
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="d-flex justify-content-end pr-4">
+      <div class="btn-group btn-group-sm mr-1" id="saveitem-btn-group">
+        <button name="saveitembutton" class="btn btn-default">
+          <i class="fal fa-save"></i> @Html.L("Save")
+        </button>
+      </div>
+      <div class="btn-group btn-group-sm mr-1" id="deleteitem-btn-group">
+        <button name="deleteitembutton" class="btn btn-danger">
+          <i class="fal fa-trash-alt"></i> @Html.L("Delete")
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="container">
+      <div class="panel-content">
+        <form id="billheader_form"
+              class="easyui-form form-horizontal padding-10"
+              method="post" novalidate>
+          @Html.AntiForgeryToken()
+          <!--Primary Key-->
+          @Html.HiddenFor(model => model.Id)
+          @Html.HiddenFor(model => model.CustomerId)
+          @Html.HiddenFor(model => model.HasSend)
+          @Html.HiddenFor(model => model.SendDateTime)
+          <fieldset class="form-group">
+            <div class="row h-100 align-items-center">
+              <!--月份-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Month)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.Month)"
+                       name="@Html.NameFor(model => model.Month)"
+                       value="@Html.ValueFor(model => model.Month)"
+                       tabindex="9"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.Month)',
+								 required:false,readonly:true,
+                                 validType: 'length[0,12]'
+                                 " />
+              </div>
+              <!--状态-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.Status)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.Status)"
+                       name="@Html.NameFor(model => model.Status)"
+                       value="@Html.ValueFor(model => model.Status)"
+                       tabindex="20" required
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.Status)',
+								 required:true,readonly:true,
+                                 validType: 'length[0,20]'
+                                 " />
+              </div>
+              <!--账单编号-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.BillNo)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.BillNo)"
+                       name="@Html.NameFor(model => model.BillNo)"
+                       value="@Html.ValueFor(model => model.BillNo)"
+                       tabindex="0" required
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.BillNo)',
+								 required:true,readonly:true,
+                                 validType: 'length[0,12]'
+                                 " />
+              </div>
+
+              <!--用水单位-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.CustomerCode)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.CustomerCode)"
+                       name="@Html.NameFor(model => model.CustomerCode)"
+                       value="@Html.ValueFor(model => model.CustomerCode)"
+                       tabindex="0" required
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.CustomerCode)',
+								 required:true,readonly:true,
+                                 validType: 'length[0,12]'
+                                 " />
+              </div>
+
+
+              <!--单位名称-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.CustomerName)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.CustomerName)"
+                       name="@Html.NameFor(model => model.CustomerName)"
+                       value="@Html.ValueFor(model => model.CustomerName)"
+                       tabindex="2"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.CustomerName)',
+								 required:false,readonly:true,
+                                 validType: 'length[0,50]'
+                                 " />
+              </div>
+
+              <!--客户类型-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Category)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.Category)"
+                       name="@Html.NameFor(model => model.Category)"
+                       value="@Html.ValueFor(model => model.Category)"
+                       tabindex="3"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.Category)',
+								 required:false,readonly:true,
+                                 validType: 'length[0,50]'
+                                 " />
+              </div>
+
+
+              <!--水单价(元/m3)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.WaterPrice)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.WaterPrice)"
+                       name="@Html.NameFor(model => model.WaterPrice)"
+                       value="@Html.ValueFor(model => model.WaterPrice)"
+                       tabindex="4"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.WaterPrice)',
+								 required:true, precision:3,
+
+                                 " />
+
+              </div>
+
+
+
+
+              <!--折扣-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.Discount)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.Discount)"
+                       name="@Html.NameFor(model => model.Discount)"
+                       value="@Html.ValueFor(model => model.Discount)"
+                       tabindex="6"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.Discount)',
+								 required:true,formatter:numberformatter,
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+              <!--账单日期-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.BillDate)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.BillDate)"
+                       name="@Html.NameFor(model => model.BillDate)"
+                       value="@Html.ValueFor(model => model.BillDate)"
+                       tabindex="7" required
+                       class="easyui-datebox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.BillDate)',
+								 required:true,
+								 formatter:dateformatter" />
+              </div>
+              <!--账单日期-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.PaymentDate)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.PaymentDate)"
+                       name="@Html.NameFor(model => model.PaymentDate)"
+                       value="@Html.ValueFor(model => model.PaymentDate)"
+                       tabindex="7" required
+                       class="easyui-datebox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.PaymentDate)',
+								 required:true,
+								 formatter:dateformatter" />
+              </div>
+
+              <!--收费日期-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.ReceiptDate)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.ReceiptDate)"
+                       name="@Html.NameFor(model => model.ReceiptDate)"
+                       value="@Html.ValueFor(model => model.ReceiptDate)"
+                       tabindex="8"
+                       class="easyui-datebox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.ReceiptDate)',
+								 required:false,
+								 formatter:dateformatter" />
+              </div>
+
+
+
+
+              <!--总水量(m3)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalWater)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.TotalWater)"
+                       name="@Html.NameFor(model => model.TotalWater)"
+                       value="@Html.ValueFor(model => model.TotalWater)"
+                       tabindex="10"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.TotalWater)',
+								 required:true,formatter:numberformatter,readonly:true,
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+              <!--上个月总用水量(m3)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.LastTotalWater)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.LastTotalWater)"
+                       name="@Html.NameFor(model => model.LastTotalWater)"
+                       value="@Html.ValueFor(model => model.LastTotalWater)"
+                       tabindex="11"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.LastTotalWater)',
+                       buttonText:'获取水量',buttonAlign:'right',readonly:false,
+								 required:false,formatter:numberformatter,
+                 parser:parsernumber,precision:2,onClickButton:function(){ getAdnUpdateLasterWater() }
+
+                                 " />
+
+              </div>
+
+
+              <!--环比(%)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.PerCent)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.PerCent)"
+                       name="@Html.NameFor(model => model.PerCent)"
+                       value="@Html.ValueFor(model => model.PerCent)"
+                       tabindex="12"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.PerCent)',
+								 required:false,formatter:numberformatter,readonly:true,
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+              <!--总水价(元)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalWaterAmount)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.TotalWaterAmount)"
+                       name="@Html.NameFor(model => model.TotalWaterAmount)"
+                       value="@Html.ValueFor(model => model.TotalWaterAmount)"
+                       tabindex="13"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.TotalWaterAmount)',
+								 required:true,formatter:numberformatter,
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+
+
+
+              <!--补扣水量(m3)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.AdjustWater)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.AdjustWater)"
+                       name="@Html.NameFor(model => model.AdjustWater)"
+                       value="@Html.ValueFor(model => model.AdjustWater)"
+                       tabindex="15"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.AdjustWater)',
+								 required:true,formatter:numberformatter,onChange:function(){caltotalamount()},
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+
+              <!--补扣水费(元)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.AdjustWaterAmount)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.AdjustWaterAmount)"
+                       name="@Html.NameFor(model => model.AdjustWaterAmount)"
+                       value="@Html.ValueFor(model => model.AdjustWaterAmount)"
+                       tabindex="16"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.AdjustWaterAmount)',
+								 required:true,formatter:numberformatter,onChange:function(){caltotalamount()},
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+
+
+
+              <!--总费用(元)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalAmount)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.TotalAmount)"
+                       name="@Html.NameFor(model => model.TotalAmount)"
+                       value="@Html.ValueFor(model => model.TotalAmount)"
+                       tabindex="18"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.TotalAmount)',
+								 required:true,formatter:numberformatter,readonly:true,
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+
+              <!--总应收费用(元)-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalReceivableAmount)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.TotalReceivableAmount)"
+                       name="@Html.NameFor(model => model.TotalReceivableAmount)"
+                       value="@Html.ValueFor(model => model.TotalReceivableAmount)"
+                       tabindex="19"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.TotalReceivableAmount)',
+								 required:true,formatter:numberformatter,readonly:true,
+                                 parser:parsernumber,precision:2,
+
+                                 " />
+
+              </div>
+              <!--备注-->
+              <label class="col-md-2 col-sm-3 col-xs-3 col-3 pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Remark)</label>
+              <div class="col-md-4 col-sm-9 col-xs-9 col-9 mb-1 pl-1">
+                <input id="@Html.IdFor(model => model.Remark)"
+                       name="@Html.NameFor(model => model.Remark)"
+                       value="@Html.ValueFor(model => model.Remark)"
+                       tabindex="21"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DescriptionFor(model => model.Remark)',
+								 required:false,
+                                 validType: 'length[0,250]'
+                                 " />
+              </div>
+
+            </div>
+          </fieldset>
+        </form>
+        <ul class="nav nav-tabs nav-tabs-clean" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active"
+               data-toggle="tab"
+               data-model="billdetail"
+               href="#tab-billdetail"
+               role="tab">用水明细</a>
+          </li>
+        </ul>
+        <div class="tab-content p-0">
+          <div class="tab-pane fade show active"
+               id="tab-billdetail"
+               data-model="billdetail"
+               role="tabpanel"
+               aria-labelledby="tab-billdetail">
+
+            <div class="d-flex justify-content-start flex-wrap p-2">
+ 
+
+            </div>
+            <div class="table-responsive">
+              <table class="m-0" id="billdetail_datagrid">
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+<!-- billdetail datagrid  javascript block -->
+@Html.Partial("_BillDetailEditForm", new WebApp.Models.BillDetail())
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+  //当初始的 HTML 文档被完全加载和解析完成之后
+  document.addEventListener('DOMContentLoaded', function () {
+    //绑定按钮事件
+    $('button[name="saveitembutton"]').on('click', savebillheaderitem);
+    $('button[name="deleteitembutton"]').on('click', deletebillheaderitem);
+    $('button[name="billdetail_searchbutton"]').on('click', billdetail_reloadData);
+    $('button[name="billdetail_appenditembutton"]').on('click', billdetail_appendItem);
+    $('button[name="billdetail_deleterowbutton"]').on('click', billdetail_removeItem);
+    $('button[name="billdetail_cancelchangesbutton"]').on('click', billdetail_rejectChanges);
+    $('button[name="billdetail_savechangesbutton"]').on('click', billdetail_acceptChanges);
+    $('a[data-toggle="tab"]').on('shown.bs.tab', (e) => {
+      const model = $(e.target).data('model');
+      $(`#${model}_datagrid`).datagrid('resize');
+    })
+  });
+  //获取上月水量
+  function getAdnUpdateLasterWater() {
+    var billid = $("#BillNo").val();
+    $.get('/BillHeaders/GetAdnUpdateLasterWater?billid=' + billid).done(res => {
+      console.log(res);
+      if (res.item) {
+        $('#LastTotalWater').numberbox('setValue', res.item.TotalWater);
+        var water = $('#TotalWater').numberbox('getValue');
+        var lastwater = res.item.TotalWater;
+        var percent = (water - lastwater) / lastwater * 100;
+        $('#PerCent').numberbox('setValue',percent)
+      }
+    });
+
+  }
+  //计算总用金额
+  function caltotalamount() {
+    var price = numeral($('#WaterPrice').numberbox('getValue')).value();
+    var totalwateramount = numeral($('#TotalWaterAmount').numberbox('getValue')).value();
+    var adjwater = numeral($('#AdjustWater').numberbox('getValue')).value();
+    var adjustwateramount = adjwater * price;
+    $('#AdjustWaterAmount').numberbox('setValue', adjustwateramount);
+    $('#TotalAmount').numberbox('setValue', totalwateramount + adjustwateramount);
+    $('#TotalReceivableAmount').numberbox('setValue', totalwateramount + adjustwateramount);
+  }
+
+  //判断新增编辑状态
+  var MODELSTATE = 'Added';
+  var billheaderid = null;
+  function openbillheaderdetailwindow(data, state) {
+    MODELSTATE = state;
+   
+
+    billheaderid = (data.Id || 0);
+    $('#billheaderdetailwindow').window('open');
+    $('#billheader_form').form('reset');
+    $('#billheader_form').form('load', data);
+    var url = '/BillDetails/GetDataByBillId?billid=' + billheaderid;
+    $billdetaildg.datagrid('load', url);
+    $billdetaildg.datagrid('resize');
+
+
+    //判断是否显示功能按钮
+    if (data.Status == "待确认") {
+      if (MODELSTATE === 'Added') {
+        $('#deleteitem-btn-group').hide();
+      } else {
+        $('#deleteitem-btn-group').show();
+      }
+    } else {
+      $('#billheader_form').form('disable');
+      $('#deleteitem-btn-group').hide();
+      $('#saveitem-btn-group').hide();
+    }
+  }
+  //删除当前记录
+  function deletebillheaderitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/BillHeaders/Delete/${billheaderid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $('#billheaderdetailwindow').window('close');
+            reloadData();
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+  //async 保存数据
+  async function savebillheaderitem() {
+    const $billheaderform = $('#billheader_form');
+    if ($billheaderform.form('enableValidation').form('validate')) {
+      let billheader = $billheaderform.serializeJSON();
+      //获取明细表数据
+
+      const billdetail_result = await billdetail_acceptChanges();
+      if (!billdetail_result.success) {
+        return false;
+      } else {
+        billheader.BillDetails = billdetail_result.changed;
+      }
+
+      let url = '/BillHeaders/Edit';
+      //判断是新增或是修改方法
+      if (MODELSTATE === 'Added') {
+        url = '/BillHeaders/Create';
+      }
+      var token = $('input[name="__RequestVerificationToken"]', $billheaderform).val();
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+          __RequestVerificationToken: token,
+          billheader: billheader
+        },
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+      })
+        .done(response => {
+          if (response.success) {
+            hook = false;
+            $billheaderform.form('disableValidation');
+            $billheaderform.form('submitChanged');
+            $('#billheaderdetailwindow').window("close");
+            toastr.success("保存成功");
+            reloadData();
+          } else {
+            $.messager.alert("错误", response.err, "error");
+          }
+        })
+        .fail((jqXHR, textStatus, errorThrown) => {
+          $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+        });
+    }
+  }
+  //判断是否有没有保存的记录
+  function billheaderhasmodified() {
+    if (!hook) {
+      if (!billdetail_endEditing()) {
+        return true;
+      }
+      const billdetails = $billdetaildg.datagrid("getChanges");
+      if (MODELSTATE == 'Modified' && billdetails.length > 0) {
+        return true;
+      }
+      return false;
+    } else {
+      return hook;
+    }
+
+  }
+
+
+  
+</script>
+

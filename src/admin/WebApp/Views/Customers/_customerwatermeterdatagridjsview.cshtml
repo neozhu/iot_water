@@ -1,0 +1,479 @@
+﻿
+@model WebApp.Models.CustomerWaterMeter
+
+<script type="text/javascript">
+    //是否开启行内编辑
+    var SUBEDITINLINE = false;
+   //初始化 CustomerWaterMeter datagrid
+   var $customerwatermeterdg = $('#customerwatermeter_datagrid');
+   //当前行记录
+   var customerwatermeter = {};
+   //datagrid CRUD method
+    var customerwatermeter_editIndex = undefined;
+    //取消
+    function customerwatermeter_reject() {
+		$customerwatermeterdg.datagrid('rejectChanges');
+		customerwatermeter_editIndex = undefined;
+        $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', true);
+        $('button[name*=\'customerwatermeterdeletebutton\']').prop('disabled', true);
+        $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', true);
+    }
+    //重新加载数据
+    function customerwatermeter_reload() {
+      if (customerwatermeter_endEditing()) {
+        $customerwatermeterdg.datagrid('uncheckAll');
+				$customerwatermeterdg.datagrid('reload');
+			}
+	}
+    //关闭编辑状态
+	function customerwatermeter_endEditing() {
+			if (customerwatermeter_editIndex === undefined) {
+                return true;
+            }
+			if ($customerwatermeterdg.datagrid('validateRow', customerwatermeter_editIndex)) {
+				$customerwatermeterdg.datagrid('endEdit', customerwatermeter_editIndex);
+				customerwatermeter_editIndex = undefined;
+                return true;
+			} else {
+				const invalidinput = $('input.validatebox-invalid',$customerwatermeterdg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+				return false;
+			}
+		}
+    //单击列开启编辑功能
+	function customerwatermeter_onClickCell(index, field) {
+			const _operates = ['_operate1', 'ck'];
+             $('button[name*=\'customerwatermeterdeletebutton\']').prop('disabled', false);
+			if (!SUBEDITINLINE || $.inArray(field, _operates) >= 0) {
+				return false;
+			}
+			if (customerwatermeter_editIndex !== index) {
+				if (customerwatermeter_endEditing()) {
+					$customerwatermeterdg.datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+                    //customerwatermeter_editIndex = index;
+					var ed = $customerwatermeterdg.datagrid('getEditor', { index: index, field: field });
+					if (ed) {
+						($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+					}
+                    $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', false);
+                    $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', false);
+				} else {
+					$customerwatermeterdg.datagrid('selectRow', customerwatermeter_editIndex);
+				}
+			}
+		}
+    //双击弹出编辑当前行对话框
+    function customerwatermeter_onDblClickRow(index, row) {
+            open_customerwatermeterdlg(index, row, 'Modified');
+    }
+    //订阅对话框新增返回事件
+  $(document).on('customerwatermeter_form.add', (e, items) => {
+    console.log(items)
+    items.forEach(item => {
+      $customerwatermeterdg.datagrid("insertRow",
+        {
+          index: 0,
+          row: item
+        });
+    })
+
+
+    });
+    //订阅对话框修改返回事件
+    $(document).on('customerwatermeter_form.edit', (e,index, item) => {
+        $customerwatermeterdg.datagrid('updateRow', {
+            index: index,
+            row: item
+        });
+        $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', false);
+        $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', false);
+    });
+    //新增记录
+  function customerwatermeter_append() {
+    const id = parseInt($('#customer_form #Id').val());
+    if (id <= 0) {
+      $.messager.alert('提示', '请先保存单位信息后再添加水表')
+      return;
+    }
+    const $customerform = $('#customer_form');
+    if ($customerform.form('enableValidation').form('validate')) {
+      $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', false);
+      $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', false);
+      $('button[name*=\'saveitembutton\']').prop('disabled', false);
+      const customer = $customerform.serializeJSON();
+      const item = {
+        Quota: 0,
+        Ratio: 1,
+        IsFee: false,
+        Discount: 0,
+        RegisterDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        CustomerName: customer.Name,
+        CustomerCode: customer.Code,
+        CustomerId: customer.Id
+      };
+      open_customerwatermeterdlg(0, item, 'Added');
+
+    }
+  }
+    //删除编辑的行
+	function customerwatermeter_removeit() {
+    const rows = $customerwatermeterdg.datagrid('getChecked');
+    rows.slice().reverse().forEach(row => {
+      const rowindex = $customerwatermeterdg.datagrid('getRowIndex', row);
+      $customerwatermeterdg.datagrid('deleteRow', rowindex);
+
+    });
+    }
+   //停用水表
+    function customerwatermeter_stop() {
+      const id = $customerwatermeterdg.datagrid('getChecked').filter(item => item.IsDelete == false).map(item => {
+        return item.Id;
+      });
+      if (id.length > 0) {
+        $.messager.confirm('确认', `你确定要停用 <span class='badge badge-icon position-relative'>${id.length}</span> 水表?`, result => {
+          if (result) {
+            $.post('/CustomerWaterMeters/Stop', { id: id })
+              .done(response => {
+                if (response.success) {
+                  $customerwatermeterdg.datagrid('uncheckAll');
+                  $customerwatermeterdg.datagrid('reload');
+                } else {
+                  $.messager.alert('错误', response.err, 'error');
+                }
+              });
+          }
+        });
+      } else {
+        $.messager.alert('提示', '请先选择要停用的记录!', 'question');
+      }
+    }
+    //恢复水表
+    function customerwatermeter_resume() {
+      const id = $customerwatermeterdg.datagrid('getChecked').filter(item => item.IsDelete == true).map(item => {
+        return item.Id;
+      });
+      if (id.length > 0) {
+
+        $.post('/CustomerWaterMeters/Resume', { id: id })
+              .done(response => {
+                if (response.success) {
+                  $customerwatermeterdg.datagrid('uncheckAll');
+                  $customerwatermeterdg.datagrid('reload');
+                } else {
+                  $.messager.alert('错误', response.err, 'error');
+                }
+              });
+
+      } else {
+        $.messager.alert('提示', '请先选择已停用的记录!', 'question');
+      }
+    }
+    //删除选中的行
+    function customerwatermeter_deletechecked() {
+            const rows = $customerwatermeterdg.datagrid('getChecked');
+            if (rows.length > 0) {
+                var id = rows.filter(item=>item.Id!=null).map(item => {
+                    return item.Id;
+                });
+              $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length}</span> 行记录?`,result => {
+                    if (result) {
+                        $.post('/CustomerWaterMeters/DeleteChecked', { id: id })
+                         .done(response => {
+                            if (response.success) {
+                                $customerwatermeterdg.datagrid('reload');
+                            } else {
+                                $.messager.alert('错误', response.err,'error');
+                            }
+                         });
+                    }
+                });
+            } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+            }
+      }
+  //获取修改的行
+  function customerwatermeter_getchanges() {
+    if (customerwatermeter_endEditing()) {
+      if ($customerwatermeterdg.datagrid('getChanges').length > 0) {
+        const inserted = $customerwatermeterdg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const deleted = $customerwatermeterdg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3;
+          return item;
+        });
+        const updated = $customerwatermeterdg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2;
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+          return !deleted.includes(item);
+        })).concat(deleted);
+        return { success: true, changed };
+      } else {
+        return { success: true, changed:undefined};
+      }
+    } else {
+      return { success: false,changed:undefined };
+    }
+  }
+  //提交修改的数据
+  function customerwatermeter_acceptchanges() {
+    $customerwatermeterdg.datagrid('acceptChanges');
+  }
+    //提交保存后台数据库
+  function customerwatermeter_accept() {
+    return new Promise((resolve, reject) => {
+      if (customerwatermeter_endEditing()) {
+        if ($customerwatermeterdg.datagrid('getChanges').length > 0) {
+          const inserted = $customerwatermeterdg.datagrid('getChanges', 'inserted').map(item => {
+            item.TrackingState = 1;
+            return item;
+          });
+          const deleted = $customerwatermeterdg.datagrid('getChanges', 'deleted').map(item => {
+            item.TrackingState = 3;
+            return item;
+          });
+          const updated = $customerwatermeterdg.datagrid('getChanges', 'updated').map(item => {
+            item.TrackingState = 2;
+            return item;
+          });
+          //过滤已删除的重复项
+          const changed = inserted.concat(updated.filter(item => {
+            return !deleted.includes(item);
+          })).concat(deleted);
+          //console.table(changed);
+          if (MODELSTATE === 'Added') {
+            resolve({ success: true, changed });
+          } else {
+            $.post('/CustomerWaterMeters/SaveData', { customerwatermeters: changed })
+              .done(response => {
+                response.changed = undefined;
+                resolve(response);
+                //console.log(response);f
+                if (response.success) {
+                  toastr.success('保存成功');
+                  $customerwatermeterdg.datagrid('acceptChanges');
+                  $customerwatermeterdg.datagrid('reload');
+                  $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', true);
+                  $('button[name*=\'customerwatermeterdeletebutton\']').prop('disabled', true);
+                  $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', true);
+                } else {
+                  $.messager.alert('错误', response.err, 'error');
+                }
+              })
+              .fail((jqXHR, textStatus, errorThrown) => {
+                //console.log(errorThrown);
+                resolve({ success: false, err: errorThrown });
+                $.messager.alert('异常', errorThrown, 'error');
+              });
+          }
+        } else {
+          resolve({ success: true, changed: undefined });
+        }
+      } else {
+        resolve({ success: false });
+      }
+    });
+  }
+
+
+  $(() => {
+    $customerwatermeterdg.datagrid({
+      rownumbers: true,
+      idField: 'Id',
+      sortName: 'Dept',
+      sortOrder: 'asc',
+      remoteFilter: true,
+      singleSelect: true,
+      checkOnSelect: false,
+      selectOnCheck: false,
+      pagination: true,
+      clientPaging: false,
+      onDblClickRow: customerwatermeter_onDblClickRow,
+      method: 'get',
+      pageList: [10, 20, 50, 100],
+      onSelect: function (index, row) {
+        customerwatermeter = row;
+      },
+      onLoadSuccess: function (data) {
+        customerwatermeter_editIndex = undefined;
+      },
+      onBeginEdit: function (index, row) {
+        //const editors = $(this).datagrid('getEditors', index);
+
+      },
+      onEndEdit: function (index, row) {
+
+      },
+      onBeforeEdit: function (index, row) {
+        customerwatermeter_editIndex = index;
+        row.editing = true;
+        $(this).datagrid('refreshRow', index);
+        $('button[name*=\'customerwatermeterdeletebutton\']').prop('disabled', false);
+        $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', false);
+        $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', false);
+      },
+      onAfterEdit: function (index, row) {
+        row.editing = false;
+        customerwatermeter_editIndex = undefined;
+        $(this).datagrid('refreshRow', index);
+      },
+      onCancelEdit: function (index, row) {
+        customerwatermeter_editIndex = undefined;
+        row.editing = false;
+        $(this).datagrid('refreshRow', index);
+        $('button[name*=\'customerwatermeterdeletebutton\']').prop('disabled', true);
+        $('button[name*=\'customerwatermetersavebutton\']').prop('disabled', true);
+        $('button[name*=\'customerwatermetercancelbutton\']').prop('disabled', true);
+      },
+      pagination: true,
+      striped: true,
+      columns: [[
+        { field: 'ck', checkbox: true },
+         {    /*部门*/
+           field: 'Dept',
+          title: '@Html.DisplayNameFor(model => model.Dept)',
+          width: 100,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+         {    /*表名*/
+           field: 'meterName',
+          title: '@Html.DisplayNameFor(model => model.meterName)',
+          width: 140,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+        {    /*表号*/
+          field: 'meterId',
+          title: '@Html.DisplayNameFor(model => model.meterId)',
+          width: 140,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+         {    /*正负项*/
+           field: 'Negitive',
+          title: '@Html.DisplayNameFor(model => model.Negitive)',
+          width: 140,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+          {    /*占比*/
+            field: 'Ratio',
+          title: '@Html.DisplayNameFor(model => model.Ratio)',
+          width: 140,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+        {    /*用水点*/
+          field: 'Points',
+          title: '@Html.DisplayNameFor(model => model.Points)',
+          width: 160,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+        {    /*所在区域*/
+          field: 'Remark',
+          title: '@Html.DisplayNameFor(model => model.Remark)',
+          width: 160,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+        {    /*等级*/
+          field: 'Level',
+          title: '@Html.DisplayNameFor(model => model.Level)',
+          width: 60,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+        {    /*所在区域*/
+          field: 'ZoneName',
+          title: '区域',
+          width: 100,
+          sortable: true,
+          hidden: false,
+          resizable: true
+        },
+
+         {    /*是否停用*/
+           field: 'IsDelete',
+           title: '@Html.DisplayNameFor(model => model.IsDelete)',
+          width: 90,
+          sortable: true,
+           hidden: false,
+           formatter: checkboxformatter
+        },
+         {    /*注册日期*/
+            field: 'RegisterDate',
+            title: '@Html.DisplayNameFor(model => model.RegisterDate)',
+            width: 120,
+            hidden: false,
+            sortable: true,
+            resizable: true,
+            formatter:dateformatter
+          },
+          {    /*截止日期*/
+            field: 'DeleteDate',
+            title: '@Html.DisplayNameFor(model => model.DeleteDate)',
+            width: 120,
+            hidden: false,
+            sortable: true,
+            resizable: true,
+            formatter:dateformatter
+          },
+      ]]
+    });
+    //初始化 datagrid filter
+    $customerwatermeterdg.datagrid('enableFilter', [
+      {    /*用水定额(月)*/
+        field: 'Quota',
+        type: 'numberbox',
+        op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+      },
+      {    /*折扣*/
+        field: 'Discount',
+        type: 'numberbox',
+        op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+      },
+      {     /*注册日期*/
+        field: 'RegisterDate',
+        type: 'dateRange',
+        options: {
+        }
+      },
+      {     /*截止日期*/
+        field: 'DeleteDate',
+        type: 'dateRange',
+        options: {
+        }
+      },
+      {     /*是否计费*/
+        field: 'IsFee',
+        type: 'booleanfilter'
+      },
+      {     /*是否删除*/
+        field: 'IsDelete',
+        type: 'booleanfilter'
+      },
+    ]);
+  });
+
+</script>
+
+
+ 

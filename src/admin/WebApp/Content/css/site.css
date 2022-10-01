@@ -1,0 +1,43 @@
+/* Bootstrap Validation Summary Override */
+.validation-summary-valid {
+    display: none;
+}
+
+.validation-summary-errors ul {
+    margin-bottom: 0;
+    padding-left: 1rem;
+}
+
+.alert.validation-summary-errors {
+    margin-bottom: 1rem;
+}
+
+/* Reference classes, no implementation */
+.js-waves-off,
+.js-waves-on,
+.js-get-date,
+.js-collapse,
+.js-modal-settings,
+.js-filter-message,
+.js-buttons,
+.js-icon-class,
+.js-icon-copy,
+.base,
+.needs-validation,
+.flex-start,
+.text-faded,
+.app-container-demo,
+.has-tooltip,
+.has-popover {}
+
+.js-bg-color,
+.js-bg-gradient,
+.js-bg-gradient-demo,
+.js-bg-target {}
+
+/* Small word wrap correction */
+section>ol>li {
+    word-break: break-all;
+}
+
+/* Enter custom CSS rules for your application here */

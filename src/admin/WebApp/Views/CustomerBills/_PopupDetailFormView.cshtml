@@ -1,0 +1,422 @@
+﻿﻿@model WebApp.Models.CustomerBill
+<!-- 弹出编辑窗体表单 -->
+ <div id="customerbilldetailwindow" class="easyui-window" 
+      title="明细数据" 
+      data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'icon-more',
+                    footer:'#windowfooter',
+                    closeDuration:200,
+                    closeAnimation:'slide',
+                    openDuration:300,
+                    openAnimation:'slide',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(customerbillhasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="row align-items-center m-0">
+      <div class="col">
+        <div class="btn-group btn-group-sm">
+          <button name="saveitembutton" onclick="savecustomerbillitem()" class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm" id="deleteitem-btn-group">
+          <button onclick="deletecustomerbillitem()" class="btn btn-danger">
+            <i class="fal fa-times"></i> @Html.L("Delete")
+          </button>
+        </div>
+      
+      </div>
+      <div class="col d-flex">
+
+      </div>
+    </div>
+  </div>
+ <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="panel-content">
+           <form id="customerbill_form" 
+              class="easyui-form form-horizontal padding-10" 
+              method="post" 
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+  @Html.AntiForgeryToken()
+   <!--Primary Key-->
+  @Html.HiddenFor(model=>model.Id)
+    <!--单位名称-->
+ @Html.HiddenFor(model=>model.CustomerName)
+  <fieldset class="form-group">
+   <div class="row m-1">
+
+    <!--用水单位-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.CustomerId)</label>
+		<div class="col-md-4 mb-1">   	
+            <input id="@Html.IdFor(model => model.CustomerId)"
+			       name="@Html.NameFor(model => model.CustomerId)"
+				   value="@Html.ValueFor(model => model.CustomerId)"
+                   tabindex="0" required
+              	   class="easyui-combobox"      
+                   style="width:100%"
+                   data-options="prompt:'@Html.DisplayNameFor(model => model.CustomerId)' ,
+						required:true ,
+						valueField: 'Id',
+						textField:  'Name' ,
+                        validateOnCreate:false,
+                        validateOnBlur:true,
+                        validType:'combocheck[\'#CustomerId\',\'请选择用水单位\']',
+						url: '/CustomerBills/GetCustomers' ,
+						onSelect: function(item){
+						  //console.log(item);
+				        }">
+       </div>
+	   
+   <!--年份-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Year)</label>
+	   <div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Year)"
+				   name="@Html.NameFor(model => model.Year)" 
+				   value="@Html.ValueFor(model => model.Year)"
+				   tabindex="1" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Year)',
+								 required:true,formatter:intformatter,
+                                 
+                                 " />
+      </div>
+				   
+
+   <!--月份-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Month)</label>
+	   <div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Month)"
+				   name="@Html.NameFor(model => model.Month)" 
+				   value="@Html.ValueFor(model => model.Month)"
+				   tabindex="2" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Month)',
+								 required:true,formatter:intformatter,
+                                 
+                                 " />
+      </div>
+				   
+   <!--状态-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Status)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Status)" 
+				   name="@Html.NameFor(model => model.Status)" 
+				   value="@Html.ValueFor(model => model.Status)"
+				   tabindex="3" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Status)',
+								 required:false, 
+                                 validType: 'length[0,10]'
+                                 " />
+       </div>
+				   
+
+   <!--本期用水量-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.water)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.water)"
+				   name="@Html.NameFor(model => model.water)" 
+				   value="@Html.ValueFor(model => model.water)"
+				   tabindex="4" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.water)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+   <!--水价-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Price)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.Price)"
+				   name="@Html.NameFor(model => model.Price)" 
+				   value="@Html.ValueFor(model => model.Price)"
+				   tabindex="5" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Price)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--折扣-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Discount)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.Discount)"
+				   name="@Html.NameFor(model => model.Discount)" 
+				   value="@Html.ValueFor(model => model.Discount)"
+				   tabindex="6" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Discount)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+   <!--金额-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Amount)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.Amount)"
+				   name="@Html.NameFor(model => model.Amount)" 
+				   value="@Html.ValueFor(model => model.Amount)"
+				   tabindex="7" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Amount)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--账单日期-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.BillDate)</label>
+		<div class="col-md-4 mb-1">  
+                <input id="@Html.IdFor(model => model.BillDate)" 
+			       name="@Html.NameFor(model => model.BillDate)"
+                   value="@Html.ValueFor(model => model.BillDate)"
+           		   tabindex="8"  required
+				   class="easyui-datebox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.BillDate)',
+								 required:true,
+								 formatter:dateformatter" />
+     </div>
+				   
+   <!--备注-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Remark)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Remark)" 
+				   name="@Html.NameFor(model => model.Remark)" 
+				   value="@Html.ValueFor(model => model.Remark)"
+				   tabindex="9" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Remark)',
+								 required:false, 
+                                 validType: 'length[0,200]'
+                                 " />
+       </div>
+				   
+	    </div> 
+      </fieldset>
+   </form>
+    </div>
+    </div>
+</div>
+<div id="windowfooter" style="padding:5px;">&nbsp;</div>
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+    //判断新增编辑状态
+    var MODELSTATE = 'Added';
+    var customerbillid = null;
+    function opencustomerbilldetailwindow(data,state) {
+         MODELSTATE = state;
+         initcustomerbilldetailview();
+         customerbillid = (data.Id || 0);
+         $('#customerbilldetailwindow').window('open');
+         $('#customerbill_form').form('reset');
+         $('#customerbill_form').form('load', data);
+             }
+  //删除当前记录
+  function deletecustomerbillitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/CustomerBills/Delete/${customerbillid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $dg.datagrid('reload');
+            $('#customerbilldetailwindow').window('close');
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+    //async 保存数据
+    async function savecustomerbillitem() { 
+      const $customerbillform = $('#customerbill_form');
+      if ($customerbillform.form('enableValidation').form('validate')) {
+            let customerbill = $customerbillform.serializeJSON();
+            let url = '/CustomerBills/Edit';
+            //判断是新增或是修改方法
+            if (MODELSTATE === 'Added') {
+                url = '/CustomerBills/Create';
+            }
+            var token = $('input[name="__RequestVerificationToken"]', $customerbillform).val();
+            $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        __RequestVerificationToken: token,
+                        customerbill:customerbill
+                    },
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+                })
+                .done(response => {
+                    $.messager.progress('close');
+                    if (response.success) {
+                        hook = false;
+                        $customerbillform.form('disableValidation');
+                        $dg.datagrid('reload');
+                        $('#customerbilldetailwindow').window("close");
+                        toastr.success("保存成功");  
+                    } else {
+                        $.messager.alert("错误",   response.err, "error");
+                    }
+                    })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                       $.messager.progress('close');
+                       $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                    });
+        }
+    }
+    //关闭窗口
+    function closecustomerbilldetailwindow() {
+        $('#customerbilldetailwindow').window('close');
+    }
+    //todo
+    function todo() {
+         console.log('todo.....');
+    }
+     //判断是否有没有保存的记录
+     function customerbillhasmodified() {
+            return hook;
+
+     }
+
+
+function initcustomerbilldetailview() {
+  //判断是否显示功能按钮
+  if (MODELSTATE === 'Added') {
+    $('#deleteitem-btn-group').hide();
+  } else {
+    $('#deleteitem-btn-group').show();
+  }
+
+//回车光标移动到下个输入控件
+    //如果是枚举类型需要把numberbox改成combobox
+    //年份
+	$('#Year').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //月份
+	$('#Month').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //本期用水量
+	$('#water').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //水价
+	$('#Price').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //折扣
+	$('#Discount').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //金额
+	$('#Amount').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //日期类型 账单日期
+	$('#BillDate').datebox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //用水单位默认外键使用combobox,也可以使用combogrid
+	$('#CustomerId').combobox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+}
+</script>
+

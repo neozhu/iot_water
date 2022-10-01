@@ -1,0 +1,662 @@
+﻿@model WebApp.Models.OrgChart
+@{
+  ViewData["Title"] = "拓扑结构";
+  ViewData["PageName"] = "OrgCharts_Index";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  拓扑结构";
+  ViewData["Category1"] = "设备管理";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          拓扑结构
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-trash-alt"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container enable-loader show">
+        <div class="loader"><i class="fal fa-spinner-third fa-spin-4x fs-xxl"></i></div>
+        <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-faded bg-subtlelight-fade">
+          <div class="row no-gutters align-items-center">
+            <div class="col">
+              <!-- 开启授权控制请参考 @@if (Html.IsAuthorize("Create") -->
+              <div class="btn-group btn-group-sm">
+                <button name="searchbutton" class="btn btn-default"> <span class="fal fa-search mr-1"></span> @Html.L("Refresh") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="appendbutton" class="btn btn-default"> <span class="fal fa-plus mr-1"></span> @Html.L("Add") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="deleterowbutton" disabled class="btn btn-default"> <span class="fal fa-trash-alt mr-1"></span> @Html.L("Delete") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="cancelchangesbutton" disabled class="btn btn-default"> <span class="fal fa-times mr-1"></span> @Html.L("Cancel") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="savechangesbutton" disabled class="btn btn-default"> <span class="fal fa-save mr-1"></span> @Html.L("Save") </button>
+              </div>
+
+              <div class="btn-group btn-group-sm hidden-xs">
+                <button name="importexcelbutton" type="button" class="btn btn-default"><span class="fal fa-cloud-upload mr-1"></span> @Html.L("Import") </button>
+                <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <button name="downloadtemplatebutton" class="dropdown-item js-waves-on"><span class="fal fa-download"></span> @Html.L("Download") </button>
+                </div>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button name="exportexcelbutton" class="btn btn-default"> <span class="fal fa-file-excel mr-1"></span>  @Html.L("Export") </button>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button name="helpbutton" class="btn btn-default"> <span class="fal fa-question-circle mr-1"></span> @Html.L("Help") </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="table-responsive">
+            <table id="orgcharts_datagrid">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section ScriptsBlock {
+  @{ Html.RenderPartial("_ImportWindow", new ViewDataDictionary { { "EntityName", "Customer" } }); }
+  @{ Html.RenderPartial("_PopupDetailFormView", new WebApp.Models.OrgChart()); }
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-ext.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-reset.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script type="text/javascript">
+    //绑定按钮事件
+    $('button[name="searchbutton"]').on('click', reloadData);
+    $('button[name="appendbutton"]').on('click', appendData);
+    $('button[name="deleterowbutton"]').on('click', deleteRow);
+    $('button[name="savechangesbutton"]').on('click', acceptChanges);
+    $('button[name="cancelchangesbutton"]').on('click', rejectChanges);
+    $('button[name="exportexcelbutton"]').on('click', exportExcel);
+    $('button[name="importexcelbutton"]').on('click', () => {
+      importexcel('OrgChart')
+    });
+    $('button[name="downloadtemplatebutton"]').on('click', () => {
+      downloadtemplate()
+    });
+    function downloadtemplate() {
+      //默认模板路径存放位置
+      const url = '/FileUpload/Download?file=/ExcelTemplate/OrgChart.xlsx';
+      $.fileDownload(url)
+        .done(() => {
+          //console.log('file download a success!');
+          toastr.success('模板下载完成!');
+        })
+        .fail(() => {
+          $.messager.alert('下载模板失败', '没有下载到导入模板[OrgChart.xlsx]文件!', 'error');
+        });
+    }
+    //全屏事件
+    document.addEventListener('panel.onfullscreen', () => {
+         $dg.datagrid('resize');
+     });
+      //是否强制从后台取值
+      const REQUIRBACKEND = false;
+      //是否开启行内编辑
+      const EDITINLINE = true;
+      var orgchart = {};
+
+       //执行导出下载Excel
+       function exportExcel() {
+                const filterRules = JSON.stringify($dg.datagrid('options').filterRules);
+                //console.log(filterRules);
+                const dialog = bootbox.dialog({
+                    message: '<div class="text-center"><i class="fal fa-spinner fa-pulse fa-lg mr-1"></i> 正在执行...</div>',
+                    closeButton: false
+                 });
+                let formData = new FormData();
+                formData.append('filterRules', filterRules);
+                formData.append('sort', 'Id');
+                formData.append('order', 'asc');
+                $.postDownload('/OrgCharts/ExportExcel', formData).then(res => {
+                    setTimeout(() => {
+                       dialog.modal('hide')
+                     }, 300);
+                    toastr.success('导出成功!');
+                }).catch(err => {
+                    setTimeout(() => {
+                       dialog.modal('hide')
+                     }, 300);
+                    $.messager.alert('导出失败', err.statusText, 'error');
+                });
+
+        }
+        //显示帮助信息
+        function dohelp() {
+            toastr.info('有问题请联系管理员 <br><i class="fa fa-envelope-o" aria-hidden="true"></i> : demo@admin.com','帮助');
+        }
+       var editIndex = undefined;
+       //重新加载数据
+       function reloadData() {
+            $dg.datagrid('unselectAll');
+            $dg.datagrid('uncheckAll');
+            $dg.datagrid('reload');
+       }
+      //关闭编辑状态
+      function endEditing() {
+            if (editIndex === undefined) {
+                return true;
+            }
+            if ($dg.datagrid('validateRow', editIndex)) {
+                $dg.datagrid('endEdit', editIndex);
+                return true;
+            } else {
+                const invalidinput = $('input.validatebox-invalid',$dg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+                return false;
+            }
+        }
+
+    //单击列开启编辑功能
+    function onClickCell(index, field) {
+        orgchart = $dg.datagrid('getRows')[index];
+        const _actions = ['action', 'ck'];
+        if (!EDITINLINE || $.inArray(field, _actions) >= 0) {
+                return;
+        }
+        if (editIndex !== index) {
+            if (endEditing()) {
+                $dg.datagrid('selectRow', index)
+                   .datagrid('beginEdit', index);
+                hook = true;
+                editIndex = index;
+                const ed = $dg.datagrid('getEditor', { index: index, field: field });
+                if (ed) {
+                        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+            } else {
+                $dg.datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    //新增记录
+    async function appendData() {
+       orgchart = {  };
+        //需要后台创建对象
+       if (REQUIRBACKEND) {
+         orgchart = await $.get('/OrgCharts/NewItem');
+       }
+            if (endEditing()) {
+                //对必填字段进行默认值初始化
+                $dg.datagrid('insertRow',
+                              {
+                                  index: 0,
+                                  row: orgchart
+                               });
+                editIndex = 0;
+                $dg.datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+                hook = true;
+            }
+    }
+    //删除编辑的行
+    function deleteRow() {
+       if ($dg.datagrid('getChecked').length<=0 && EDITINLINE) {
+          if (editIndex !== undefined) {
+             const delindex = editIndex;
+             $dg.datagrid('cancelEdit', delindex)
+                .datagrid('deleteRow', delindex);
+               hook = true;
+               $("button[name*='cancelchangesbutton']").prop('disabled', false);
+               $("button[name*='savechangesbutton']").prop('disabled', false);
+           }else{
+              const rows = $dg.datagrid('getChecked');
+              rows.slice().reverse().forEach(row => {
+                const rowindex = $dg.datagrid('getRowIndex', row);
+                $dg.datagrid('deleteRow', rowindex);
+                hook = true;
+                $("button[name*='cancelchangesbutton']").prop('disabled', false);
+                $("button[name*='savechangesbutton']").prop('disabled', false);
+            });
+           }
+        } else {
+          deleteChecked();
+        }
+    }
+    //删除选中的行
+    function deleteChecked() {
+        const checked = $dg.datagrid('getChecked').filter(item=>item.Id!=null && item.Id > 0).map(item => {
+                   return item.Id;
+                });;
+        if (checked.length > 0) {
+              deleteRows(checked);
+         } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+         }
+     }
+    //执行删除
+    function deleteRows(selected){
+      $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${selected.length} </span> 行记录?`, result => {
+       if (result) {
+         $.post('/OrgCharts/DeleteChecked', { id: selected })
+                         .done(response => {
+                                if (response.success) {
+                                    toastr.error(`成功删除 [${selected.length}] 行记录`);
+                                    reloadData();
+                                } else {
+                                    $.messager.alert('错误', response.err,'error');
+                                }
+                          })
+                          .fail((jqXHR, textStatus, errorThrown) => {
+                             $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                          });
+        }
+      });
+    }
+    //提交保存后台数据库
+    function acceptChanges() {
+      if (endEditing()) {
+        if ($dg.datagrid('getChanges').length > 0) {
+          const inserted = $dg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const updated = $dg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2
+          return item;
+        });
+        const deleted = $dg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+            return !deleted.includes(item);
+          })).concat(deleted);
+        //console.table(changed);
+        $.post('/OrgCharts/AcceptChanges', {orgcharts:changed})
+                     .done(response => {
+                           //console.log(response);
+                           if (response.success) {
+                               toastr.success('保存成功');
+                               $dg.datagrid('acceptChanges');
+                               reloadData();
+                               hook = false;
+                           } else {
+                               $.messager.alert('错误', response.err ,'error');
+                           }
+                        })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+                        $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                      });
+                }
+            }
+    }
+    function rejectChanges() {
+        $dg.datagrid('rejectChanges');
+        editIndex = undefined;
+        hook = false;
+    }
+    function getChanges() {
+        const rows = $dg.datagrid('getChanges');
+        //console.log(rows.length + ' rows are changed!');
+    }
+    //弹出明细信息
+    async function showdetailsWindow(id,index) {
+        const orgchart = $dg.datagrid('getRows')[index];
+        if (REQUIRBACKEND) {
+           orgchart = await $.get('/OrgCharts/GetItem/' + id);
+        }
+        openorgchartdetailwindow(orgchart,'Modified');
+    }
+
+    //初始化定义datagrid
+    var $dg = $('#orgcharts_datagrid');
+    $(() => {
+        //定义datagrid结构
+       $dg.datagrid({
+        height:670,
+         pageSize:15,
+                        rownumbers:true,
+                        checkOnSelect:false,
+                        selectOnCheck:false,
+                        idField:'Id',
+                        sortName:'Id',
+                        sortOrder:'desc',
+                        remoteFilter: true,
+                        singleSelect: true,
+                        //url: '/OrgCharts/GetData',
+                        method: 'get',
+                        onClickCell: onClickCell,
+                        pagination: true,
+                        clientPaging:false,
+                        striped:true,
+                        pageList: [15, 20, 50, 100, 500,2000],
+                        filterRules: [],
+                        onHeaderContextMenu: function (e, field) {
+                           e.preventDefault();
+                           $(this).datagrid('columnMenu').menu('show', {
+                             left: e.pageX,
+                             top: e.pageY
+                           });
+                        },
+                        onBeforeLoad: function () {
+                        $('.enable-loader').removeClass('enable-loader')
+                        },
+                        onLoadSuccess: function (data) {
+                           editIndex = undefined;
+                           $("button[name*='deleterowbutton']").prop('disabled', true);
+                           $("button[name*='savechangesbutton']").prop('disabled', true);
+                           $("button[name*='cancelchangesbutton']").prop('disabled', true);
+                        },
+                        onCheck: function () {
+                          $("button[name*='deleterowbutton']").prop('disabled', false);
+                        },
+                        onUncheck: function () {
+                           const checked = $(this).datagrid('getChecked').length > 0;
+                           $("button[name*='deleterowbutton']").prop('disabled', !checked);
+                        },
+                        onCheckAll: function (rows) {
+                          if(rows.length > 0){
+                            $("button[name*='deleterowbutton']").prop('disabled', false);
+                          }
+                        },
+                        onUncheckAll: function () {
+                         $("button[name*='deleterowbutton']").prop('disabled', true);
+                        },
+                        onSelect: function(index,row) {
+                           orgchart = row;
+                        },
+                        onBeforeEdit: function (index, row) {
+                            editIndex = index;
+                            row.editing = true;
+                            $("button[name*='deleterowbutton']").prop('disabled', false);
+                            $("button[name*='cancelchangesbutton']").prop('disabled', false);
+                            $("button[name*='savechangesbutton']").prop('disabled', false);
+                            $(this).datagrid('refreshRow', index);
+                        },
+                        onBeginEdit: function (index, row) {
+                          //const editors = $(this).datagrid('getEditors', index);
+                         const parentid = $(this).datagrid('getEditor', { index: index, field: 'ParentId' });
+                         $(parentid.target).combobox('options')
+                             .onSelect = (item) => {
+                               row['ParentId'] = item.Id;
+                               row['ParentNo'] = item.No;
+                            };
+                         $(parentid.target).combobox('textbox').bind('keydown', function (e) {
+                           if (e.keyCode === 13) {
+                             $(e.target).emulateTab();
+                           }
+                          });
+
+                         },
+                      onEndEdit: function (index, row) {
+
+                       },
+                       onAfterEdit: function (index, row) {
+                            row.editing = false;
+                            editIndex = undefined;
+                            $(this).datagrid('refreshRow', index);
+                        },
+                        onCancelEdit: function (index, row) {
+                             row.editing = false;
+                             editIndex = undefined;
+                             $("button[name*='deleterowbutton']").prop('disabled', true);
+                             $("button[name*='savechangesbutton']").prop('disabled', true);
+                             $("button[name*='cancelchangesbutton']").prop('disabled', true);
+                             $(this).datagrid('refreshRow', index);
+                        },
+                        frozenColumns: [[
+                         /*开启CheckBox选择功能*/
+                         { field: 'ck', checkbox: true },
+                         {
+                            field: 'action',
+                            title:'@Html.L("Command")',
+                            align:'center',
+                            width: 85,
+                            sortable: false,
+                            resizable: true,
+                            formatter: function showdetailsformatter(value, row, index) {
+                                         if (!row.editing) {
+                                            return `<div class="btn-group">\
+                                                         <button onclick="showdetailsWindow('${row.Id}',  ${index})" class="btn btn-outline-info btn-sm btn-icon waves-effect waves-themed" data-toggle="tooltip" data-placement="right" title="@Html.L("EditDetail")" ><i class="fal fa-edit"></i> </button>\
+                                                         <button onclick="deleteRows(['${row.Id}'],${index})" class="btn btn-outline-info btn-sm btn-icon waves-effect waves-themed" data-toggle="tooltip" data-placement="right" title="@Html.L("Delete")" ><i class="fal fa-trash-alt"></i> </button>\
+                                                    </div>`;
+                                         } else {
+                                             return `<button class="btn btn-outline-info btn-sm btn-icon waves-effect waves-themed" disabled title="查看明细"  ><i class="fal fa-edit"></i> </button>`;
+                                         }
+                                     }
+                          }
+                        ]],
+                        columns: [[
+
+            {    /*总序号*/
+                 field:'No',
+                 title:'@Html.DisplayNameFor(model => model.No)',
+                 width:120,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_No',
+                             prompt:'@Html.DescriptionFor(model => model.No)',
+                             required:false,
+                             validType: 'length[0,3]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*层级*/
+                 field:'Level',
+                 title:'@Html.DisplayNameFor(model => model.Level)',
+                 width:120,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_Level',
+                             prompt:'@Html.DescriptionFor(model => model.Level)',
+                             required:true,
+                             validType: 'length[0,16]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*层级序号*/
+                 field:'LevelNo',
+                 title:'@Html.DisplayNameFor(model => model.LevelNo)',
+                 width:120,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_LevelNo',
+                             prompt:'@Html.DescriptionFor(model => model.LevelNo)',
+                             required:true,
+                             validType: 'length[0,3]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*位置*/
+                 field:'Location',
+                 title:'@Html.DisplayNameFor(model => model.Location)',
+                 width:260,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_Location',
+                             prompt:'@Html.DescriptionFor(model => model.Location)',
+                             required:false,
+                             validType: 'length[0,128]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*精度*/
+                 field:'Precision',
+                 title:'@Html.DisplayNameFor(model => model.Precision)',
+                 width:120,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_Precision',
+                             prompt:'@Html.DescriptionFor(model => model.Precision)',
+                             required:false,
+                             validType: 'length[0,8]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*口径*/
+                 field:'DN',
+                 title:'@Html.DisplayNameFor(model => model.DN)',
+                 width:120,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_DN',
+                             prompt:'@Html.DescriptionFor(model => model.DN)',
+                             required:false,
+                             validType: 'length[0,8]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*年份*/
+                 field:'Year',
+                 title:'@Html.DisplayNameFor(model => model.Year)',
+                 width:120,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_Year',
+                             prompt:'@Html.DescriptionFor(model => model.Year)',
+                             required:false,
+                             validType: 'length[0,8]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {    /*备注*/
+                 field:'Remark',
+                 title:'@Html.DisplayNameFor(model => model.Remark)',
+                 width:260,
+                 hidden:false,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                             id:'editor_Remark',
+                             prompt:'@Html.DescriptionFor(model => model.Remark)',
+                             required:false,
+                             validType: 'length[0,128]'
+                             }
+                       },
+                 sortable:true,
+                 resizable:true
+            },
+            {   /*父级*/
+                field:'ParentId',
+                title:'@Html.DisplayNameFor(model => model.ParentId)',
+                width:160,
+                sortable:true,
+                resizable:true,
+                hidden:false,
+                formatter:(value,row) => {
+                        return row.ParentNo;
+                    },
+                editor:{
+                        type:'combobox',
+                        options:{
+                                id:'editor_ParentId',
+                                prompt:'@Html.DescriptionFor(model => model.ParentId)' ,
+                                mode: 'remote',
+                                panelHeight:'auto',
+                                editable: false,
+                                valueField:'Id',
+                                textField:'No',
+                                method:'get',
+                                url:'/OrgCharts/GetOrgCharts',
+                                required:false
+                            }
+                        }
+            },
+                 ]]
+           }).datagrid('columnMoving')
+             .datagrid('resetColumns')
+             .datagrid('enableFilter',[
+           {   /*父级*/
+                 field: 'ParentId',
+                 type:'combobox',
+                 options:{
+                                panelHeight:'auto',
+                                valueField:'Id',
+                                textField:'No',
+                                method:'get',
+                                url:'/OrgCharts/GetOrgCharts',
+                                onChange: value => {
+                                if (value === '' || value === null) {
+                                    $dg.datagrid('removeFilterRule', 'ParentId');
+                                } else {
+                                    $dg.datagrid('addFilterRule', {
+                                        field: 'ParentId',
+                                        op: 'equal',
+                                        value: value
+                                });
+                            }
+                            $dg.datagrid('doFilter');
+                        }
+                    }
+           },
+           ])
+           .datagrid('load', '/OrgCharts/GetData');
+
+     });
+
+  </script>
+
+
+
+}
+
+

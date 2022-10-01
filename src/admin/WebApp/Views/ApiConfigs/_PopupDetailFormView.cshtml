@@ -1,0 +1,332 @@
+﻿﻿@model WebApp.Models.ApiConfig
+<!-- 弹出编辑窗体表单 -->
+ <div id="apiconfigdetailwindow" class="easyui-window" 
+      title="明细数据" 
+      data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'icon-more',
+                    footer:'#windowfooter',
+                    closeDuration:200,
+                    closeAnimation:'slide',
+                    openDuration:300,
+                    openAnimation:'slide',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(apiconfighasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="row align-items-center m-0">
+      <div class="col">
+        <div class="btn-group btn-group-sm">
+          <button name="saveitembutton" onclick="saveapiconfigitem()" class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm" id="deleteitem-btn-group">
+          <button onclick="deleteapiconfigitem()" class="btn btn-danger">
+            <i class="fal fa-times"></i> @Html.L("Delete")
+          </button>
+        </div>
+      
+      </div>
+      <div class="col d-flex">
+
+      </div>
+    </div>
+  </div>
+ <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="panel-content">
+           <form id="apiconfig_form" 
+              class="easyui-form form-horizontal padding-10" 
+              method="post" 
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+  @Html.AntiForgeryToken()
+   <!--Primary Key-->
+  @Html.HiddenFor(model=>model.Id)
+   <fieldset class="form-group">
+   <div class="row m-1">
+
+   <!--服务名-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.ServiceName)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.ServiceName)" 
+				   name="@Html.NameFor(model => model.ServiceName)" 
+				   value="@Html.ValueFor(model => model.ServiceName)"
+				   tabindex="0" required
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.ServiceName)',
+								 required:true, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+   <!--主机地址-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Host)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Host)" 
+				   name="@Html.NameFor(model => model.Host)" 
+				   value="@Html.ValueFor(model => model.Host)"
+				   tabindex="1" required
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Host)',
+								 required:true, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+
+   <!--安全代码-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.SecretAccessKey)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.SecretAccessKey)" 
+				   name="@Html.NameFor(model => model.SecretAccessKey)" 
+				   value="@Html.ValueFor(model => model.SecretAccessKey)"
+				   tabindex="2" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.SecretAccessKey)',
+								 required:false, 
+                                 validType: 'length[0,250]'
+                                 " />
+       </div>
+				   
+   <!--访问代码-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.AccessKeyId)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.AccessKeyId)" 
+				   name="@Html.NameFor(model => model.AccessKeyId)" 
+				   value="@Html.ValueFor(model => model.AccessKeyId)"
+				   tabindex="3" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.AccessKeyId)',
+								 required:false, 
+                                 validType: 'length[0,250]'
+                                 " />
+       </div>
+				   
+
+   <!--登录用户名-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.UserId)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.UserId)" 
+				   name="@Html.NameFor(model => model.UserId)" 
+				   value="@Html.ValueFor(model => model.UserId)"
+				   tabindex="4" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.UserId)',
+								 required:false, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+   <!--登录密码-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Password)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Password)" 
+				   name="@Html.NameFor(model => model.Password)" 
+				   value="@Html.ValueFor(model => model.Password)"
+				   tabindex="5" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Password)',
+								 required:false, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+
+   <!--描述-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Description)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Description)" 
+				   name="@Html.NameFor(model => model.Description)" 
+				   value="@Html.ValueFor(model => model.Description)"
+				   tabindex="6" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Description)',
+								 required:false, 
+                                 validType: 'length[0,250]'
+                                 " />
+       </div>
+				   
+    <!--所属企业-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.CompanyId)</label>
+		<div class="col-md-4 mb-1">   	
+            <input id="@Html.IdFor(model => model.CompanyId)"
+			       name="@Html.NameFor(model => model.CompanyId)"
+				   value="@Html.ValueFor(model => model.CompanyId)"
+                   tabindex="7" required
+              	   class="easyui-combobox"      
+                   style="width:100%"
+                   data-options="prompt:'@Html.DisplayNameFor(model => model.CompanyId)' ,
+						required:true ,
+						valueField: 'Id',
+						textField:  'Name' ,
+                        validateOnCreate:false,
+                        validateOnBlur:true,
+                        validType:'combocheck[\'#CompanyId\',\'请选择所属企业\']',
+						url: '/ApiConfigs/GetCompanies' ,
+						onSelect: function(item){
+						  //console.log(item);
+				        }">
+       </div>
+	   
+	    </div> 
+      </fieldset>
+   </form>
+    </div>
+    </div>
+</div>
+<div id="windowfooter" style="padding:5px;">&nbsp;</div>
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+    //判断新增编辑状态
+    var MODELSTATE = 'Added';
+    var apiconfigid = null;
+    function openapiconfigdetailwindow(data,state) {
+         MODELSTATE = state;
+         initapiconfigdetailview();
+         apiconfigid = (data.Id || 0);
+         $('#apiconfigdetailwindow').window('open');
+         $('#apiconfig_form').form('reset');
+         $('#apiconfig_form').form('load', data);
+             }
+  //删除当前记录
+  function deleteapiconfigitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/ApiConfigs/Delete/${apiconfigid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $dg.datagrid('reload');
+            $('#apiconfigdetailwindow').window('close');
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+    //async 保存数据
+    async function saveapiconfigitem() { 
+      const $apiconfigform = $('#apiconfig_form');
+      if ($apiconfigform.form('enableValidation').form('validate')) {
+            let apiconfig = $apiconfigform.serializeJSON();
+            let url = '/ApiConfigs/Edit';
+            //判断是新增或是修改方法
+            if (MODELSTATE === 'Added') {
+                url = '/ApiConfigs/Create';
+            }
+            var token = $('input[name="__RequestVerificationToken"]', $apiconfigform).val();
+            $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        __RequestVerificationToken: token,
+                        apiconfig:apiconfig
+                    },
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+                })
+                .done(response => {
+                    $.messager.progress('close');
+                    if (response.success) {
+                        hook = false;
+                        $apiconfigform.form('disableValidation');
+                        $dg.datagrid('reload');
+                        $('#apiconfigdetailwindow').window("close");
+                        toastr.success("保存成功");  
+                    } else {
+                        $.messager.alert("错误",   response.err, "error");
+                    }
+                    })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                       $.messager.progress('close');
+                       $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                    });
+        }
+    }
+    //关闭窗口
+    function closeapiconfigdetailwindow() {
+        $('#apiconfigdetailwindow').window('close');
+    }
+    //todo
+    function todo() {
+         console.log('todo.....');
+    }
+     //判断是否有没有保存的记录
+     function apiconfighasmodified() {
+            return hook;
+
+     }
+
+
+function initapiconfigdetailview() {
+  //判断是否显示功能按钮
+  if (MODELSTATE === 'Added') {
+    $('#deleteitem-btn-group').hide();
+  } else {
+    $('#deleteitem-btn-group').show();
+  }
+
+//回车光标移动到下个输入控件
+    //所属企业默认外键使用combobox,也可以使用combogrid
+	$('#CompanyId').combobox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+}
+</script>
+

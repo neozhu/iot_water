@@ -1,0 +1,333 @@
+﻿﻿@model WebApp.Models.OrgChart
+<!-- 弹出编辑窗体表单 -->
+ <div id="orgchartdetailwindow" class="easyui-window" 
+      title="编辑拓扑结构" 
+      data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'fal fa-window',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(orgcharthasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+  <div class="d-flex justify-content-end pr-4">
+        <div class="btn-group btn-group-sm mr-1">
+          <button name="saveitembutton"   class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm mr-1" id="deleteitem-btn-group">
+          <button  name="deleteitembutton" class="btn btn-danger">
+            <i class="fal fa-trash-alt"></i> @Html.L("Delete")
+          </button>
+        </div>
+    </div>
+  </div>
+ <!-- panel container form  -->
+ <div class="panel-container show">
+   <div class="container">
+    <div class="panel-content">
+           <form id="orgchart_form" 
+              class="easyui-form form-horizontal padding-10" 
+              method="post" 
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+  @Html.AntiForgeryToken()
+   <!--Primary Key-->
+  @Html.HiddenFor(model=>model.Id)
+   <fieldset class="form-group">
+   <div class="row h-100 align-items-center">
+
+   <!--总序号-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.No)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.No)" 
+				   name="@Html.NameFor(model => model.No)" 
+				   value="@Html.ValueFor(model => model.No)"
+				   tabindex="0" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.No)',
+								 required:false, 
+                                 validType: 'length[0,3]'
+                                 " />
+       </div>
+				   
+   <!--层级-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.Level)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.Level)" 
+				   name="@Html.NameFor(model => model.Level)" 
+				   value="@Html.ValueFor(model => model.Level)"
+				   tabindex="1" required
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.Level)',
+								 required:true, 
+                                 validType: 'length[0,16]'
+                                 " />
+       </div>
+				   
+
+   <!--层级序号-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"><span class="text-danger">*</span> @Html.DisplayNameFor(model => model.LevelNo)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.LevelNo)" 
+				   name="@Html.NameFor(model => model.LevelNo)" 
+				   value="@Html.ValueFor(model => model.LevelNo)"
+				   tabindex="2" required
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.LevelNo)',
+								 required:true, 
+                                 validType: 'length[0,3]'
+                                 " />
+       </div>
+				   
+   <!--位置-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Location)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.Location)" 
+				   name="@Html.NameFor(model => model.Location)" 
+				   value="@Html.ValueFor(model => model.Location)"
+				   tabindex="3" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.Location)',
+								 required:false, 
+                                 validType: 'length[0,128]'
+                                 " />
+       </div>
+				   
+
+   <!--精度-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Precision)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.Precision)" 
+				   name="@Html.NameFor(model => model.Precision)" 
+				   value="@Html.ValueFor(model => model.Precision)"
+				   tabindex="4" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.Precision)',
+								 required:false, 
+                                 validType: 'length[0,8]'
+                                 " />
+       </div>
+				   
+   <!--口径-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.DN)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.DN)" 
+				   name="@Html.NameFor(model => model.DN)" 
+				   value="@Html.ValueFor(model => model.DN)"
+				   tabindex="5" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.DN)',
+								 required:false, 
+                                 validType: 'length[0,8]'
+                                 " />
+       </div>
+				   
+
+   <!--年份-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Year)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.Year)" 
+				   name="@Html.NameFor(model => model.Year)" 
+				   value="@Html.ValueFor(model => model.Year)"
+				   tabindex="6" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.Year)',
+								 required:false, 
+                                 validType: 'length[0,8]'
+                                 " />
+       </div>
+				   
+   <!--备注-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.Remark)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">  
+			<input id="@Html.IdFor(model => model.Remark)" 
+				   name="@Html.NameFor(model => model.Remark)" 
+				   value="@Html.ValueFor(model => model.Remark)"
+				   tabindex="7" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DescriptionFor(model => model.Remark)',
+								 required:false, 
+                                 validType: 'length[0,128]'
+                                 " />
+       </div>
+				   
+
+    <!--父级-->
+        <label class="col-md-2 col-sm2  pt-1 pl-0 pr-0 form-label text-right"> @Html.DisplayNameFor(model => model.ParentId)</label>
+		<div class="col-md-4 col-sm-4 mb-1 pl-1">   	
+            <input id="@Html.IdFor(model => model.ParentId)"
+			       name="@Html.NameFor(model => model.ParentId)"
+				   value="@Html.ValueFor(model => model.ParentId)"
+                   tabindex="8" 
+              	   class="easyui-combobox"      
+                   style="width:100%"
+                   data-options="prompt:'@Html.DescriptionFor(model => model.ParentId)' ,
+						required:false ,
+						valueField: 'Id',
+						textField:  'No' ,
+                        panelHeight:'auto',
+                        editable:false,
+						url: '/OrgCharts/GetOrgCharts' ,
+						onSelect: function(item){
+						  //console.log(item);
+				        }">
+       </div>
+	   
+	    </div> 
+      </fieldset>
+   </form>
+    </div>
+    </div>
+    </div>
+</div>
+
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+ //当初始的 HTML 文档被完全加载和解析完成之后
+ document.addEventListener('DOMContentLoaded', function () {
+     //绑定按钮事件
+    $('button[name="saveitembutton"]').on('click', saveorgchartitem);
+    $('button[name="deleteitembutton"]').on('click', deleteorgchartitem);
+  });
+    //判断新增编辑状态
+    var MODELSTATE = 'Added';
+    var orgchartid = null;
+    function openorgchartdetailwindow(data,state) {
+         MODELSTATE = state;
+         //判断是否显示功能按钮
+        if (MODELSTATE === 'Added') {
+          $('#deleteitem-btn-group').hide();
+        } else {
+          $('#deleteitem-btn-group').show();
+        }
+        initorgchartdetailview();
+         orgchartid = (data.Id || 0);
+         $('#orgchartdetailwindow').window('open');
+         $('#orgchart_form').form('reset');
+         $('#orgchart_form').form('load', data);
+             }
+  //删除当前记录
+  function deleteorgchartitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/OrgCharts/Delete/${orgchartid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $('#orgchartdetailwindow').window('close');
+            reloadData();
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+    //async 保存数据
+    async function saveorgchartitem() { 
+      const $orgchartform = $('#orgchart_form');
+      if ($orgchartform.form('enableValidation').form('validate')) {
+            let orgchart = $orgchartform.serializeJSON();
+            let url = '/OrgCharts/Edit';
+            //判断是新增或是修改方法
+            if (MODELSTATE === 'Added') {
+                url = '/OrgCharts/Create';
+            }
+            var token = $('input[name="__RequestVerificationToken"]', $orgchartform).val();
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        __RequestVerificationToken: token,
+                        orgchart:orgchart
+                    },
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+                })
+                .done(response => {
+                    if (response.success) {
+                        hook = false;
+                        $orgchartform.form('disableValidation');
+                        $('#orgchartdetailwindow').window("close");
+                        toastr.success("保存成功"); 
+                        reloadData();
+                    } else {
+                        $.messager.alert("错误",   response.err, "error");
+                    }
+                    })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                       $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                    });
+        }
+    }
+     //判断是否有没有保存的记录
+     function orgcharthasmodified() {
+            return hook;
+
+     }
+
+
+function initorgchartdetailview() {
+//回车光标移动到下个输入控件
+    //父级默认外键使用combobox,也可以使用combogrid
+	$('#ParentId').combobox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+}
+</script>
+

@@ -1,0 +1,331 @@
+﻿@model WebApp.Models.WaterMeterRecord
+@{
+  ViewData["Title"] = "用水量同比分析";
+  ViewData["PageName"] = "WaterMeterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  用水量同比分析";
+  ViewData["Category1"] = "数据分析";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/select2/select2.bundle.css" rel="stylesheet" />
+  <link href="~/Scripts/plugin/bstreeview/css/bootstrap-treeview.css" rel="stylesheet" />
+
+  
+}
+<!-- Modal Right Small -->
+<div class="modal fade default-example-modal-right-sm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-right modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4">分组筛选</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fal fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="panel-12" class="panel">
+          <div class="panel-hdr border-faded border-top-0 border-right-0 border-left-0 shadow-0">
+            <h2>
+              分组 <span class="fw-300"></span>
+            </h2>
+            <div class="panel-toolbar pr-3 align-self-end">
+       
+              <ul id="demo_panel-tabs" class="nav nav-tabs border-bottom-0 nav-tabs-clean" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#tab_default-1" role="tab">区域</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#tab_default-2" role="tab">业态</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel-container show">
+            <div id="tab-scroll" style="height: 460px">
+              <div class="panel-content">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_default-1" role="tabpanel">
+                    <div id="tree1"></div>
+                  </div>
+                  <div class="tab-pane" id="tab_default-2" role="tabpanel">
+                    <div id="tree2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          用水量同步 <span class="fw-300"><i>图表</i></span>
+        </h2>
+        <div class="panel-toolbar ">
+          <span class="ml-1" style="width:60px">选择年份:</span>
+          <div class="form-group" style="width: 350px">
+            <select class="select2 form-control"   id="selectmonth">
+             </select>
+          </div>
+         
+        </div>
+        <div class="panel-toolbar ">
+          <button data-toggle="modal" data-target=".default-example-modal-right-sm" class="btn btn-primary ml-1 waves-effect waves-themed">
+            分组筛选
+          </button>
+        </div>
+        </div>
+        <div class="panel-container show">
+          <div class="panel-content py-2 rounded-top border-faded border-left-0 border-right-0 border-top-0 text-muted d-flex justify-content-center">
+        
+            <div class="btn-group btn-group-toggle mr-2" data-toggle="buttons">
+              <label id="chtypelabel1" class="btn btn-secondary waves-effect waves-themed ">
+                <input type="radio" name="coptions" id="coption1"> 柱状图
+              </label>
+              <label id="chtypelabel2" class="btn btn-secondary waves-effect waves-themed ">
+                <input type="radio" name="coptions" id="coption1"> 折线图
+              </label>
+
+            </div>
+          </div>
+          <div class="panel-content">
+
+            <div id="chartcontainer" class="w-100 mt-4" style="height: 300px"></div>
+          </div>
+          
+        </div>
+      </div>
+  </div>
+</div>
+@{ Html.RenderPartial("_PopupMapView"); }
+@section ScriptsBlock {
+  <script type="text/javascript"
+          src="https://webapi.amap.com/maps?v=1.4.15&key=5f37b68c9bb76cbf1262a78331807e63"></script>
+  <script src="~/Scripts/plugin/bstreeview/js/bootstrap-treeview.js"></script>
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.0.2/dist/g2.min.js"></script>
+  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
+  <script src="~/Scripts/dependency/moment/moment.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-datepicker/bootstrap-datepicker.zh-CN.min.js"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script src="~/Scripts/plugin/numeral/numeral.min.js"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script type="text/javascript">
+    
+
+
+
+    var chtype = 'interval';
+    var selected = '';
+    var selectnodes = [];
+    var label = '';
+    var selectedyears = [];
+    var parent = undefined;
+    $(document).ready(async function () {
+      var year = (new Date()).getFullYear();
+      var years = [];
+      selectedyears = [];
+      for (var i = -5; i <= 0; i++){
+        years.push(year + i);
+        if (i > -3) {
+          selectedyears.push(year + i);
+        }
+      }
+      $('#chtypelabel1').on('click', async function () {
+        chtype = 'interval';
+        await querydata()
+      });
+      $('#chtypelabel2').on('click', async function () {
+        chtype = 'line';
+        await querydata()
+      });
+      $('.select2').select2({
+        data: years,
+        multiple:true,
+      });
+      $('#selectmonth').val(selectedyears).trigger('change');
+      $('#selectmonth').on('change.select2', function (e) {
+        selectedyears = $('#selectmonth').val();
+        console.log($('#selectmonth').val());
+        querydata();
+      });
+      $('#tab-scroll').slimScroll(
+        {
+          height: '690px',
+          railVisible: true,
+          alwaysVisible: true
+        });
+
+      const chart = new G2.Chart({
+        container: 'chartcontainer',
+        autoFit: true,
+        height: 300,
+      });
+
+     
+
+      var data1 = await $.get('/CustomerWaterMeters/GetZoneTreeData');
+      
+      selected = data1.list[0].data;
+      label = data1.list[0].text;
+      data1.list[0].selectable = true,
+        $('#tree1').treeview({
+          multiSelect:true,
+          expandIcon: "fal fa-plus",
+          collapseIcon: "fal  fa-minus",
+          levels: 2,
+          data: data1.list,
+          onNodeSelected: async function (event, data) {
+            //console.log(event, data)
+            const selectedall = $('#tree1').treeview('getSelected');
+            selectnodes = selectedall;
+            selected = data.data;
+            label = data.text;
+            //console.log(selected, label)
+           
+            var level = 0;
+            if (data.parentId != undefined) {
+              level = 1;
+              var p1 = $('#tree1').treeview('getNode', data.parentId);
+              parent=p1;
+            } else {
+              level = 0;
+              parent = undefined
+              
+            }
+            querydata();
+          }
+
+
+        });
+      var data2 = await $.get('/CustomerWaterMeters/GetCTypeTreeData');
+      //console.log(data2);
+      data2.list[0].selectable = true,
+        $('#tree2').treeview({
+          multiSelect: true,
+          expandIcon: "fal fa-plus",
+          collapseIcon: "fal  fa-minus",
+          levels: 2,
+          data: data2.list,
+          onNodeSelected: async function (event, data) {
+            
+            const selectedall = $('#tree2').treeview('getSelected');
+            selectnodes = selectedall;
+            selected = data.data;
+            label = data.text;
+            //console.log(selected, label)
+
+            var level = 0;
+            if (data.parentId != undefined) {
+              level = 1;
+              var p1 = $('#tree2').treeview('getNode', data.parentId);
+              parent = p1;
+            } else {
+              level = 0;
+              parent = undefined
+
+            }
+            querydata();
+          }
+        });
+      
+
+ 
+    
+      async function querydata() {
+   
+        //var meterid = selected.split(',');
+        //var data = [];
+        //if (parent == undefined) {
+        //  data = await $.get(`/WaterChart/GetComparedMonthData`, { meterid: meterid.join(), years: selectedyears.join(), label: label });
+        //} else {
+        //  const data1 = await $.get(`/WaterChart/GetComparedMonthData`, { meterid: meterid.join(), years: selectedyears.join(), label: label });
+        //  const data2 = await $.get(`/WaterChart/GetComparedMonthData`, { meterid: parent.data, years: selectedyears.join(), label: parent.text });
+        //  data = data1.concat(data2);
+        //}
+        const data = await $.post('/WaterChart/QueryCompareMonthData', { dto: selectnodes, years: selectedyears.join() });
+        console.log(data);
+        if (data.length > 0) {
+          renderChart(data);
+        }
+
+        
+
+      }
+
+      querydata();
+      function renderChart(data) {
+
+
+        chart.clear();
+        chart.data(data);
+        var margin = 2 / data.length;
+        chart.scale({
+          month: {
+            range: [margin / 2,1 - margin / 2],
+            alias: '月份',
+            formatter: (val) => `${val}月`,
+          },
+          water: {
+            alias: '用水量(吨)',
+            nice: true,
+            min: 0
+          },
+
+        });
+
+        chart.axis('water', {
+          grid: null,
+          title: {},
+        });
+        ;
+
+
+        chart.tooltip({
+          showMarkers: false,
+          shared: true,
+        });
+
+
+
+        if (chtype == 'interval') {
+          chart
+            .interval()
+            .position('month*water')
+            .color('year')
+            .adjust([
+              {
+                type: 'dodge',
+                marginRatio: 0,
+              },
+            ]);
+        }
+        else {
+          chart
+            .line()
+            .position('month*water')
+            .color('year')
+            .shape('smooth');
+        }
+
+        chart.interaction('active-region');
+
+        chart.render();
+      }
+
+    })
+  </script>
+
+}

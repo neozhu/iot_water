@@ -1,0 +1,924 @@
+﻿@model WebApp.Models.WaterMeter
+@{
+  ViewData["Title"] = "水表信息";
+  ViewData["PageName"] = "WaterMeter";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  水表信息";
+  ViewData["Category1"] = "水务中心";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+
+  <link href="~/Scripts/plugin/bstreeview/css/bootstrap-treeview.css" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/icon.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/font/font-fileuploader.css")" rel="stylesheet" />
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          水表信息
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-faded bg-subtlelight-fade ">
+          <div class="row no-gutters align-items-center">
+            <div class="col">
+              <!-- 开启授权控制请参考 @@if (Html.IsAuthorize("Create") -->
+              <div class="btn-group btn-group-sm">
+                <button onclick="syncQueryUserInfo()" class="btn btn-primary" data-rel="tooltip" data-placement="bottom" title="同步获取水表信息"> <i class="fal  fa-bolt"></i> 同步下载 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="operateValveStatus(0)" class="btn btn-success" data-rel="tooltip" data-placement="bottom" title="打开/关闭阀门"> <i class="fal  fa-forward"></i> 打开/关闭阀门 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="stopmeter(0)" class="btn btn-danger" > <i class="fal fa-ban"></i> 停用 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="enablemeter(0)" class="btn btn-success" > <i class="fal  fa-clipboard-check"></i> 启用 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="append()" class="btn btn-default"> <span class="fal fa-plus mr-1"></span> @Html.L("Add") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="deletebutton" disabled onclick="removeit()" class="btn btn-default"> <span class="fal fa-times mr-1"></span> @Html.L("Delete") </button>
+              </div>
+              <div class="btn-group btn-group-sm" style="display:none">
+                <button name="savebutton" disabled onclick="accept()" class="btn btn-default"> <span class="fal fa-save mr-1"></span> @Html.L("Save") </button>
+              </div>
+              <div class="btn-group btn-group-sm" style="display:none">
+                <button name="cancelbutton" disabled onclick="reject()" class="btn btn-default"> <span class="fal fa-ban mr-1"></span> @Html.L("Cancel") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="reload()" class="btn btn-default"> <span class="fal fa-search mr-1"></span> @Html.L("Refresh") </button>
+              </div>
+              <div class="btn-group btn-group-sm hidden-xs">
+                <button type="button" onclick="importexcel('WaterMeter')" class="btn btn-default"><span class="fal fa-cloud-upload mr-1"></span> @Html.L("Import") </button>
+                <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item js-waves-on" href="javascript:downloadtemplate()"><span class="fal fa-download"></span> @Html.L("Download") </a>
+                </div>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button onclick="exportexcel()" class="btn btn-default"> <span class="fal fa-file-excel mr-1"></span>  @Html.L("Export") </button>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button onclick="dohelp()" class="btn btn-default"> <span class="fal fa-question-circle mr-1"></span> @Html.L("Help") </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-content">
+         
+              <div class="table-responsive">
+                <table id="watermeters_datagrid">
+               </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@{ Html.RenderPartial("_ImportWindow", new ViewDataDictionary { { "EntityName", "WaterMeter" } }); }
+
+@{ Html.RenderPartial("_PopupDetailFormView", new WebApp.Models.WaterMeter()); }
+
+
+
+
+@section ScriptsBlock {
+
+  <script src="~/Scripts/plugin/bstreeview/js/bootstrap-treeview.js"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/numeral/numeral.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-ext.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-reset.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+  <script type="text/javascript">
+
+    $(async () => {
+      var data = await $.get('/CustomerWaterMeters/GetCTypeTreeData');
+
+      $('#tree').treeview({
+        expandIcon: "fal fa-plus",
+        collapseIcon: "fal  fa-minus",
+        levels: 1,
+        data: data.list,
+        onNodeSelected: function (event, data) {
+          //console.log(event, data)
+          var url = '/WaterMeters/GetData?allmeterid=' + data.data;
+          $dg.datagrid('load', url);
+        }
+      });
+    })
+
+   //停用水表
+    function stopmeter() {
+      var selected = $dg.datagrid('getChecked').filter(item => item.Status =='使用中').map(item => {
+        return item.Id;
+      });
+      if (selected.length > 0) {
+        $.messager.confirm('确认', `你确定要停用这 <span class='badge badge-icon position-relative'>${selected.length} </span> 行记录?`, result => {
+          if (result) {
+            $.post('/WaterMeters/StopMeter', { id: selected }).done(res => {
+              reload();
+            })
+          }
+        });
+      } else {
+        $.messager.alert('提示', '请先选择状态是[使用中]的记录!', 'question');
+      }
+    }
+  //启用水表
+    function enablemeter() {
+      var selected = $dg.datagrid('getChecked').filter(item => item.Status == '停用').map(item => {
+        return item.Id;
+      });
+      if (selected.length > 0) {
+        $.messager.confirm('确认', `你确定要重新启用这 <span class='badge badge-icon position-relative'>${selected.length} </span> 行记录?`, result => {
+          if (result) {
+            $.post('/WaterMeters/EnableMeter', { id: selected }).done(res => {
+              reload();
+            })
+          }
+        });
+      } else {
+        $.messager.alert('提示', '请先选择状态是[停用]的记录!', 'question');
+      }
+    }
+      //是否强制从后台取值
+      const REQUIRBACKEND = false;
+      //是否开启行内编辑
+      const EDITINLINE = false;
+      var watermeter = {};
+    async function operateValveStatus(state) {
+      $.messager.progress({ title: '请等待', msg: '正在发送指令...', interval: 200 });
+      var selected = $dg.datagrid('getChecked').filter(item => item.Id != null && item.Id > 0).map(item => {
+        return item.Id;
+      });
+      const result = await $.post('/WaterMeters/OperateValveStatus', { id: selected, state: state });
+      if (result.success) {
+        toastr.success('操作完成!');
+        reload();
+      } else {
+        $.messager.alert('操作失败', result.err, 'error');
+      }
+      $.messager.progress('close');
+    }
+    async function syncQueryUserInfo() {
+      $.messager.progress({ title: '请等待', msg: '正在同步云端数据...', interval: 200 });
+      const result = await $.get('/WaterMeters/SyncQueryUserInfo');
+      if (result.success) {
+        toastr.success('同步完成!');
+        reload();
+      } else {
+        $.messager.alert('错误', result.err, 'error');
+      }
+      $.messager.progress('close');
+    }
+      //下载Excel导入模板
+      function downloadtemplate() {
+          //默认模板路径存放位置
+          const url = '/FileUpload/Download?file=/ExcelTemplate/WaterMeter.xlsx';
+          $.fileDownload(url)
+           .done(() => {
+                    //console.log('file download a success!');
+                    toastr.success('模板下载完成!');
+                })
+           .fail(() => {
+               $.messager.alert('下载模板失败','没有下载到导入模板[WaterMeter.xlsx]文件!','error');
+            });
+       }
+       //打印
+       function print() {
+            $dg.datagrid('print', 'DataGrid');
+       }
+       //执行导出下载Excel
+       function exportexcel() {
+                const filterRules = JSON.stringify($dg.datagrid('options').filterRules);
+                //console.log(filterRules);
+                $.messager.progress({ title: '正在执行导出!' });
+                let formData = new FormData();
+                formData.append('filterRules', filterRules);
+                formData.append('sort', 'Id');
+                formData.append('order', 'asc');
+                $.postDownload('/WaterMeters/ExportExcel', formData).then(res => {
+                    $.messager.progress('close');
+                    toastr.success('导出成功!');
+                }).catch(err => {
+                    //console.log(err);
+                    $.messager.progress('close');
+                    $.messager.alert('导出失败', err.statusText, 'error');
+                });
+
+        }
+        //显示帮助信息
+        function dohelp() {
+            toastr.info('有问题请联系管理员 <br><i class="fa fa-envelope-o" aria-hidden="true"></i> : demo@admin.com','帮助');
+        }
+       var editIndex = undefined;
+       //重新加载数据
+    function reload() {
+
+      $dg.datagrid('uncheckAll');
+         var url = '/WaterMeters/GetData'
+         $dg.datagrid('load', url);
+
+
+
+       }
+      //关闭编辑状态
+      function endEditing() {
+            if (editIndex === undefined) {
+                return true;
+            }
+            if ($dg.datagrid('validateRow', editIndex)) {
+                $dg.datagrid('endEdit', editIndex);
+                return true;
+            } else {
+                const invalidinput = $('input.validatebox-invalid',$dg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+                return false;
+            }
+        }
+    //单击列开启编辑功能
+    function onClickCell(index, field) {
+        watermeter = $dg.datagrid('getRows')[index];
+        const _actions = ['action', 'ck'];
+        if (!EDITINLINE || $.inArray(field, _actions) >= 0) {
+                return;
+        }
+        if (editIndex !== index) {
+            if (endEditing()) {
+                $dg.datagrid('selectRow', index)
+                   .datagrid('beginEdit', index);
+                hook = true;
+                editIndex = index;
+                const ed = $dg.datagrid('getEditor', { index: index, field: field });
+                if (ed) {
+                        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+            } else {
+                $dg.datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    //新增记录
+    async function append() {
+       watermeter = { Status: '使用中',
+valveStatus: null,
+meterType: '机械表',
+produced: null,
+period: null,
+ };
+        //需要后台创建对象
+       if (REQUIRBACKEND) {
+         watermeter = await $.get('/WaterMeters/NewItem');
+       }
+        if (!EDITINLINE) {
+           //弹出新增窗口
+           openwatermeterdetailwindow(watermeter, 'Added');
+        } else {
+            if (endEditing()) {
+                //对必填字段进行默认值初始化
+                $dg.datagrid('insertRow',
+                              {
+                                  index: 0,
+                                  row: watermeter
+                               });
+                editIndex = 0;
+                $dg.datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+                hook = true;
+            }
+        }
+    }
+    //删除编辑的行
+    function removeit() {
+       if (EDITINLINE) {
+          if (editIndex !== undefined) {
+             const delindex = editIndex;
+             $dg.datagrid('cancelEdit', delindex)
+                .datagrid('deleteRow', delindex);
+               hook = true;
+               $("button[name*='savebutton']").prop('disabled', false);
+               $("button[name*='cancelbutton']").prop('disabled', false);
+           }else{
+              const rows = $dg.datagrid('getChecked');
+              rows.slice().reverse().forEach(row => {
+                const rowindex = $dg.datagrid('getRowIndex', row);
+                $dg.datagrid('deleteRow', rowindex);
+                hook = true;
+                $("button[name*='savebutton']").prop('disabled', false);
+                $("button[name*='cancelbutton']").prop('disabled', false);
+            });
+           }
+        } else {
+          deletechecked();
+        }
+    }
+  //删除该行
+  function deleteRow(id) {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        dodeletechecked([id]);
+      }
+     });
+  }
+    //删除选中的行
+    function deletechecked() {
+        const id = $dg.datagrid('getChecked').filter(item=>item.Id!=null && item.Id > 0).map(item => {
+                   return item.Id;
+                });;
+        if (id.length > 0) {
+           $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length} </span> 行记录?`, result => {
+                if (result) {
+                    dodeletechecked(id);
+                    }
+                });
+         } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+         }
+     }
+    //执行删除
+    function dodeletechecked(id){
+       $.post('/WaterMeters/DeleteChecked', { id: id })
+                         .done(response => {
+                                if (response.success) {
+                                    toastr.error(`成功删除[${id.length}]行记录`);
+                                    reload();
+                                } else {
+                                    $.messager.alert('错误', response.err,'error');
+                                }
+                          })
+                          .fail((jqXHR, textStatus, errorThrown) => {
+                             $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                          });
+    }
+    //提交保存后台数据库
+    function accept() {
+      if (endEditing()) {
+        if ($dg.datagrid('getChanges').length > 0) {
+          const inserted = $dg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const updated = $dg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2
+          return item;
+        });
+        const deleted = $dg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+            return !deleted.includes(item);
+          })).concat(deleted);
+        //console.table(changed);
+        $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+        $.post('/WaterMeters/SaveData', {watermeters:changed})
+                     .done(response => {
+                     $.messager.progress('close');
+                           //console.log(response);
+                           if (response.success) {
+                               toastr.success('保存成功');
+                               $dg.datagrid('acceptChanges');
+                               reload();
+                               hook = false;
+                           } else {
+                               $.messager.alert('错误', response.err ,'error');
+                           }
+                        })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+                        $.messager.progress('close');
+                        $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                      });
+                }
+            }
+    }
+    function reject() {
+        $dg.datagrid('rejectChanges');
+        editIndex = undefined;
+        hook = false;
+    }
+    function getChanges() {
+        const rows = $dg.datagrid('getChanges');
+        //console.log(rows.length + ' rows are changed!');
+    }
+    //弹出明细信息
+    async function showdetailswindow(id,index) {
+        const watermeter = $dg.datagrid('getRows')[index];
+        if (REQUIRBACKEND) {
+           watermeter = await $.get('/WaterMeters/GetItem/' + id);
+        }
+        openwatermeterdetailwindow(watermeter,'Modified');
+    }
+
+    //初始化定义datagrid
+    var $dg = $('#watermeters_datagrid');
+  $(() => {
+    //定义datagrid结构
+    $dg.datagrid({
+      // fit: false,
+      height:670,
+      rownumbers: true,
+      checkOnSelect: false,
+      selectOnCheck: false,
+      idField: 'Id',
+      sortName: 'Id',
+      sortOrder: 'desc',
+      remoteFilter: true,
+      singleSelect: false,
+      
+      method: 'get',
+      onClickCell: onClickCell,
+      pagination: true,
+      clientPaging: false,
+      striped: true,
+      pageSize:15,
+      pageList: [15, 20, 50, 100, 500, 2000],
+      filterRules: [
+        {
+          field: 'Status',
+          op: 'equal',
+          value: '使用中'
+        }
+      ],
+      onHeaderContextMenu: function (e, field) {
+        e.preventDefault();
+        $(this).datagrid('columnMenu').menu('show', {
+          left: e.pageX,
+          top: e.pageY
+        });
+      },
+      onBeforeLoad: function () {
+        const that = $(this);
+        document.addEventListener('smartPanel.onFullscreen', () => {
+          setTimeout(() => {
+            that.datagrid('resize');
+          }, 200)
+        })
+      },
+      onLoadSuccess: function (data) {
+        editIndex = undefined;
+        $("button[name*='deletebutton']").prop('disabled', true);
+        $("button[name*='savebutton']").prop('disabled', true);
+        $("button[name*='cancelbutton']").prop('disabled', true);
+      },
+      onCheck: function () {
+        $("button[name*='deletebutton']").prop('disabled', false);
+      },
+      onUncheck: function () {
+        const checked = $(this).datagrid('getChecked').length > 0;
+        $("button[name*='deletebutton']").prop('disabled', !checked);
+      },
+      onSelect: function (index, row) {
+        watermeter = row;
+      },
+      onBeginEdit: function (index, row) {
+        //const editors = $(this).datagrid('getEditors', index);
+
+      },
+      onEndEdit: function (index, row) {
+
+      },
+      onBeforeEdit: function (index, row) {
+        editIndex = index;
+        row.editing = true;
+        $("button[name*='deletebutton']").prop('disabled', false);
+        $("button[name*='cancelbutton']").prop('disabled', false);
+        $("button[name*='savebutton']").prop('disabled', false);
+        $(this).datagrid('refreshRow', index);
+      },
+      onAfterEdit: function (index, row) {
+        row.editing = false;
+        editIndex = undefined;
+        $(this).datagrid('refreshRow', index);
+      },
+      onCancelEdit: function (index, row) {
+        row.editing = false;
+        editIndex = undefined;
+        $("button[name*='deletebutton']").prop('disabled', true);
+        $("button[name*='savebutton']").prop('disabled', true);
+        $("button[name*='cancelbutton']").prop('disabled', true);
+        $(this).datagrid('refreshRow', index);
+      },
+      frozenColumns: [[
+        /*开启CheckBox选择功能*/
+        { field: 'ck', checkbox: true },
+        {
+          field: 'action',
+          title: '@Html.L("Command")',
+          width: 85,
+          sortable: false,
+          resizable: true,
+          formatter: function showdetailsformatter(value, row, index) {
+            if (!row.editing) {
+              return `<div class="btn-group">\
+                                                         <button onclick="showdetailswindow('${row.Id}',  ${index})" class="btn btn-primary btn-sm btn-icon waves-effect waves-themed" data-toggle="tooltip" data-placement="right" title="@Html.L("EditDetail")" ><i class="fal fa-edit"></i> </button>\
+                                                         <button onclick="deleteRow('${row.Id}',${index})" class="btn btn-primary btn-sm btn-icon waves-effect waves-themed" data-toggle="tooltip" data-placement="right" title="@Html.L("Delete")" ><i class="fal fa-times"></i> </button>\
+                                                    </div>`;
+            } else {
+              return `<button class="btn btn-primary btn-sm btn-icon waves-effect waves-themed" disabled title="查看明细"  ><i class="fa fa-edit"></i> </button>`;
+            }
+          }
+        }
+      ]],
+      columns: [[
+        {    /*序号*/
+          field: 'LineNo',
+          title: '@Html.DisplayNameFor(model => model.LineNo)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+         {    /*表名*/
+          field: 'Name',
+          title: '@Html.DisplayNameFor(model => model.Name)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+
+        {    /*表号*/
+          field: 'meterId',
+          title: '@Html.DisplayNameFor(model => model.meterId)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*出线名称*/
+          field: 'Name1',
+          title: '@Html.DisplayNameFor(model => model.Name1)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*小区/楼栋/单元/门牌号*/
+          field: 'address',
+          title: '@Html.DisplayNameFor(model => model.address)',
+          width: 260,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*倍率*/
+          field: 'Rate',
+          title: '@Html.DisplayNameFor(model => model.Rate)',
+          width: 80,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*单位*/
+          field: 'CustomerName',
+          title: '@Html.DisplayNameFor(model => model.CustomerName)',
+          width: 160,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*水表类型*/
+          field: 'meterType',
+          title: '@Html.DisplayNameFor(model => model.meterType)',
+          width: 100,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*水表状态*/
+          field: 'Status',
+          title: '@Html.DisplayNameFor(model => model.Status)',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: statusformatter
+        },
+        {    /*层级*/
+          field: 'Level',
+          title: '@Html.DisplayNameFor(model => model.Level)',
+          width: 100,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        @*{    /*区域*/
+          field: 'ZoneName',
+          title: '@Html.DisplayNameFor(model => model.ZoneName)',
+          width: 100,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },*@
+         {    /*备注*/
+          field: 'Remark',
+          title: '@Html.DisplayNameFor(model => model.Remark)',
+          width: 260,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*阀门状态*/
+          field: 'valveStatus',
+          title: '@Html.DisplayNameFor(model => model.valveStatus)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*口径大小*/
+          field: 'meterSize',
+          title: '@Html.DisplayNameFor(model => model.meterSize)',
+          width: 100,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+
+        {   /*开通日期*/
+          field: 'OpeningDate',
+          title: '@Html.DisplayNameFor(model => model.OpeningDate)',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {   /*停用日期*/
+          field: 'ClosedDate',
+          title: '@Html.DisplayNameFor(model => model.ClosedDate)',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*厂家*/
+          field: 'vender',
+          title: '@Html.DisplayNameFor(model => model.vender)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {     /*检修周期*/
+          field: 'repairCycle',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.repairCycle)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: intformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*水表精度*/
+          field: 'precision',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.precision)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {   /*生产日期*/
+          field: 'produced',
+          title: '@Html.DisplayNameFor(model => model.produced)',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {   /*有效日期*/
+          field: 'period',
+          title: '@Html.DisplayNameFor(model => model.period)',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*鉴定铅封号*/
+          field: 'sealNumber1',
+          title: '@Html.DisplayNameFor(model => model.sealNumber1)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*监管铅封号*/
+          field: 'sealNumber2',
+          title: '@Html.DisplayNameFor(model => model.sealNumber2)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*售水铅封号*/
+          field: 'sealNumber3',
+          title: '@Html.DisplayNameFor(model => model.sealNumber3)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*IMEI*/
+          field: 'imei',
+          title: '@Html.DisplayNameFor(model => model.imei)',
+          width: 200,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*水表当前读数(吨)*/
+          field: 'water',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.water)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*累计流量*/
+          field: 'reverseWater',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.reverseWater)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*温度*/
+          field: 'temperature',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.temperature)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*瞬时流量*/
+          field: 'flowrate',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.flowrate)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*压力 (bar)*/
+          field: 'pressure',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.pressure)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*电压*/
+          field: 'voltage',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.voltage)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*水压预警阈值*/
+          field: 'threshold1',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.threshold1)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*流量预警阈值*/
+          field: 'threshold2',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.threshold2)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*温度预警阈值*/
+          field: 'threshold3',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.threshold3)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*电压预警阈值*/
+          field: 'threshold4',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.threshold4)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*用户编码*/
+          field: 'userCode',
+          title: '@Html.DisplayNameFor(model => model.userCode)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*用户名*/
+          field: 'userName',
+          title: '@Html.DisplayNameFor(model => model.userName)',
+          width: 120,
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+
+
+
+      ]]
+    })
+    .datagrid('enableFilter', [
+      /*需要在键值队维护好status枚举值*/
+      {  /*水表状态*/
+        field: 'Status',
+        type: 'meterstatusfilter',
+      },
+      {
+        field: 'meterType',
+        type:'metertypefilter'
+      },
+      {     /*生产日期*/
+        field: 'produced',
+        type: 'dateRange',
+        options: {
+        }
+      },
+      {     /*有效日期*/
+        field: 'period',
+        type: 'dateRange',
+        options: {
+        }
+      },
+    ])
+      .datagrid('load', '/WaterMeters/GetData');
+  });
+
+  </script>
+
+
+
+}
+
+

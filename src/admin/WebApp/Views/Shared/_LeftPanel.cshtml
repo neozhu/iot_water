@@ -1,0 +1,18 @@
+﻿@if (ViewBag.AppSidebar != null && this.Request.IsAuthenticated)
+{
+  <!-- BEGIN Left Aside -->
+  <aside class="page-sidebar">
+    @Html.Partial("_Logo")
+    <!-- BEGIN PRIMARY NAVIGATION -->
+    <nav id="js-primary-nav" class="primary-nav" role="navigation">
+      @if (Request.IsAuthenticated)
+      {
+        Html.RenderAction("RenderMenus", "RoleMenus");
+      }
+    </nav>
+    <!-- END PRIMARY NAVIGATION -->
+    <!-- NAV FOOTER -->
+    <!-- END NAV FOOTER -->
+  </aside>
+  <!-- END Left Aside -->
+}

@@ -1,0 +1,23 @@
+﻿@model WebApp.Models.BillHeader
+@{
+  ViewData["Title"] = "账单信息";
+  ViewData["PageName"] = "BillHeader";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  账单信息";
+  ViewData["Category1"] = "账单管理";
+  ViewData["PageDescription"] = "";
+}
+<link href="~/Content/css/page-invoice.css" rel="stylesheet" />
+<style>
+  .subheader {
+    visibility: hidden
+  }
+</style>
+
+@Html.Partial("_DisplayForm")
+
+@section ScriptsBlock {
+  <script type="text/javascript">
+
+  </script>
+
+}

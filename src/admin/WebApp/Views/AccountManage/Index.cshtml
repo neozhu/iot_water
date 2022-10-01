@@ -1,0 +1,346 @@
+﻿@using WebApp.Models
+@model IEnumerable<ApplicationUser>
+@{
+  /**/
+  ViewData["Title"] = "系统账号";
+  ViewData["PageName"] = "applicationuser";
+  ViewData["Heading"] = "<i class='fal fa-users text-primary'></i>  系统账号";
+  ViewData["Category1"] = "系统管理";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/icon.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/font/font-fileuploader.css")" rel="stylesheet" />
+}
+
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          系统账号
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-faded bg-subtlelight-fade">
+          <div class="row no-gutters align-items-center">
+            <div class="col">
+              <!-- 开启授权控制请参考 @@if (Html.IsAuthorize("Create") -->
+              <div class="btn-group">
+                <a href="javascript:resetpassword()" class="btn btn-sm btn-primary"> <i class="fal fa-key mr-1"></i> 重置密码 </a>
+              </div>
+              <div class="btn-group">
+                <a href="javascript:setlockout()" class="btn btn-sm btn-danger"> <i class="fal fa-user-lock mr-1"></i> 禁用账号 </a>
+              </div>
+              <div class="btn-group">
+                <a href="javascript:setunlockout()" class="btn btn-sm btn-success"> <i class="fal fa-unlock-alt mr-1"></i> 恢复账号 </a>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="append()" class="btn btn-default"> <span class="fal fa-plus mr-1"></span> 注册新账号 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="deletebutton" disabled onclick="removeit()" class="btn btn-default"> <span class="fal fa-times mr-1"></span> @Html.L("Delete") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="reload()" class="btn btn-default"> <span class="fal fa-search mr-1"></span> @Html.L("Refresh") </button>
+              </div>
+              <div class="btn-group btn-group-sm hidden-xs">
+                <button type="button" onclick="importexcel('ApplicationUser')" class="btn btn-default"><span class="fal fa-cloud-upload mr-1"></span> @Html.L("Import") </button>
+                <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item js-waves-on" href="javascript:downloadtemplate()"><span class="fal fa-download"></span> @Html.L("Download") </a>
+                </div>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button onclick="exportexcel()" class="btn btn-default"> <span class="fal fa-file-excel mr-1"></span>  @Html.L("Export") </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div class="panel-content">
+          <div class="table-responsive">
+            <table id="users_datagrid"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@{ Html.RenderPartial("_ImportWindow", new ViewDataDictionary { { "EntityName", "ApplicationUser" } }); }
+@Html.Partial("_ResetPasswordPartial")
+@Html.Partial("_RegisterFormPartial")
+<!-- END MAIN CONTENT -->
+
+@section ScriptsBlock {
+
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+  <script type="text/javascript">
+
+    //禁用账号
+    function setlockout() {
+      const userid = $dg.datagrid('getChecked').map(x => x.Id);
+      if (userid.length > 0) {
+        $.post('/AccountManage/SetLockout', { userid: userid }).done(res => {
+          reload();
+
+        });
+      }
+    }
+    function setunlockout() {
+      const userid = $dg.datagrid('getChecked').map(x => x.Id);
+      if (userid.length > 0) {
+        $.post('/AccountManage/SetUnLockout', { userid: userid }).done(res => {
+          reload();
+
+        });
+      }
+    }
+    //执行Excel到处下载
+    function exportexcel() {
+
+    }
+    function downloadtemplate() {
+      //默认模板路径存放位置
+      const url = '/FileUpload/Download?file=/ExcelTemplate/Accounts.xlsx';
+      $.fileDownload(url)
+        .done(() => {
+          //console.log('file download a success!');
+          toastr.success('模板下载完成!');
+        })
+        .fail(() => {
+          $.messager.alert('下载模板失败', '没有下载到导入模板[Accounts.xlsx]文件!', 'error');
+        });
+    }
+   //显示帮助信息
+    function resetpassword() {
+        var row = $dg.datagrid('getChecked');
+        if (row.length === 0) {
+            $.messager.alert("提示", "请选中需要重置密码的记录!");
+        } else {
+            //console.log(row);
+            showresetform(row[0].Id, row[0].UserName);
+        }
+    }
+    function reload() {
+      $dg.datagrid('unselectAll');
+      $dg.datagrid('uncheckAll');
+      $dg.datagrid('reload');
+
+    }
+
+    var $dg = $('#users_datagrid');
+
+    function append() {
+      showregisterform();
+    }
+    function removeit() {
+      const rows = $dg.datagrid('getChecked');
+      if (rows.length > 0) {
+        var id = rows.filter(item => item.Id != null).map(item => {
+          return item.Id;
+        });
+        $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length}</span> 行记录?`, result => {
+          if (result) {
+            $.post('/AccountManage/DeleteCheckedAsync', { id: id })
+              .done(response => {
+                if (response.success) {
+                  toastr.success('删除成功', '确认', { timeOut: 2000 });
+                  $dg.datagrid('uncheckAll');
+                  $dg.datagrid('reload');
+                } else {
+                  $.messager.alert('错误', response.err, 'error');
+                }
+              })
+              .fail((jqXHR, textStatus, errorThrown) => {
+                //console.log(errorThrown);
+                $.messager.alert('失败', errorThrown, 'error');
+              });
+          }
+        });
+      } else {
+        $.messager.alert('提示', '请选择要删除的账号');
+
+      }
+    }
+
+
+
+    $(function () {
+      $dg.datagrid({
+       height:670,
+        rownumbers: true,
+        checkOnSelect: true,
+        selectOnCheck: true,
+        idField: 'Id',
+        sortName: 'Id',
+        sortOrder: 'desc',
+        remoteFilter: true,
+        singleSelect: false,
+        url: '/AccountManage/GetData',
+        method: 'get',
+        pagination: true,
+         clientPaging: false,
+        striped: true,
+        onBeforeLoad: function () {
+          const that = $(this);
+          document.addEventListener('smartPanel.onFullscreen', () => {
+            setTimeout(() => {
+              that.datagrid('resize');
+            }, 200)
+          })
+        },
+        onLoadSuccess: function (data) {
+          editIndex = undefined;
+          $("button[name*='deletebutton']").prop('disabled', true);
+        },
+        onSelect: function (index, row) {
+            menuitem = row;
+          },
+          onCheck: function (index,row) {
+             $("button[name*='deletebutton']").prop('disabled', false);
+            menuitem = row;
+        },
+        onUncheck: function () {
+          const checked = $(this).datagrid('getChecked').length > 0;
+          $("button[name*='deletebutton']").prop('disabled', !checked);
+        },
+        onBeforeEdit: function (index, row) {
+            row.editing = true;
+            $(this).datagrid('refreshRow', index);
+        },
+        onCancelEdit: function (index, row) {
+          row.editing = false;
+          editIndex = undefined;
+          $(this).datagrid('refreshRow', index);
+        },
+        columns: [[
+          { field: 'ck', checkbox: true },
+          {
+            field: 'status',
+            title: '状态',
+            formatter: function (v, r, i) {
+              if (r.LockoutEndDateUtc == null) {
+                return '<span class="badge badge-info">正常</span>'
+              } else {
+                if (moment(r.LockoutEndDateUtc).add(8, 'hours') > moment()) {
+                  return '<span class="badge badge-danger">锁定</span>'
+                } else {
+                  return '<span class="badge badge-info">正常</span>'
+                }
+              }
+            }
+          },
+          {
+            field: 'UserName',
+            title: '<span class="required">账号</span>',
+            width: 140,
+            sortable: true,
+            resizable: true
+          },
+          {
+            field: 'FullName',
+            title: '<span class="required">@Html.DisplayNameFor(model => model.FullName)</span>',
+            width: 140,
+            sortable: true,
+            resizable: true
+          },
+          {
+            field: 'Email',
+            title: '<span class="required">电子邮件</span>',
+            width: 240,
+            sortable: true,
+            resizable: true
+          },
+          {
+            field: 'PhoneNumber',
+            title: '<span class="required">电话号码</span>',
+            width: 140,
+            sortable: true,
+            resizable: true
+          },
+          {
+            field: 'TenantId',
+            title: '@Html.DisplayNameFor(model => model.TenantId)',
+            width: 180,
+            formatter: function (value, row, index) {
+              return row.TenantName
+            }
+          },
+          {
+            field: 'IsOnline',
+            title: '是否在线',
+            width: 90,
+            sortable: true,
+            resizable: true,
+            formatter: booleanformatter
+          }
+          
+        ]]
+      });
+      $dg.datagrid('enableFilter', [
+        {
+          field: 'TenantId',
+          type: 'combogrid',
+          options: {
+            idField: 'Id',
+            panelWidth: 330,
+            textField: 'Name',
+            method: 'get',
+            url: '/AccountManage/GetTenantData',
+            icons: [{
+              iconCls: 'icon-clear',
+              handler: function (e) {
+                $dg.datagrid('removeFilterRule', 'TenantId');
+                $dg.datagrid('doFilter');
+              }
+            }],
+            columns: [[
+              { field: 'Name', title: '名称', width: 170 },
+              { field: 'ConnectionStrings', title: '数据库', width: 120 }
+            ]],
+            onChange: value => {
+              if (value === '' || value === null) {
+                $dg.datagrid('removeFilterRule', 'TenantId');
+              } else {
+                $dg.datagrid('addFilterRule', {
+                  field: 'TenantId',
+                  op: 'equal',
+                  value: value
+                });
+              }
+              $dg.datagrid('doFilter');
+            }
+          }
+        }]);
+    });
+  </script>
+
+}
+

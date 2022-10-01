@@ -1,0 +1,627 @@
+﻿@model WebApp.Models.BillDetail
+<script type="text/javascript">
+  //全屏事件
+  document.addEventListener('panel.onfullscreen', () => {
+       $billdetaildg.datagrid('resize');
+   });
+    //是否开启行内编辑
+    var SUBEDITINLINE = true;
+   //初始化 BillDetail datagrid
+   var $billdetaildg = $('#billdetail_datagrid');
+   //当前行记录
+   var billdetail = {};
+   //datagrid CRUD method
+    var billdetail_editIndex = undefined;
+    //取消编辑恢复状态
+    function billdetail_rejectChanges() {
+		$billdetaildg.datagrid('rejectChanges');
+		billdetail_editIndex = undefined;
+    }
+    //重新加载数据
+    function billdetail_reloadData() {
+			$billdetaildg.datagrid('unselectAll');
+            $billdetaildg.datagrid('uncheckAll');
+	        $billdetaildg.datagrid('reload');
+	}
+    //关闭编辑状态
+	function billdetail_endEditing() {
+			if (billdetail_editIndex === undefined) {
+                return true;
+            }
+			if ($billdetaildg.datagrid('validateRow', billdetail_editIndex)) {
+				$billdetaildg.datagrid('endEdit', billdetail_editIndex);
+				billdetail_editIndex = undefined;
+                return true;
+			} else {
+				const invalidinput = $('input.validatebox-invalid',$billdetaildg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+				return false;
+			}
+		}
+    //单击列开启编辑功能
+	function billdetail_onClickCell(index, field) {
+			const _operates = ['_operate1', 'ck'];
+             $('button[name*=\'billdetaildeleterowbutton\']').prop('disabled', false);
+			if (!SUBEDITINLINE || $.inArray(field, _operates) >= 0) {
+				return false;
+			}
+			if (billdetail_editIndex !== index) {
+				if (billdetail_endEditing()) {
+					$billdetaildg.datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+                    //billdetail_editIndex = index;
+					var ed = $billdetaildg.datagrid('getEditor', { index: index, field: field });
+					if (ed) {
+						($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+					}
+				} else {
+					$billdetaildg.datagrid('selectRow', billdetail_editIndex);
+				}
+			}
+		}
+    //双击弹出编辑当前行对话框
+    function billdetail_onDblClickRow(index, row) {
+        if (!SUBEDITINLINE) {
+            open_billdetaildlg(index, row, 'Modified');
+        }
+    }
+    //订阅对话框新增返回事件
+    $(document).on('billdetail_form.add', (e, index,item) => {
+        $billdetaildg.datagrid("insertRow",
+            {
+                index: 0,
+                row: item
+            });
+        $("button[name*='billdetail_cancelchangesbutton']").prop('disabled', false);
+        $("button[name*='billdetail_savechangesbutton']").prop('disabled', false);
+    });
+    //订阅对话框修改返回事件
+    $(document).on('billdetail_form.edit', (e,index, item) => {
+        $billdetaildg.datagrid('updateRow', {
+            index: index,
+            row: item
+        });
+        $("button[name*='billdetail_cancelchangesbutton']").prop('disabled', false);
+        $("button[name*='billdetail_savechangesbutton']").prop('disabled', false);
+    });
+    //新增记录
+    function billdetail_appendItem() {
+       const $billheaderform = $('#billheader_form');
+       if ($billheaderform.form('enableValidation').form('validate')) {
+          const billheader = $billheaderform.serializeJSON();
+       const item = {
+
+          BillId:billheader.Id
+        };
+      if (!SUBEDITINLINE) {
+        open_billdetaildlg(0, item, 'Added');
+      } else {
+			if (billdetail_endEditing()) {
+				//对必填字段进行默认值初始化
+				$billdetaildg.datagrid('insertRow',
+                               { index: 0,
+                                  row: item
+                               });
+				billdetail_editIndex = 0;
+				$billdetaildg.datagrid('selectRow', billdetail_editIndex)
+						.datagrid('beginEdit', billdetail_editIndex);
+			}
+        }
+        }
+	 }
+    //删除编辑的行
+	function billdetail_removeItem() {
+		if (billdetail_editIndex !== undefined) {
+            const delindex = billdetail_editIndex;
+			$billdetaildg.datagrid('cancelEdit', delindex)
+					           .datagrid('deleteRow', delindex);
+            $("button[name*='billdetail_cancelchangesbutton']").prop('disabled', false);
+            $("button[name*='billdetail_savechangesbutton']").prop('disabled', false);
+        } else {
+           const rows = $billdetaildg.datagrid('getChecked');
+           rows.slice().reverse().forEach(row => {
+                const rowindex = $billdetaildg.datagrid('getRowIndex', row);
+                $billdetaildg.datagrid('deleteRow', rowindex);
+                $("button[name*='billdetail_cancelchangesbutton']").prop('disabled', false);
+                $("button[name*='billdetail_savechangesbutton']").prop('disabled', false);
+            });
+        }
+	}
+    //删除选中的行
+    function billdetail_deleteChecked() {
+            const rows = $billdetaildg.datagrid('getChecked');
+            if (rows.length > 0) {
+                var id = rows.filter(item=>item.Id!=null).map(item => {
+                    return item.Id;
+                });
+                $.messager.confirm('确认', `你确定要删除这 <span class='badge bg-color-red'>${id.length}</span> 行记录?`,result => {
+                    if (result) {
+                        $.post('/BillDetails/DeleteChecked', { id: id })
+                         .done(response => {
+                            if (response.success) {
+                                $billdetaildg.datagrid('reload');
+                            } else {
+                                $.messager.alert('错误', response.err,'error');
+                            }
+                         });
+                    }
+                });
+            } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+            }
+      }
+  //获取修改的行
+  function billdetail_getChanges() {
+    if (billdetail_endEditing()) {
+      if ($billdetaildg.datagrid('getChanges').length > 0) {
+        const inserted = $billdetaildg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const deleted = $billdetaildg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3;
+          return item;
+        });
+        const updated = $billdetaildg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2;
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+          return !deleted.includes(item);
+        })).concat(deleted);
+        return { success: true, changed };
+      } else {
+        return { success: true, changed:undefined};
+      }
+    } else {
+      return { success: false,changed:undefined };
+    }
+  }
+  //提交修改的数据
+  //function billdetail_acceptChanges() {
+  //  $billdetaildg.datagrid('acceptChanges');
+  //}
+  //提交保存后台数据库
+  async function billdetail_acceptChanges() {
+			if (billdetail_endEditing()) {
+				if ($billdetaildg.datagrid('getChanges').length > 0) {
+					const inserted = $billdetaildg.datagrid('getChanges', 'inserted').map(item => {
+                       item.TrackingState = 1;
+                       return item;
+                    });
+					const deleted = $billdetaildg.datagrid('getChanges', 'deleted').map(item => {
+                       item.TrackingState = 3;
+                       return item;
+                    });
+					const updated = $billdetaildg.datagrid('getChanges', 'updated').map(item => {
+                       item.TrackingState = 2;
+                       return item;
+                    });
+					//过滤已删除的重复项
+                    const changed = inserted.concat(updated.filter(item => {
+                           return !deleted.includes(item);
+                         })).concat(deleted);
+                   //console.table(changed);
+				  if (MODELSTATE === 'Added') {
+                    return { success:true, changed };
+                  } else {
+                    const response = await $.post('/BillDetails/AcceptChanges', {billdetails:changed});
+                    response.changed = undefined;
+    				if (response.success) {
+							toastr.success('保存明细成功');
+							$billdetaildg.datagrid('acceptChanges');
+							billdetail_reloadData()
+                            return { success:true};
+				    } else {
+                           $.messager.alert('错误', response.err ,'error');
+                           return { success:false, err:response.err };
+                    }
+                   }
+				} else {
+                  return { success: true, changed: undefined};
+                }
+			} else {
+               return { success: false };
+            }
+      }
+
+
+$(() => {
+    $billdetaildg.datagrid({
+            fit: false,
+            height: 300,
+            rownumbers: true,
+            striped: true,
+            idField: 'Id',
+            sortName: 'Id',
+            sortOrder: 'asc',
+            remoteFilter: true,
+            singleSelect: true,
+            checkOnSelect: false,
+		    selectOnCheck: false,
+            method: 'post',
+            pageList: [10, 20, 50, 100,1000],
+            pagination: true,
+            clientPaging:false,
+            pagination: true,
+            onBeforeLoad: function () {
+
+            },
+            onLoadSuccess: function (data) {
+
+
+            },
+            columns: [[
+            { field: 'ck', checkbox: true },
+
+			{    /*表名*/
+                 field:'MeterName',
+                 title:'  @Html.DisplayNameFor(model => model.MeterName)',
+                 width:160,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_MeterName',
+                                 prompt:'@Html.DescriptionFor(model => model.MeterName)',
+                                 required:false,
+                                 validType: 'length[0,50]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+			{    /*表序号*/
+                 field:'LineNo',
+                 title:'  @Html.DisplayNameFor(model => model.LineNo)',
+                 width:160,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_LineNo',
+                                 prompt:'@Html.DescriptionFor(model => model.LineNo)',
+                                 required:false,
+                                 validType: 'length[0,50]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+			{    /*表号*/
+                 field:'MeterId',
+                 title:'  @Html.DisplayNameFor(model => model.MeterId)',
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_MeterId',
+                                 prompt:'@Html.DescriptionFor(model => model.MeterId)',
+                                 required:false,
+                                 validType: 'length[0,20]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+			{    /*出线名称*/
+                 field:'MeterName1',
+                 title:'  @Html.DisplayNameFor(model => model.MeterName1)',
+                 width:160,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_MeterName1',
+                                 prompt:'@Html.DescriptionFor(model => model.MeterName1)',
+                                 required:false,
+                                 validType: 'length[0,50]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+			{    /*安装位置*/
+                 field:'MeterPoint',
+                 title:'  @Html.DisplayNameFor(model => model.MeterPoint)',
+                 width:200,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_MeterPoint',
+                                 prompt:'@Html.DescriptionFor(model => model.MeterPoint)',
+                                 required:false,
+                                 validType: 'length[0,150]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+              },
+      {    /*正负项*/
+        field:'Rate',
+                 title:'  @Html.DisplayNameFor(model => model.Rate)',
+                 width:80,
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+			{    /*正负项*/
+                 field:'Negitive',
+                 title:'  @Html.DisplayNameFor(model => model.Negitive)',
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_Negitive',
+                                 prompt:'@Html.DescriptionFor(model => model.Negitive)',
+                                 required:false,
+                                 validType: 'length[0,10]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+			{    /*占比*/
+                 field:'Ratio',
+                 title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.Ratio)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_Ratio',
+                                  prompt:'@Html.DescriptionFor(model => model.Ratio)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*用水量(m3)*/
+                 field:'Water',
+                 title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.Water)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_Water',
+                                  prompt:'@Html.DescriptionFor(model => model.Water)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*上个月用水量(m3)*/
+                 field:'LastWater',
+                 title:'  @Html.DisplayNameFor(model => model.LastWater)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_LastWater',
+                                  prompt:'@Html.DescriptionFor(model => model.LastWater)',
+                                  required:false,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*环比(%)*/
+                 field:'PerCent',
+                 title:'  @Html.DisplayNameFor(model => model.PerCent)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_PerCent',
+                                  prompt:'@Html.DescriptionFor(model => model.PerCent)',
+                                  required:false,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*实际用水量(m3)*/
+                 field:'ActualWater',
+                 title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.ActualWater)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_ActualWater',
+                                  prompt:'@Html.DescriptionFor(model => model.ActualWater)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+            {   /*期初日期*/
+                field:'WaterDt1',
+                title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.WaterDt1)',
+                width:100,
+                align:'right',
+                hidden:false,
+                editor:{
+                      type:'datebox',
+                      options:{
+                           id:'editor_WaterDt1',
+                           prompt:'@Html.DescriptionFor(model => model.WaterDt1)',
+                           required:true
+                           }
+                      },
+                sortable:true,
+                resizable:true,
+                formatter:dateformatter
+			} ,
+			{    /*期初水量(m3)*/
+                 field:'Water1',
+                 title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.Water1)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_Water1',
+                                  prompt:'@Html.DescriptionFor(model => model.Water1)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+            {   /*期末日期*/
+                field:'WaterDt2',
+                title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.WaterDt2)',
+                width:100,
+                align:'right',
+                hidden:false,
+                editor:{
+                      type:'datebox',
+                      options:{
+                           id:'editor_WaterDt2',
+                           prompt:'@Html.DescriptionFor(model => model.WaterDt2)',
+                           required:true
+                           }
+                      },
+                sortable:true,
+                resizable:true,
+                formatter:dateformatter
+			} ,
+			{    /*期末水量(m3)*/
+                 field:'Water2',
+                 title:'<span class="text-danger">*</span>  @Html.DisplayNameFor(model => model.Water2)',
+                 width:100,
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{
+                                  id:'editor_Water2',
+                                  prompt:'@Html.DescriptionFor(model => model.Water2)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+
+                                 }
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*备注*/
+                 field:'Remark',
+                 title:'  @Html.DisplayNameFor(model => model.Remark)',
+                 width:200,
+                 editor:{
+                          type:'textbox',
+                          options:{
+                                 id:'editor_Remark',
+                                 prompt:'@Html.DescriptionFor(model => model.Remark)',
+                                 required:false,
+                                 validType: 'length[0,250]'
+                                 }
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true
+			},
+            ]]
+            })
+            .datagrid('enableFilter',[
+				{    /*占比*/
+					  field: 'Ratio',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{    /*用水量(m3)*/
+					  field: 'Water',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{    /*上个月用水量(m3)*/
+					  field: 'LastWater',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{    /*环比(%)*/
+					  field: 'PerCent',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{    /*实际用水量(m3)*/
+					  field: 'ActualWater',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{    /*期初水量(m3)*/
+					  field: 'Water1',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{    /*期末水量(m3)*/
+					  field: 'Water2',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{     /*期初日期*/
+					  field: 'WaterDt1',
+					  type: 'dateRange',
+					  options: {
+					  }
+				  },
+				{     /*期末日期*/
+					  field: 'WaterDt2',
+					  type: 'dateRange',
+					  options: {
+					  }
+				  },
+		   ]);
+  });
+
+</script>
+
+
+ 

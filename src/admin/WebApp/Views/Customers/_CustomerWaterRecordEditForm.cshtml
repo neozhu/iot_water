@@ -1,0 +1,256 @@
+﻿@model WebApp.Models.CustomerWaterRecord
+<div id="customerwaterrecorddlg" class="easyui-dialog"
+     title="CustomerWaterRecord" style="width:600px;height:300px; display:none"
+     data-options="
+                iconCls: 'icon-more',
+                modal:true,
+                closed:true,
+                cache: false,
+                resizable:true,
+                width:760,
+                height:420,
+                /*toolbar: [], 注解*/
+                onOpen:function(){
+                   $('#customerwaterrecord_form').form('disableValidation');
+                },
+                buttons: [{
+                    text:'确认',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        confirm_customerwaterrecordform();
+                    }
+                },{
+                    text:'取消',
+                    handler:function(){
+                        $('#customerwaterrecorddlg').dialog('close');
+                    }
+                }]
+            ">
+  <div class="panel-container show">
+    <div class="panel-content p-0">
+      <form id="customerwaterrecord_form" class="bv-form" novalidate="novalidate">
+        <fieldset>
+          <div class="panel-content">
+            <div class="form-row">
+              <!--Id-->
+              @Html.HiddenFor(model => model.Id)
+
+              <!--用水单位-->
+              <input type="hidden" id="CustomerName" name="CustomerName" value="">
+              <input id="@Html.IdFor(model => model.CustomerId)"
+                     name="@Html.NameFor(model => model.CustomerId)"
+                     value="@Html.ValueFor(model => model.CustomerId)"
+                     type="hidden" />
+
+              <!--年份-->
+              <div class="col-md-6">
+                <label class="form-label text-danger" for="@Html.IdFor(model => model.Year)">@Html.DisplayNameFor(model => model.Year)</label>
+                <input id="@Html.IdFor(model => model.Year)"
+                       name="@Html.NameFor(model => model.Year)"
+                       value="@Html.ValueFor(model => model.Year)"
+                       tabindex="2"
+                       class="easyui-numberbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Year)',
+								 required:true,
+                                 validType:'mone'
+                                 " />
+              </div>
+
+              <!--月份-->
+              <div class="col-md-6">
+                <label class="form-label text-danger" for="@Html.IdFor(model => model.Month)">@Html.DisplayNameFor(model => model.Month)</label>
+                <input id="@Html.IdFor(model => model.Month)"
+                       name="@Html.NameFor(model => model.Month)"
+                       value="@Html.ValueFor(model => model.Month)"
+                       tabindex="3"
+                       class="easyui-numberbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Month)',
+								 required:true,
+                                 validType:'mone'
+                                 " />
+              </div>
+
+              <!--表号-->
+              <div class="col-md-6">
+                <label class="form-label " for="@Html.IdFor(model => model.meterId)">@Html.DisplayNameFor(model => model.meterId)</label>
+                <input id="@Html.IdFor(model => model.meterId)"
+                       name="@Html.NameFor(model => model.meterId)"
+                       value="@Html.ValueFor(model => model.meterId)"
+                       tabindex="4"
+                       class="easyui-textbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.meterId)',
+     						 required:false ,validType:'length[0,20]'" />
+              </div>
+
+              <!--上期抄表日期-->
+              <div class="col-md-6">
+                <label class="form-label"><span class="required">@Html.DisplayNameFor(model => model.previousDate)</span></label>
+                <input id="@Html.IdFor(model => model.previousDate)"
+                       name="@Html.NameFor(model => model.previousDate)"
+                       value="@Html.ValueFor(model => model.previousDate)"
+                       tabindex="5"
+                       class="easyui-datebox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.previousDate)',
+                       								 required:true,
+                                 " />
+              </div>
+
+              <!--上期表见-->
+              <div class="col-md-6">
+                <label class="form-label"><span class="required">@Html.DisplayNameFor(model => model.previousWater)</span></label>
+                <input id="@Html.IdFor(model => model.previousWater)"
+                       name="@Html.NameFor(model => model.previousWater)"
+                       value="@Html.ValueFor(model => model.previousWater)"
+                       tabindex="6"
+                       class="easyui-numberbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.previousWater)',
+                                 precision:2,
+								 required:true,
+                                 validType:'decimal'
+                                 " />
+              </div>
+
+              <!--本期表见-->
+              <div class="col-md-6">
+                <label class="form-label"><span class="required">@Html.DisplayNameFor(model => model.lastWater)</span></label>
+                <input id="@Html.IdFor(model => model.lastWater)"
+                       name="@Html.NameFor(model => model.lastWater)"
+                       value="@Html.ValueFor(model => model.lastWater)"
+                       tabindex="7"
+                       class="easyui-numberbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.lastWater)',
+                                 precision:2,
+								 required:true,
+                                 validType:'decimal'
+                                 " />
+              </div>
+
+              <!--本期用水量-->
+              <div class="col-md-6">
+                <label class="form-label"><span class="required">@Html.DisplayNameFor(model => model.water)</span></label>
+                <input id="@Html.IdFor(model => model.water)"
+                       name="@Html.NameFor(model => model.water)"
+                       value="@Html.ValueFor(model => model.water)"
+                       tabindex="8"
+                       class="easyui-numberbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.water)',
+                                 precision:2,
+								 required:true,
+                                 validType:'decimal'
+                                 " />
+              </div>
+
+              <!--抄表日期-->
+              <div class="col-md-6">
+                <label class="form-label"><span class="required">@Html.DisplayNameFor(model => model.RecordDate)</span></label>
+                <input id="@Html.IdFor(model => model.RecordDate)"
+                       name="@Html.NameFor(model => model.RecordDate)"
+                       tabindex="9"
+                       class="easyui-datebox"
+                       type="text"
+                       style="width:100%"
+                       value="@Html.ValueFor(model => model.RecordDate)"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.RecordDate)',
+								 formatter:dateformatter,
+                                 required:true " />
+              </div>
+
+              <!--抄表人-->
+              <div class="col-md-6">
+                <label class="form-label " for="@Html.IdFor(model => model.User)">@Html.DisplayNameFor(model => model.User)</label>
+                <input id="@Html.IdFor(model => model.User)"
+                       name="@Html.NameFor(model => model.User)"
+                       value="@Html.ValueFor(model => model.User)"
+                       tabindex="10"
+                       class="easyui-textbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.User)',
+     						 required:false ,validType:'length[0,20]'" />
+              </div>
+
+              <!--抄表方式-->
+              <div class="col-md-6">
+                <label class="form-label " for="@Html.IdFor(model => model.Type)">@Html.DisplayNameFor(model => model.Type)</label>
+                <input id="@Html.IdFor(model => model.Type)"
+                       name="@Html.NameFor(model => model.Type)"
+                       value="@Html.ValueFor(model => model.Type)"
+                       tabindex="11"
+                       class="easyui-textbox"
+                       type="text"
+                       style="width:100%"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Type)',
+     						 required:false ,validType:'length[0,10]'" />
+              </div>
+
+
+              <!--是否删除-->
+              <div class="col-md-6" style="display:none">
+                <label class="form-label text-danger" for="@Html.IdFor(model => model.IsDelete)">@Html.DisplayNameFor(model => model.IsDelete)</label>
+                <div class="custom-control custom-checkbox">
+                  <input id="@Html.IdFor(model => model.IsDelete)"
+                         name="@Html.NameFor(model => model.IsDelete)"
+                         value="true" @(Model.IsDelete ? "checked=\"checked\"" : "")
+                         data-unchecked-value="false"
+                         tabindex="12"
+                         class="checkbox style-0"
+                         type="checkbox" />
+                  <label class="custom-control-label" for="@Html.NameFor(model => model.IsDelete)"> @Html.DisplayNameFor(model => model.IsDelete)</label>
+
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var form_state = 'Added';
+  var current_index = -1;
+  var customerwaterrecord = {};
+
+  function open_customerwaterrecorddlg(index, row, state) {
+    form_state = state;
+    current_index = index;
+    customerwaterrecord = row;
+    $('#customerwaterrecorddlg').dialog('open');
+    if (form_state === 'Added') {
+      $('#customerwaterrecorddlg').dialog('setTitle', '新增明细');
+    } else {
+      $('#customerwaterrecorddlg').dialog('setTitle', '修改明细');
+    }
+    $('#customerwaterrecord_form').form('reset');
+    $('#customerwaterrecord_form').form('load', customerwaterrecord);
+  }
+  function confirm_customerwaterrecordform() {
+    $customerwaterrecordform = $('#customerwaterrecord_form');
+    if ($customerwaterrecordform.form('enableValidation').form('validate')) {
+      customerwaterrecord = $customerwaterrecordform.serializeJSON();
+      if (form_state === 'Added') {
+        $(document).trigger('customerwaterrecord_form.add', [current_index, customerwaterrecord])
+      } else {
+        $(document).trigger('customerwaterrecord_form.edit', [current_index, customerwaterrecord])
+      }
+      $('#customerwaterrecorddlg').dialog('close');
+    }
+  }
+</script>
+

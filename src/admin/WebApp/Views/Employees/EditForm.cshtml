@@ -1,0 +1,131 @@
+﻿﻿@model WebApp.Models.Employee
+<!-- begin master section -->
+<div  class="main-form">
+<!--begin employee form  -->
+<form id="employee_form" method="post" novalidate="novalidate" >
+@Html.AntiForgeryToken()
+   @Html.HiddenFor(x=>x.Id)
+ <fieldset>
+ <div class="form-group form-group-sm">
+      <div class="row">
+
+        <!--姓名-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Name)</span> </label>
+			@Html.EditorFor(x => x.Name, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Name) } })
+      
+         </div>
+
+        <!--职位-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label">@Html.DisplayNameFor(model => model.Title) </label>
+			@Html.EditorFor(x => x.Title, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Title) } })
+      
+         </div>
+
+        <!--联系电话-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label">@Html.DisplayNameFor(model => model.PhoneNumber) </label>
+			@Html.EditorFor(x => x.PhoneNumber, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.PhoneNumber) } })
+      
+         </div>
+
+        <!--微信-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label">@Html.DisplayNameFor(model => model.WX) </label>
+			@Html.EditorFor(x => x.WX, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.WX) } })
+      
+         </div>
+
+        <!--性别-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Sex)</span> </label>
+			@Html.EditorFor(x => x.Sex, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Sex) } })
+      
+         </div>
+
+		<!--年龄-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Age)</span> </label>
+            @Html.EditorFor(x => x.Age, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.Age) } })
+
+        </div>
+	   </div>
+    </div>
+ <div class="form-group form-group-sm">
+      <div class="row">
+
+       <!--出生日期-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Brithday)</span> </label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.Brithday, 
+                         new { htmlAttributes = new { @class = "form-control datepicker hasDatepicker",
+                               placeholder = Html.DisplayNameFor(x => x.Brithday ) } })
+               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			 </div>
+         </div>
+
+       <!--入职日期-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.EntryDate)</span> </label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.EntryDate, 
+                         new { htmlAttributes = new { @class = "form-control datepicker hasDatepicker",
+                               placeholder = Html.DisplayNameFor(x => x.EntryDate ) } })
+               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			 </div>
+         </div>
+
+		
+      <!--是否已离职-->
+      <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+              <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.IsDeleted)</span> </label>
+              <div class="checkbox  no-margin">
+              <label>
+                 <input id="@Html.IdFor(model => model.IsDeleted)"
+                       name="@Html.NameFor(model => model.IsDeleted)"
+                       value="true" @(Model.IsDeleted ? "checked=\"checked\"" : "")
+                       class="checkbox style-0"
+                       tabindex="6"
+                       type="checkbox" />
+                <span>@Html.DisplayNameFor(model => model.IsDeleted)</span>
+              </label>
+            </div>
+      </div>
+
+       <!--离职日期-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label">@Html.DisplayNameFor(model => model.LeaveDate) </label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.LeaveDate, 
+                         new { htmlAttributes = new { @class = "form-control datepicker hasDatepicker",
+                               placeholder = Html.DisplayNameFor(x => x.LeaveDate ) } })
+               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			 </div>
+         </div>
+
+     
+       <!--公司-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.CompanyId)</span> </label>
+   	        @Html.DropDownListFor(model => model.CompanyId, ViewBag.CompanyId as List<SelectListItem>, htmlAttributes: new { @class = "form-control" }) 
+       </div>
+
+     
+       <!--部门-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.DepartmentId)</span> </label>
+   	        @Html.DropDownListFor(model => model.DepartmentId, ViewBag.DepartmentId as List<SelectListItem>, htmlAttributes: new { @class = "form-control" }) 
+       </div>
+	   </div>
+    </div>
+	    
+</fieldset>
+</form>
+<!-- end employee form  -->
+</div>
+
+<!-- end master section -->
+<!--========================================================================================-->
+

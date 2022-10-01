@@ -1,0 +1,44 @@
+﻿@using WebApp.Models
+@model  IEnumerable<MenuItem>
+<ul id="js-nav-menu" class="nav-menu">
+  @{
+    var nodes = Model;
+    if (nodes.Any())
+    {
+      foreach (var node in nodes.Where(x => x.ParentId == null))
+      {
+        @RenderSubMenuRecursive(node)
+      }
+    }
+  }
+  @helper RenderSubMenuRecursive(WebApp.Models.MenuItem node)
+  {
+    var childNodes = Model.Where(x => x.ParentId == node.Id);
+    if (childNodes.Any())
+    {
+      var childcontrollers = childNodes.Select(x => x.Url).ToArray();
+      var icon = String.IsNullOrEmpty(node.IconCls) ? "fal fa-window" : node.IconCls;
+      <li class="@Html.RouteIf(childcontrollers,"active open")">
+        <a href="#" title="@node.Description">
+          <i class="@icon"></i>
+          <span class="nav-link-text" data-i18n="nav.@node.Code">@node.Title</span>
+        </a>
+        <ul>
+          @foreach (var childNode in childNodes)
+          {
+            @RenderSubMenuRecursive(childNode)
+          }
+        </ul>
+      </li>
+    }
+    else
+    {
+      <li class="@Html.RouteIf(new string[1] {node.Url},"active")">
+        <a href="@node.Url" title="@node.Description" data-filter-tags="@node.Description">
+          <i class="@node.IconCls"></i>
+          <span class="nav-link-text" data-i18n="nav.@node.Code">@node.Title</span>
+        </a>
+      </li>
+    }
+  }
+</ul>

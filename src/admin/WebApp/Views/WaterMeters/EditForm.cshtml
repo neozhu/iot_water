@@ -1,0 +1,251 @@
+﻿﻿@model WebApp.Models.WaterMeter
+<div class="form-row">
+  @Html.HiddenFor(x => x.Id)
+  <!--表号-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.meterId)</label>
+    @Html.EditorFor(x => x.meterId, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterId) } })
+
+  </div>
+
+  <!--水表状态-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.Status)</label>
+    @Html.EditorFor(x => x.Status, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Status) } })
+
+  </div>
+
+  <!--阀门状态-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.valveStatus)</label>
+    @Html.EditorFor(x => x.valveStatus, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.valveStatus) } })
+
+  </div>
+
+  <!--小区/楼栋/单元/门牌号-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.address)</label>
+    @Html.EditorFor(x => x.address, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.address) } })
+
+  </div>
+
+  <!--口径大小-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.meterSize)</label>
+    @Html.EditorFor(x => x.meterSize, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterSize) } })
+
+  </div>
+
+  <!--水表类型-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.meterType)</label>
+    @Html.EditorFor(x => x.meterType, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterType) } })
+
+  </div>
+
+  <!--厂家-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.vender)</label>
+    @Html.EditorFor(x => x.vender, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.vender) } })
+
+  </div>
+
+  <!--检修周期-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.repairCycle)</label>
+    @Html.EditorFor(x => x.repairCycle, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.repairCycle) } })
+
+  </div>
+
+  <!--水表精度-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.precision)</label>
+    @Html.EditorFor(x => x.precision, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.precision) } })
+
+  </div>
+
+  <!--生产日期-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.produced)</label>
+    <div class="input-group">
+      @Html.EditorFor(x => x.produced,
+                       new
+                      {
+                        htmlAttributes = new
+                        {
+                          @class = "form-control datepicker hasDatepicker",
+                             placeholder = Html.DisplayNameFor(x => x.produced)
+                        }
+                      })
+      <div class="input-group-append">
+        <span class="input-group-text fs-xl">
+          <i class="fal fa-calendar-alt"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!--有效日期-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.period)</label>
+    <div class="input-group">
+      @Html.EditorFor(x => x.period,
+                       new
+                      {
+                        htmlAttributes = new
+                        {
+                          @class = "form-control datepicker hasDatepicker",
+                             placeholder = Html.DisplayNameFor(x => x.period)
+                        }
+                      })
+      <div class="input-group-append">
+        <span class="input-group-text fs-xl">
+          <i class="fal fa-calendar-alt"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!--鉴定铅封号-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.sealNumber1)</label>
+    @Html.EditorFor(x => x.sealNumber1, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.sealNumber1) } })
+
+  </div>
+
+  <!--监管铅封号-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.sealNumber2)</label>
+    @Html.EditorFor(x => x.sealNumber2, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.sealNumber2) } })
+
+  </div>
+
+  <!--售水铅封号-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.sealNumber3)</label>
+    @Html.EditorFor(x => x.sealNumber3, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.sealNumber3) } })
+
+  </div>
+
+  <!--IMEI-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.imei)</label>
+    @Html.EditorFor(x => x.imei, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.imei) } })
+
+  </div>
+
+  <!--水表当前读数(吨)-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.water)</label>
+    @Html.EditorFor(x => x.water, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.water) } })
+
+  </div>
+
+  <!--累计流量-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.reverseWater)</label>
+    @Html.EditorFor(x => x.reverseWater, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.reverseWater) } })
+
+  </div>
+
+  <!--温度-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.temperature)</label>
+    @Html.EditorFor(x => x.temperature, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.temperature) } })
+
+  </div>
+
+  <!--瞬时流量-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.flowrate)</label>
+    @Html.EditorFor(x => x.flowrate, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.flowrate) } })
+
+  </div>
+
+  <!--压力 (bar)-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.pressure)</label>
+    @Html.EditorFor(x => x.pressure, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.pressure) } })
+
+  </div>
+
+  <!--电压-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.voltage)</label>
+    @Html.EditorFor(x => x.voltage, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.voltage) } })
+
+  </div>
+
+  <!--水压预警阈值-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.threshold1)</label>
+    @Html.EditorFor(x => x.threshold1, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.threshold1) } })
+
+  </div>
+
+  <!--流量预警阈值-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.threshold2)</label>
+    @Html.EditorFor(x => x.threshold2, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.threshold2) } })
+
+  </div>
+
+  <!--温度预警阈值-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.threshold3)</label>
+    @Html.EditorFor(x => x.threshold3, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.threshold3) } })
+
+  </div>
+
+  <!--电压预警阈值-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.threshold4)</label>
+    @Html.EditorFor(x => x.threshold4, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.threshold4) } })
+
+  </div>
+
+  <!--用户编码-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.userCode)</label>
+    @Html.EditorFor(x => x.userCode, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.userCode) } })
+
+  </div>
+
+  <!--用户名-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.userName)</label>
+    @Html.EditorFor(x => x.userName, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.userName) } })
+
+  </div>
+
+  <!--备注-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.Remark)</label>
+    @Html.EditorFor(x => x.Remark, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Remark) } })
+
+  </div>
+
+  <!--单位ID-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label text-danger">@Html.DisplayNameFor(model => model.CustomerId)</label>
+    @Html.EditorFor(x => x.CustomerId, new { htmlAttributes = new { @class = "form-control", @type = "number", placeholder = Html.DisplayNameFor(x => x.CustomerId) } })
+
+  </div>
+
+  <!--单位名称-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.CustomerName)</label>
+    @Html.EditorFor(x => x.CustomerName, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.CustomerName) } })
+
+  </div>
+
+  <!--所属租户-->
+  <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+    <label class="form-label ">@Html.DisplayNameFor(model => model.OrgName)</label>
+    @Html.EditorFor(x => x.OrgName, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.OrgName) } })
+
+  </div>
+
+
+</div>
+

@@ -1,0 +1,682 @@
+﻿@model WebApp.Models.CustomerBill
+@{
+  ViewData["Title"] = "收费台账";
+  ViewData["PageName"] = "CustomerBill";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  收费台账";
+  ViewData["Category1"] = "收费管理";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/font/font-fileuploader.css")" rel="stylesheet" />
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          收费台账
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-faded bg-subtlelight-fade ">
+          <div class="row no-gutters align-items-center">
+            <div class="col">
+              <!-- 开启授权控制请参考 @@if (Html.IsAuthorize("Create") -->
+              <div class="btn-group btn-group-sm">
+                <button onclick="createbills()" class="btn btn-primary"> <span class="fal fa-plus mr-1"></span> 生成水费台账 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="deletebutton" disabled onclick="removeit()" class="btn btn-default"> <span class="fal fa-times mr-1"></span> @Html.L("Delete") </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="reload()" class="btn btn-default"> <span class="fal fa-search mr-1"></span> @Html.L("Refresh") </button>
+              </div>
+              <div class="btn-group btn-group-sm hidden-xs">
+                <button type="button" onclick="importexcel('CustomerBill')" class="btn btn-default"><span class="fal fa-cloud-upload mr-1"></span> @Html.L("Import") </button>
+                <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item js-waves-on" href="javascript:importexcel('CustomerBill')"><span class="fal fa-file-excel"></span>  @Html.L("Upload") </a>
+                  <a class="dropdown-item js-waves-on" href="javascript:downloadtemplate()"><span class="fal fa-download"></span> @Html.L("Download") </a>
+                </div>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button onclick="exportexcel()" class="btn btn-default"> <span class="fal fa-file-excel mr-1"></span>  @Html.L("Export") </button>
+              </div>
+           
+            </div>
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="table-responsive">
+            <table id="customerbills_datagrid">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+ @{ Html.RenderPartial("_ImportWindow",new ViewDataDictionary {{ "EntityName","CustomerBill" }}); }		 
+
+ @{ Html.RenderPartial("_PopupDetailFormView",new WebApp.Models.CustomerBill()); }
+
+            
+
+
+@section ScriptsBlock {
+  <script src="@Fingerprint.Tag("/Scripts/plugin/numeral/numeral.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-ext.js")"></script>
+ <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-reset.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+<script type="text/javascript">
+      //是否强制从后台取值
+      const REQUIRBACKEND = false;
+      //是否开启行内编辑
+      const EDITINLINE = true;
+      var customerbill = {};
+      //生成台账
+  function createbills() {
+     $.messager.progress({ title: '正在生成台账....' });
+    $.post('/CustomerBills/CreateBills')
+      .done(response => {
+         $.messager.progress('close');
+        if (response.success) {
+         
+          toastr.success(`生成成功`);
+          reload();
+        } else {
+          $.messager.alert('错误', response.err, 'error');
+        }
+      })
+      .fail((jqXHR, textStatus, errorThrown) => {
+        $.messager.progress('close');
+        $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+      });
+  }
+      //下载Excel导入模板
+      function downloadtemplate() {
+          //默认模板路径存放位置
+          const url = '/FileUpload/Download?file=/ExcelTemplate/CustomerBill.xlsx';
+          $.fileDownload(url)
+           .done(() => {
+                    //console.log('file download a success!');
+                    toastr.success('模板下载完成!');  
+                })
+           .fail(() => {
+               $.messager.alert('下载模板失败','没有下载到导入模板[CustomerBill.xlsx]文件!','error'); 
+            });           
+       }
+       //打印
+       function print() {
+            $dg.datagrid('print', 'DataGrid');
+       }
+       //执行导出下载Excel
+       function exportexcel() {
+                const filterRules = JSON.stringify($dg.datagrid('options').filterRules);
+                //console.log(filterRules);
+                $.messager.progress({ title: '正在执行导出!' });
+                let formData = new FormData();
+                formData.append('filterRules', filterRules);
+                formData.append('sort', 'Id');
+                formData.append('order', 'asc');
+                $.postDownload('/CustomerBills/ExportExcel', formData).then(res => {
+                    $.messager.progress('close');
+                    toastr.success('导出成功!');
+                }).catch(err => {
+                    //console.log(err);
+                    $.messager.progress('close');
+                    $.messager.alert('导出失败', err.statusText, 'error');
+                });
+
+        }
+        //显示帮助信息
+        function dohelp() {
+            toastr.info('有问题请联系管理员 <br><i class="fa fa-envelope-o" aria-hidden="true"></i> : demo@admin.com','帮助');  
+        }
+       var editIndex = undefined;
+       //重新加载数据
+       function reload() {
+     
+                $dg.datagrid('uncheckAll');
+                $dg.datagrid('reload');
+         
+       }
+      //关闭编辑状态
+      function endEditing() {
+            if (editIndex === undefined) { 
+                return true; 
+            }
+            if ($dg.datagrid('validateRow', editIndex)) {
+                $dg.datagrid('endEdit', editIndex);
+                return true;
+            } else {
+                const invalidinput = $('input.validatebox-invalid',$dg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+                return false;
+            }
+        }
+    //单击列开启编辑功能
+    function onClickCell(index, field) {
+        customerbill = $dg.datagrid('getRows')[index];
+        const _actions = ['action', 'ck'];
+        if (!EDITINLINE || $.inArray(field, _actions) >= 0) {
+                return;
+        }
+        if (editIndex !== index) {
+            if (endEditing()) {
+                $dg.datagrid('selectRow', index)
+                   .datagrid('beginEdit', index);
+                hook = true;
+                editIndex = index;
+                const ed = $dg.datagrid('getEditor', { index: index, field: field });
+                if (ed) {
+                        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+            } else {
+                $dg.datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    //新增记录
+    async function append() {
+       customerbill = { Status: '待确认', 
+ };
+        //需要后台创建对象
+       if (REQUIRBACKEND) {
+         customerbill = await $.get('/CustomerBills/NewItem');
+       }
+        if (!EDITINLINE) {
+           //弹出新增窗口
+           opencustomerbilldetailwindow(customerbill, 'Added');
+        } else {
+            if (endEditing()) {
+                //对必填字段进行默认值初始化
+                $dg.datagrid('insertRow', 
+                              {   
+                                  index: 0,
+                                  row: customerbill
+                               });
+                editIndex = 0;
+                $dg.datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+                hook = true;
+            }
+        }
+    }
+    //删除编辑的行
+    function removeit() {
+        
+          deletechecked();
+      
+    }
+  //删除该行
+  function deleteRow(id) {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        dodeletechecked([id]);
+      }
+     });  
+  }
+    //删除选中的行
+    function deletechecked() {
+        const id = $dg.datagrid('getChecked').filter(item=>item.Status=='待确认').map(item => {
+                   return item.Id;
+                });;
+        if (id.length > 0) {
+           $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length} </span> 行记录?`, result => {
+                if (result) {
+                    dodeletechecked(id);
+                    }
+                });  
+         } else {
+                $.messager.alert('提示', '请先选择【待确认】的记录!','question');
+         }
+     }
+    //执行删除
+    function dodeletechecked(id){
+       $.post('/CustomerBills/DeleteChecked', { id: id })
+                         .done(response => {
+                                if (response.success) {
+                                    toastr.error(`成功删除[${id.length}]行记录`);  
+                                    reload();
+                                } else {
+                                    $.messager.alert('错误', response.err,'error');
+                                }
+                          })
+                          .fail((jqXHR, textStatus, errorThrown) => {
+                             $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                          });
+    }
+    //提交保存后台数据库
+    function accept() {
+      if (endEditing()) {
+        if ($dg.datagrid('getChanges').length > 0) {
+          const inserted = $dg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const updated = $dg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2
+          return item;
+        });
+        const deleted = $dg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+            return !deleted.includes(item);
+          })).concat(deleted);
+        //console.table(changed);
+        $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+        $.post('/CustomerBills/SaveData', {customerbills:changed})
+                     .done(response => {
+                     $.messager.progress('close');
+                           //console.log(response);
+                           if (response.success) {
+                               toastr.success('保存成功');  
+                               $dg.datagrid('acceptChanges');
+                               reload();
+                               hook = false;
+                           } else {
+                               $.messager.alert('错误', response.err ,'error');
+                           }
+                        })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+                        $.messager.progress('close');
+                        $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                      });
+                }
+            }
+    }
+    function reject() {
+        $dg.datagrid('rejectChanges');
+        editIndex = undefined;
+        hook = false;
+    }
+    function getChanges() {
+        const rows = $dg.datagrid('getChanges');
+        //console.log(rows.length + ' rows are changed!');
+    }
+    //弹出明细信息
+    async function showdetailswindow(id,index) {
+        const customerbill = $dg.datagrid('getRows')[index];
+        if (REQUIRBACKEND) {
+           customerbill = await $.get('/CustomerBills/GetItem/' + id);
+        }
+        opencustomerbilldetailwindow(customerbill,'Modified');
+    }
+
+    //初始化定义datagrid
+    var $dg = $('#customerbills_datagrid');
+  $(() => {
+    //定义datagrid结构
+    $dg.datagrid({
+     height:670,
+      pageSize:15,
+      rownumbers: true,
+      checkOnSelect: false,
+      selectOnCheck: false,
+      idField: 'Id',
+      sortName: 'Id',
+      sortOrder: 'desc',
+      remoteFilter: true,
+      singleSelect: false,
+      url: '/CustomerBills/GetData',
+      method: 'get',
+      pagination: true,
+      clientPaging: false,
+      striped: true,
+      pageList: [15, 20, 50, 100, 500],
+      onHeaderContextMenu: function (e, field) {
+        e.preventDefault();
+        $(this).datagrid('columnMenu').menu('show', {
+          left: e.pageX,
+          top: e.pageY
+        });
+      },
+      onBeforeLoad: function () {
+        const that = $(this);
+        document.addEventListener('smartPanel.onFullscreen', () => {
+          setTimeout(() => {
+            that.datagrid('resize');
+          }, 200)
+        })
+      },
+      onLoadSuccess: function (data) {
+        editIndex = undefined;
+        $("button[name*='deletebutton']").prop('disabled', true);
+        $("button[name*='savebutton']").prop('disabled', true);
+        $("button[name*='cancelbutton']").prop('disabled', true);
+      },
+      onCheck: function () {
+        $("button[name*='deletebutton']").prop('disabled', false);
+      },
+      onUncheck: function () {
+        const checked = $(this).datagrid('getChecked').length > 0;
+        $("button[name*='deletebutton']").prop('disabled', !checked);
+      },
+      onSelect: function (index, row) {
+        customerbill = row;
+      },
+      onBeginEdit: function (index, row) {
+        //const editors = $(this).datagrid('getEditors', index);
+        const customerid = $(this).datagrid('getEditor', { index: index, field: 'CustomerId' });
+        $(customerid.target).combobox('options')
+          .onSelect = (item) => {
+            row['CustomerId'] = item.Id;
+            row['CustomerName'] = item.Name;
+          };
+        $(customerid.target).combobox('textbox').bind('keydown', function (e) {
+          if (e.keyCode === 13) {
+            $(e.target).emulateTab();
+          }
+        });
+
+      },
+      onEndEdit: function (index, row) {
+
+      },
+      onBeforeEdit: function (index, row) {
+        editIndex = index;
+        row.editing = true;
+        $("button[name*='deletebutton']").prop('disabled', false);
+        $("button[name*='cancelbutton']").prop('disabled', false);
+        $("button[name*='savebutton']").prop('disabled', false);
+        $(this).datagrid('refreshRow', index);
+      },
+      onAfterEdit: function (index, row) {
+        row.editing = false;
+        editIndex = undefined;
+        $(this).datagrid('refreshRow', index);
+      },
+      onCancelEdit: function (index, row) {
+        row.editing = false;
+        editIndex = undefined;
+        $("button[name*='deletebutton']").prop('disabled', true);
+        $("button[name*='savebutton']").prop('disabled', true);
+        $("button[name*='cancelbutton']").prop('disabled', true);
+        $(this).datagrid('refreshRow', index);
+      },
+      frozenColumns: [[
+        /*开启CheckBox选择功能*/
+        { field: 'ck', checkbox: true },
+        {
+          field: 'action',
+          title: '@Html.L("Command")',
+          width: 55,
+          sortable: false,
+          resizable: true,
+          formatter: function showdetailsformatter(value, row, index) {
+            if (!row.editing) {
+              return `<div class="btn-group">\
+                                                         <button onclick="deleteRow('${row.Id}',${index})" class="btn btn-primary btn-sm btn-icon waves-effect waves-themed" data-toggle="tooltip" data-placement="right" title="@Html.L("Delete")" ><i class="fal fa-times"></i> </button>\
+                                                    </div>`;
+            } else {
+              return `<button class="btn btn-primary btn-sm btn-icon waves-effect waves-themed" disabled title="查看明细"  ><i class="fa fa-edit"></i> </button>`;
+            }
+          }
+        }
+      ]],
+      columns: [[
+        { /*Id*/
+          field: 'Id',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Id)</span>',
+          width: 120,
+          sortable: true,
+          resizable: true,
+          hidden: true
+        },
+        {   /*用水单位*/
+          field: 'CustomerId',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.CustomerId)</span>',
+          width: 160,
+          sortable: true,
+          resizable: true,
+          hidden: false,
+          formatter: (value, row) => {
+            return row.CustomerName;
+          },
+          editor: {
+            type: 'combobox',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.CustomerId)',
+              mode: 'remote',
+              editable: false,
+              valueField: 'Id',
+              textField: 'Name',
+              method: 'get',
+              url: '/CustomerBills/GetCustomers',
+              required: true
+            }
+          }
+        },
+        {     /*年份*/
+          field: 'Year',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Year)</span>',
+          width: 80,
+          align: 'right',
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {     /*月份*/
+          field: 'Month',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Month)</span>',
+          width: 70,
+          align: 'right',
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*状态*/
+          field: 'Status',
+          title: '@Html.DisplayNameFor(model => model.Status)',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            /*需要在键值对中维护status枚举值并生成JavaScript才能使用*/
+            type: 'statuseditor',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.Status)',
+              required: false
+            }
+          },
+          formatter: statusformatter
+        },
+        {    /*本期用水量*/
+          field: 'water',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.water)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.water)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*水价*/
+          field: 'Price',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Price)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.Price)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*折扣*/
+          field: 'Discount',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Discount)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.Discount)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*金额*/
+          field: 'Amount',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Amount)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.Amount)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {   /*账单日期*/
+          field: 'BillDate',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.BillDate)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'datebox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.BillDate)', required: true }
+          },
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*备注*/
+          field: 'Remark',
+          title: '@Html.DisplayNameFor(model => model.Remark)',
+          width: 260,
+          hidden: false,
+          editor: {
+            type: 'textbox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.Remark)', required: false, validType: 'length[0,200]' }
+          },
+          sortable: true,
+          resizable: true
+        },
+        {    /*单位名称*/
+          field: 'CustomerName',
+          title: '@Html.DisplayNameFor(model => model.CustomerName)',
+          width: 200,
+          hidden: true,
+          editor: {
+            type: 'textbox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.CustomerName)', required: false, validType: 'length[0,50]' }
+          },
+          sortable: true,
+          resizable: true
+        },
+      ]]
+    }).datagrid('columnMoving')
+      .datagrid('resetColumns');
+
+    $dg.datagrid('enableFilter', [
+      /*需要在键值队维护好status枚举值*/
+      {  /*状态*/
+        field: 'Status',
+        type: 'billstatusfilter',
+        options: {
+
+        }
+      },
+
+      {     /*账单日期*/
+        field: 'BillDate',
+        type: 'dateRange',
+        options: {
+        }
+      },
+      {   /*用水单位*/
+        field: 'CustomerId',
+        type: 'combobox',
+        options: {
+          valueField: 'Id',
+          textField: 'Name',
+          method: 'get',
+          url: '/CustomerBills/GetCustomers',
+          onChange: value => {
+            if (value === '' || value === null) {
+              $dg.datagrid('removeFilterRule', 'CustomerId');
+            } else {
+              $dg.datagrid('addFilterRule', {
+                field: 'CustomerId',
+                op: 'equal',
+                value: value
+              });
+            }
+            $dg.datagrid('doFilter');
+          }
+        }
+      },
+    ]);
+  });
+ 
+</script>
+
+
+
+}
+
+ 

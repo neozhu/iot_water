@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+// <copyright file="WaterMeterMetadata.cs" company="neozhu/MVC5-Scaffolder">
+// Copyright (c) 2020 All Rights Reserved
+// </copyright>
+// <author>neo.zhu</author>
+// <date>3/25/2020 9:40:59 AM </date>
+// <summary>Class representing a Metadata entity </summary>
+  -->
+<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+   <data name="Id" xml:space="preserve">
+    <value>Id</value>
+   </data> 
+   <data name="meterId" xml:space="preserve">
+    <value>表号</value>
+   </data> 
+   <data name="Status" xml:space="preserve">
+    <value>水表状态</value>
+   </data> 
+   <data name="valveStatus" xml:space="preserve">
+    <value>阀门状态</value>
+   </data> 
+   <data name="address" xml:space="preserve">
+    <value>小区/楼栋/单元/门牌号</value>
+   </data> 
+   <data name="meterSize" xml:space="preserve">
+    <value>口径大小</value>
+   </data> 
+   <data name="meterType" xml:space="preserve">
+    <value>水表类型</value>
+   </data> 
+   <data name="vender" xml:space="preserve">
+    <value>厂家</value>
+   </data> 
+   <data name="repairCycle" xml:space="preserve">
+    <value>检修周期</value>
+   </data> 
+   <data name="precision" xml:space="preserve">
+    <value>水表精度</value>
+   </data> 
+   <data name="produced" xml:space="preserve">
+    <value>生产日期</value>
+   </data> 
+   <data name="period" xml:space="preserve">
+    <value>有效日期</value>
+   </data> 
+   <data name="sealNumber1" xml:space="preserve">
+    <value>鉴定铅封号</value>
+   </data> 
+   <data name="sealNumber2" xml:space="preserve">
+    <value>监管铅封号</value>
+   </data> 
+   <data name="sealNumber3" xml:space="preserve">
+    <value>售水铅封号</value>
+   </data> 
+   <data name="imei" xml:space="preserve">
+    <value>IMEI</value>
+   </data> 
+   <data name="water" xml:space="preserve">
+    <value>水表当前读数(吨)</value>
+   </data> 
+   <data name="reverseWater" xml:space="preserve">
+    <value>累计流量</value>
+   </data> 
+   <data name="temperature" xml:space="preserve">
+    <value>温度</value>
+   </data> 
+   <data name="flowrate" xml:space="preserve">
+    <value>瞬时流量</value>
+   </data> 
+   <data name="pressure" xml:space="preserve">
+    <value>压力 (bar)</value>
+   </data> 
+   <data name="voltage" xml:space="preserve">
+    <value>电压</value>
+   </data> 
+   <data name="threshold1" xml:space="preserve">
+    <value>水压预警阈值</value>
+   </data> 
+   <data name="threshold2" xml:space="preserve">
+    <value>流量预警阈值</value>
+   </data> 
+   <data name="threshold3" xml:space="preserve">
+    <value>温度预警阈值</value>
+   </data> 
+   <data name="threshold4" xml:space="preserve">
+    <value>电压预警阈值</value>
+   </data> 
+   <data name="userCode" xml:space="preserve">
+    <value>用户编码</value>
+   </data> 
+   <data name="userName" xml:space="preserve">
+    <value>用户名</value>
+   </data> 
+   <data name="Remark" xml:space="preserve">
+    <value>备注</value>
+   </data> 
+   <data name="CustomerId" xml:space="preserve">
+    <value>单位ID</value>
+   </data> 
+   <data name="CustomerName" xml:space="preserve">
+    <value>单位名称</value>
+   </data> 
+   <data name="OrgName" xml:space="preserve">
+    <value>所属租户</value>
+   </data> 
+</root>

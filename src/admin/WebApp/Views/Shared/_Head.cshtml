@@ -1,0 +1,29 @@
+﻿<meta charset="utf-8">
+<title>
+  @if (ViewBag.Title != null)
+  {
+    <text>@ViewBag.Title - @ViewBag.Category1 - @ViewBag.App v@(ViewBag.Version)</text>
+  }
+  else
+  {
+    @ViewBag.App
+  }
+</title>
+<meta name="description" content="@ViewBag.Title">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="msapplication-tap-highlight" content="no">
+<link rel="stylesheet" media="screen, print" href="~/Content/css/vendors.bundle.css">
+<link rel="stylesheet" media="screen, print" href="~/Content/css/app.bundle.css">
+<link rel="stylesheet" media="screen, print" href="~/Content/css/site.css">
+@Html.Partial("_Favicon")
+<style>
+  .breadcrumb {
+    display: none;
+  }
+
+  .subheader {
+    display: none;
+  }
+</style>

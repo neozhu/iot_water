@@ -1,0 +1,8 @@
+﻿
+@using WebApp.Models
+@model ApplicationUser
+
+<form action="/management/account/@Model.Id" method="get" class="form-inline" role="form">
+    @Html.AntiForgeryToken()
+  <button type="submit" value="删除" class="btn btn-sm btn-danger">删除</button>
+</form>

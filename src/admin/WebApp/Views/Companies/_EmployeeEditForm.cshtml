@@ -1,0 +1,259 @@
+﻿
+
+@model WebApp.Models.Employee
+<div id="employeedlg" hidden="hidden" class="easyui-dialog"
+     title="Employee" style="padding:15px"
+     data-options="
+                iconCls: 'icon-more',
+                modal:true,
+                closed:true,
+                cache: false,
+                resizable:true,
+                width:760,
+                height:420,
+                /*toolbar: [], 注解*/
+                onOpen:function(){
+                   $('#employee_form').form('disableValidation');
+                },
+                buttons: [{
+                    text:'确认',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        confirm_employeeform();
+                    }
+                },{
+                    text:'取消',
+                    handler:function(){
+                        $('#employeedlg').dialog('close');
+                    }
+                }]
+            ">
+ <div class="widget-body">
+    <form id="employee_form" class="bv-form" novalidate="novalidate">
+        <fieldset>
+          <div class="form-group">
+            <div class="row">
+    <!--Id-->
+	@Html.HiddenFor(model => model.Id)		
+             
+    <!--姓名-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Name)</span></label>
+		<input id="@Html.IdFor(model => model.Name)" 
+							name="@Html.NameFor(model => model.Name)" 
+							value="@Html.ValueFor(model => model.Name)"
+							tabindex="1" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Name)',
+     						 required:true ,validType:'length[0,20]'" />
+    </div>
+             
+    <!--职位-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.Title)</label>
+		<input id="@Html.IdFor(model => model.Title)" 
+							name="@Html.NameFor(model => model.Title)" 
+							value="@Html.ValueFor(model => model.Title)"
+							tabindex="2" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Title)',
+     						 required:false ,validType:'length[0,30]'" />
+    </div>
+             
+    <!--联系电话-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.PhoneNumber)</label>
+		<input id="@Html.IdFor(model => model.PhoneNumber)" 
+							name="@Html.NameFor(model => model.PhoneNumber)" 
+							value="@Html.ValueFor(model => model.PhoneNumber)"
+							tabindex="3" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.PhoneNumber)',
+     						 required:false ,validType:'length[0,30]'" />
+    </div>
+             
+    <!--微信-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.WX)</label>
+		<input id="@Html.IdFor(model => model.WX)" 
+							name="@Html.NameFor(model => model.WX)" 
+							value="@Html.ValueFor(model => model.WX)"
+							tabindex="4" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.WX)',
+     						 required:false ,validType:'length[0,30]'" />
+    </div>
+             
+    <!--性别-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Sex)</span></label>
+		<input id="@Html.IdFor(model => model.Sex)" 
+							name="@Html.NameFor(model => model.Sex)" 
+							value="@Html.ValueFor(model => model.Sex)"
+							tabindex="5" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Sex)',
+     						 required:true ,validType:'length[0,10]'" />
+    </div>
+             
+    <!--年龄-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Age)</span></label>
+		<input id="@Html.IdFor(model => model.Age)"
+							name="@Html.NameFor(model => model.Age)" 
+							value="@Html.ValueFor(model => model.Age)"
+							tabindex="6" 
+							class="easyui-numberbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Age)',
+								 required:true,
+                                 validType:'mone' 
+                                 " />
+    </div>
+             
+     <!--出生日期-->
+     <div class="col-sm-12 col-md-4">
+          <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.Brithday)</span></label>
+		  <input id="@Html.IdFor(model => model.Brithday)" 
+							name="@Html.NameFor(model => model.Brithday)" 
+							tabindex="7" 
+							class="easyui-datebox" 
+                            type="text"
+                            style="width:100%"
+							value="@Html.ValueFor(model => model.Brithday)"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Brithday)',
+								 formatter:dateformatter,
+                                 required:true " />
+     </div>
+             
+     <!--入职日期-->
+     <div class="col-sm-12 col-md-4">
+          <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.EntryDate)</span></label>
+		  <input id="@Html.IdFor(model => model.EntryDate)" 
+							name="@Html.NameFor(model => model.EntryDate)" 
+							tabindex="8" 
+							class="easyui-datebox" 
+                            type="text"
+                            style="width:100%"
+							value="@Html.ValueFor(model => model.EntryDate)"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.EntryDate)',
+								 formatter:dateformatter,
+                                 required:true " />
+     </div>
+             
+         
+        <!--是否已离职-->
+        <div class="col-sm-12 col-md-4">
+           <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.IsDeleted)</span></label>
+           <div class="col-md-12" style="padding-left:0px" >
+                  <label class="checkbox-inline">
+                      <input id="@Html.IdFor(model => model.IsDeleted)"
+                                   name="@Html.NameFor(model => model.IsDeleted)"
+                                   value="true" @(Model.IsDeleted ? "checked=\"checked\"" : "")
+                                   data-unchecked-value="false"
+                                   tabindex="9"
+                                   class="checkbox style-0"
+                                   type="checkbox" />
+                       <span>@Html.DisplayNameFor(model => model.IsDeleted)</span>
+                  </label>
+            </div>
+         </div>
+             
+     <!--离职日期-->
+     <div class="col-sm-12 col-md-4">
+          <label class="control-label">@Html.DisplayNameFor(model => model.LeaveDate)</label>
+		  <input id="@Html.IdFor(model => model.LeaveDate)" 
+							name="@Html.NameFor(model => model.LeaveDate)" 
+							tabindex="10" 
+							class="easyui-datebox" 
+                            type="text"
+                            style="width:100%"
+							value="@Html.ValueFor(model => model.LeaveDate)"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.LeaveDate)',
+								 formatter:dateformatter,
+                                 required:false " />
+     </div>
+             
+      <!--公司-->
+      <input type="hidden" id="CompanyName" name="CompanyName" value="">
+	  <input id="@Html.IdFor(model => model.CompanyId)"
+			       name="@Html.NameFor(model => model.CompanyId)"
+				   value="@Html.ValueFor(model => model.CompanyId)"
+                   type="hidden" />
+             
+       <!--部门-->
+       <div class="col-sm-12 col-md-4">
+            <input type="hidden" id="DepartmentName" name="DepartmentName" value="">
+			<label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.DepartmentId)</span></label>
+            <input id="@Html.IdFor(model => model.DepartmentId)"
+			       name="@Html.NameFor(model => model.DepartmentId)"
+				   value="@Html.ValueFor(model => model.DepartmentId)"
+                   style="width:100%"
+                   tabindex="12"
+				   class="easyui-combobox" 
+                   data-options="
+						prompt:'@Html.DisplayNameFor(model => model.DepartmentId)' ,
+						valueField: 'Id',
+						textField: 'Name' ,
+                        required:true,
+                        validateOnCreate:false,
+                        validateOnBlur:true,
+                        validType:'combocheck[\'#DepartmentId\',\'请选择部门\']',
+						url: '/Companies/GetDepartments' ,
+						onSelect: function(item){
+                            $('#DepartmentName').val(item.Name);
+				        }
+                        ">
+    </div>
+             
+  
+           </div>
+         </div>
+       </fieldset>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+     var form_state = 'Added';
+     var current_index = -1;
+     var employee = {};
+ 
+     function open_employeedlg(index, row, state) {
+         form_state = state;
+         current_index = index;
+         employee = row;
+         $('#employeedlg').dialog('open');
+         if (form_state === 'Added') {
+             $('#employeedlg').dialog('setTitle', '新增明细');
+         } else {
+             $('#employeedlg').dialog('setTitle', '修改明细');
+         }
+         $('#employee_form').form('reset');
+         $('#employee_form').form('load', employee);
+     }
+     function confirm_employeeform() {
+         $employeeform = $('#employee_form');
+         if ($employeeform.form('enableValidation').form('validate')) {
+             employee = $employeeform.serializeJSON();
+             if (form_state === 'Added') {
+                 $(document).trigger('employee_form.add', [current_index, employee])
+             } else {
+                 $(document).trigger('employee_form.edit', [current_index, employee])
+             }
+             $('#employeedlg').dialog('close');
+         }
+     }
+ </script>
+
+ 

@@ -1,0 +1,681 @@
+﻿@model WebApp.Models.CustomerWaterRecord
+@{
+  ViewData["Title"] = "单位抄表记录";
+  ViewData["PageName"] = "CustomerWaterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  单位抄表记录";
+  ViewData["Category1"] = "水务管理中心";
+  ViewData["PageDescription"] = "自动抄表每个月只会产生一条记录，人工抄表只对机械表进行登记";
+}
+@section HeadBlock {
+  @*<link href="~/Scripts/easyui/themes/material/easyui.css" rel="stylesheet" />*@
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/icon.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/font/font-fileuploader.css")" rel="stylesheet" />
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          单位抄表记录
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-faded bg-subtlelight-fade ">
+          <div class="row no-gutters align-items-center">
+            <div class="col">
+              <!-- 开启授权控制请参考 @@if (Html.IsAuthorize("Create") -->
+              <div class="btn-group btn-group-sm">
+                <button onclick="append()" class="btn btn-primary"> <span class="fal fa-file-signature mr-1"></span> 人工抄表登记 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button onclick="autorecordmonth()" class="btn btn-success"> <span class="fal fa-clipboard-list-check mr-1"></span> 自动抄表 </button>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button name="deletebutton" disabled onclick="removeit()" class="btn btn-default"> <span class="fal fa-times mr-1"></span> @Html.L("Delete") </button>
+              </div>
+             
+              <div class="btn-group btn-group-sm">
+                <button onclick="reload()" class="btn btn-default"> <span class="fal fa-search mr-1"></span> @Html.L("Refresh") </button>
+              </div>
+              <div class="btn-group btn-group-sm hidden-xs">
+                <button type="button" onclick="importexcel('CustomerWaterRecord')" class="btn btn-default"><span class="fal fa-cloud-upload mr-1"></span> @Html.L("Import") </button>
+                <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item js-waves-on" href="javascript:downloadtemplate()"><span class="fal fa-download"></span> @Html.L("Download") </a>
+                </div>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button onclick="exportexcel()" class="btn btn-default"> <span class="fal fa-file-excel mr-1"></span>  @Html.L("Export") </button>
+              </div>
+              <div class="btn-group btn-group-sm ">
+                <button onclick="dohelp()" class="btn btn-default"> <span class="fal fa-question-circle mr-1"></span> @Html.L("Help") </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="table-responsive">
+            <table id="customerwaterrecords_datagrid">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@{ Html.RenderPartial("_ImportWindow", new ViewDataDictionary { { "EntityName", "CustomerWaterRecord" } }); }
+
+@{ Html.RenderPartial("_PopupDetailFormView", new WebApp.Models.CustomerWaterRecord()); }
+
+
+
+
+@section ScriptsBlock {
+  <script src="@Fingerprint.Tag("/Scripts/plugin/numeral/numeral.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-ext.js")"></script>
+ <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-reset.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+  <script type="text/javascript">
+      //是否强制从后台取值
+      const REQUIRBACKEND = false;
+      //是否开启行内编辑
+      const EDITINLINE = false;
+      var customerwaterrecord = {};
+    //自动抄表
+    function autorecordmonth() {
+      $.messager.progress({ title: '正在计算....' });
+       $.post('/CustomerWaterRecords/AutoRecordMonth')
+         .done(response => {
+           $.messager.progress('close');
+                                if (response.success) {
+                                    toastr.success(`抄表完成`);
+                                    reload();
+                                } else {
+                                    $.messager.alert('错误', response.err,'error');
+                                }
+                          })
+                          .fail((jqXHR, textStatus, errorThrown) => {
+                             $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                          });
+    }
+      //下载Excel导入模板
+      function downloadtemplate() {
+          //默认模板路径存放位置
+          const url = '/FileUpload/Download?file=/ExcelTemplate/CustomerWaterRecord.xlsx';
+          $.fileDownload(url)
+           .done(() => {
+                    //console.log('file download a success!');
+                    toastr.success('模板下载完成!');
+                })
+           .fail(() => {
+               $.messager.alert('下载模板失败','没有下载到导入模板[CustomerWaterRecord.xlsx]文件!','error');
+            });
+       }
+       //打印
+       function print() {
+            $dg.datagrid('print', 'DataGrid');
+       }
+       //执行导出下载Excel
+       function exportexcel() {
+                const filterRules = JSON.stringify($dg.datagrid('options').filterRules);
+                //console.log(filterRules);
+                $.messager.progress({ title: '正在执行导出!' });
+                let formData = new FormData();
+                formData.append('filterRules', filterRules);
+                formData.append('sort', 'Id');
+                formData.append('order', 'asc');
+                $.postDownload('/CustomerWaterRecords/ExportExcel', formData).then(res => {
+                    $.messager.progress('close');
+                    toastr.success('导出成功!');
+                }).catch(err => {
+                    //console.log(err);
+                    $.messager.progress('close');
+                    $.messager.alert('导出失败', err.statusText, 'error');
+                });
+
+        }
+        //显示帮助信息
+        function dohelp() {
+            toastr.info('有问题请联系管理员 <br><i class="fa fa-envelope-o" aria-hidden="true"></i> : demo@admin.com','帮助');
+        }
+       var editIndex = undefined;
+       //重新加载数据
+       function reload() {
+          
+                $dg.datagrid('uncheckAll');
+                       $dg.datagrid('reload');
+          
+       }
+      //关闭编辑状态
+      function endEditing() {
+            if (editIndex === undefined) {
+                return true;
+            }
+            if ($dg.datagrid('validateRow', editIndex)) {
+                $dg.datagrid('endEdit', editIndex);
+                return true;
+            } else {
+                const invalidinput = $('input.validatebox-invalid',$dg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+                return false;
+            }
+        }
+    //单击列开启编辑功能
+    function onClickCell(index, field) {
+        customerwaterrecord = $dg.datagrid('getRows')[index];
+        const _actions = ['action', 'ck'];
+        if (!EDITINLINE || $.inArray(field, _actions) >= 0) {
+                return;
+        }
+        if (editIndex !== index) {
+            if (endEditing()) {
+                $dg.datagrid('selectRow', index)
+                   .datagrid('beginEdit', index);
+                hook = true;
+                editIndex = index;
+                const ed = $dg.datagrid('getEditor', { index: index, field: field });
+                if (ed) {
+                        ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+            } else {
+                $dg.datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    //新增记录
+    async function append() {
+      customerwaterrecord = {
+        Year: moment().year(),
+        Month: moment().month(),
+        RecordDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        Type: '人工',
+        User:$.getusername()
+ };
+        //需要后台创建对象
+       if (REQUIRBACKEND) {
+         customerwaterrecord = await $.get('/CustomerWaterRecords/NewItem');
+       }
+        if (!EDITINLINE) {
+           //弹出新增窗口
+           opencustomerwaterrecorddetailwindow(customerwaterrecord, 'Added');
+        } else {
+            if (endEditing()) {
+                //对必填字段进行默认值初始化
+                $dg.datagrid('insertRow',
+                              {
+                                  index: 0,
+                                  row: customerwaterrecord
+                               });
+                editIndex = 0;
+                $dg.datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+                hook = true;
+            }
+        }
+    }
+    //删除编辑的行
+    function removeit() {
+       
+          deletechecked();
+       
+    }
+  //删除该行
+  function deleteRow(id) {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        dodeletechecked([id]);
+      }
+     });
+  }
+    //删除选中的行
+    function deletechecked() {
+        const id = $dg.datagrid('getChecked').filter(item=>item.Type=='人工').map(item => {
+                   return item.Id;
+                });;
+        if (id.length > 0) {
+           $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length} </span> 行记录?`, result => {
+                if (result) {
+                    dodeletechecked(id);
+                    }
+                });
+         } else {
+                $.messager.alert('提示', '请先选择【人工】抄表记录!','question');
+         }
+     }
+    //执行删除
+    function dodeletechecked(id){
+       $.post('/CustomerWaterRecords/DeleteChecked', { id: id })
+                         .done(response => {
+                                if (response.success) {
+                                    toastr.error(`成功删除[${id.length}]行记录`);
+                                    reload();
+                                } else {
+                                    $.messager.alert('错误', response.err,'error');
+                                }
+                          })
+                          .fail((jqXHR, textStatus, errorThrown) => {
+                             $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                          });
+    }
+    //提交保存后台数据库
+    function accept() {
+      if (endEditing()) {
+        if ($dg.datagrid('getChanges').length > 0) {
+          const inserted = $dg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const updated = $dg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2
+          return item;
+        });
+        const deleted = $dg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+            return !deleted.includes(item);
+          })).concat(deleted);
+        //console.table(changed);
+        $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+        $.post('/CustomerWaterRecords/SaveData', {customerwaterrecords:changed})
+                     .done(response => {
+                     $.messager.progress('close');
+                           //console.log(response);
+                           if (response.success) {
+                               toastr.success('保存成功');
+                               $dg.datagrid('acceptChanges');
+                               reload();
+                               hook = false;
+                           } else {
+                               $.messager.alert('错误', response.err ,'error');
+                           }
+                        })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+                        $.messager.progress('close');
+                        $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                      });
+                }
+            }
+    }
+    function reject() {
+        $dg.datagrid('rejectChanges');
+        editIndex = undefined;
+        hook = false;
+    }
+    function getChanges() {
+        const rows = $dg.datagrid('getChanges');
+        //console.log(rows.length + ' rows are changed!');
+    }
+    //弹出明细信息
+    async function showdetailswindow(id,index) {
+        const customerwaterrecord = $dg.datagrid('getRows')[index];
+        if (REQUIRBACKEND) {
+           customerwaterrecord = await $.get('/CustomerWaterRecords/GetItem/' + id);
+        }
+        opencustomerwaterrecorddetailwindow(customerwaterrecord,'Modified');
+    }
+
+    //初始化定义datagrid
+    var $dg = $('#customerwaterrecords_datagrid');
+  $(() => {
+    //定义datagrid结构
+    $dg.datagrid({
+     height:670,
+      pageSize:15,
+      rownumbers: true,
+      checkOnSelect: false,
+      selectOnCheck: false,
+      idField: 'Id',
+      sortName: 'Id',
+      sortOrder: 'desc',
+      remoteFilter: true,
+      singleSelect: false,
+      url: '/CustomerWaterRecords/GetData',
+      method: 'get',
+      onClickCell: onClickCell,
+      pagination: true,
+      clientPaging: false,
+      striped: true,
+      pageList: [15, 20, 50, 100, 500, 2000],
+      onHeaderContextMenu: function (e, field) {
+        e.preventDefault();
+        $(this).datagrid('columnMenu').menu('show', {
+          left: e.pageX,
+          top: e.pageY
+        });
+      },
+      onBeforeLoad: function () {
+        const that = $(this);
+        document.addEventListener('smartPanel.onFullscreen', () => {
+          setTimeout(() => {
+            that.datagrid('resize');
+          }, 200)
+        })
+      },
+      onLoadSuccess: function (data) {
+        editIndex = undefined;
+        $("button[name*='deletebutton']").prop('disabled', true);
+        $("button[name*='savebutton']").prop('disabled', true);
+        $("button[name*='cancelbutton']").prop('disabled', true);
+      },
+      onCheck: function () {
+        $("button[name*='deletebutton']").prop('disabled', false);
+      },
+      onUncheck: function () {
+        const checked = $(this).datagrid('getChecked').length > 0;
+        $("button[name*='deletebutton']").prop('disabled', !checked);
+      },
+      onSelect: function (index, row) {
+        customerwaterrecord = row;
+      },
+      onBeginEdit: function (index, row) {
+        //const editors = $(this).datagrid('getEditors', index);
+        const customerid = $(this).datagrid('getEditor', { index: index, field: 'CustomerId' });
+        $(customerid.target).combobox('options')
+          .onSelect = (item) => {
+            row['CustomerId'] = item.Id;
+            row['CustomerName'] = item.Name;
+          };
+        $(customerid.target).combobox('textbox').bind('keydown', function (e) {
+          if (e.keyCode === 13) {
+            $(e.target).emulateTab();
+          }
+        });
+
+      },
+      onEndEdit: function (index, row) {
+
+      },
+      onBeforeEdit: function (index, row) {
+        editIndex = index;
+        row.editing = true;
+        $("button[name*='deletebutton']").prop('disabled', false);
+        $("button[name*='cancelbutton']").prop('disabled', false);
+        $("button[name*='savebutton']").prop('disabled', false);
+        $(this).datagrid('refreshRow', index);
+      },
+      onAfterEdit: function (index, row) {
+        row.editing = false;
+        editIndex = undefined;
+        $(this).datagrid('refreshRow', index);
+      },
+      onCancelEdit: function (index, row) {
+        row.editing = false;
+        editIndex = undefined;
+        $("button[name*='deletebutton']").prop('disabled', true);
+        $("button[name*='savebutton']").prop('disabled', true);
+        $("button[name*='cancelbutton']").prop('disabled', true);
+        $(this).datagrid('refreshRow', index);
+      },
+      frozenColumns: [[
+        /*开启CheckBox选择功能*/
+        { field: 'ck', checkbox: true },
+
+      ]],
+      columns: [[
+        { /*Id*/
+          field: 'Id',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Id)</span>',
+          width: 120,
+          sortable: true,
+          resizable: true,
+          hidden: true
+        },
+        {   /*用水单位*/
+          field: 'CustomerId',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.CustomerId)</span>',
+          width: 160,
+          sortable: true,
+          resizable: true,
+          hidden: false,
+          formatter: (value, row) => {
+            return row.CustomerName;
+          },
+          editor: {
+            type: 'combobox',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.CustomerId)',
+              mode: 'remote',
+              editable: false,
+              valueField: 'Id',
+              textField: 'Name',
+              method: 'get',
+              url: '/CustomerWaterRecords/GetCustomers',
+              required: true
+            }
+          }
+        },
+        {     /*年份*/
+          field: 'Year',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Year)</span>',
+          width: 80,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.Year)',
+              required: true,
+
+            }
+          },
+          sortable: true,
+          resizable: true
+        },
+        {     /*月份*/
+          field: 'Month',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.Month)</span>',
+          width: 60,
+          align: 'right',
+          hidden: false,
+          sortable: true,
+          resizable: true
+        },
+        {    /*表号*/
+          field: 'meterId',
+          title: '@Html.DisplayNameFor(model => model.meterId)',
+          width: 120,
+          hidden: false,
+          editor: {
+            type: 'textbox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.meterId)', required: false, validType: 'length[0,20]' }
+          },
+          sortable: true,
+          resizable: true
+        },
+        {    /*上期抄表日期*/
+          field: 'previousDate',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.previousDate)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*上期表见*/
+          field: 'previousWater',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.previousWater)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.previousWater)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*本期表见*/
+          field: 'lastWater',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.lastWater)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.lastWater)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*本期用水量*/
+          field: 'water',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.water)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'numberspinner',
+            options: {
+              prompt: '@Html.DisplayNameFor(model => model.water)',
+              required: true,
+              precision: 2,
+
+            }
+          },
+          formatter: numberformatter,
+          sortable: true,
+          resizable: true
+        },
+        {   /*抄表日期*/
+          field: 'RecordDate',
+          title: '<span class="required">@Html.DisplayNameFor(model => model.RecordDate)</span>',
+          width: 100,
+          align: 'right',
+          hidden: false,
+          editor: {
+            type: 'datebox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.RecordDate)', required: true }
+          },
+          formatter: dateformatter,
+          sortable: true,
+          resizable: true
+        },
+        {    /*抄表人*/
+          field: 'User',
+          title: '@Html.DisplayNameFor(model => model.User)',
+          width: 120,
+          hidden: false,
+          editor: {
+            type: 'textbox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.User)', required: false, validType: 'length[0,20]' }
+          },
+          sortable: true,
+          resizable: true
+        },
+        {    /*抄表方式*/
+          field: 'Type',
+          title: '@Html.DisplayNameFor(model => model.Type)',
+          width: 120,
+          hidden: false,
+          editor: {
+            type: 'textbox',
+            options: { prompt: '@Html.DisplayNameFor(model => model.Type)', required: false, validType: 'length[0,10]' }
+          },
+          sortable: true,
+          resizable: true
+        },
+      ]]
+    }).datagrid('columnMoving')
+      .datagrid('resetColumns');
+
+    $dg.datagrid('enableFilter', [
+      {   /*Id*/
+        field: 'Id',
+        type: 'numberbox',
+        op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+      },
+      
+      {   /*上期抄表日期*/
+        field: 'previousDate',
+        type: 'dateRange',
+       
+      },
+    
+       
+      {     /*抄表日期*/
+        field: 'RecordDate',
+        type: 'dateRange',
+        options: {
+        }
+      },
+      {   /*是否删除*/
+        field: 'IsDelete',
+        type: 'booleanfilter'
+      },
+      {   /*用水单位*/
+        field: 'CustomerId',
+        type: 'combobox',
+        options: {
+          valueField: 'Id',
+          textField: 'Name',
+          method: 'get',
+          url: '/CustomerWaterRecords/GetCustomers',
+          onChange: value => {
+            if (value === '' || value === null) {
+              $dg.datagrid('removeFilterRule', 'CustomerId');
+            } else {
+              $dg.datagrid('addFilterRule', {
+                field: 'CustomerId',
+                op: 'equal',
+                value: value
+              });
+            }
+            $dg.datagrid('doFilter');
+          }
+        }
+      },
+    ]);
+  });
+
+  </script>
+
+
+
+}
+
+

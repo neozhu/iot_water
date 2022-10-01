@@ -1,0 +1,102 @@
+﻿﻿@model WebApp.Models.CustomerWaterRecord
+  <div class="form-row">
+   @Html.HiddenFor(x=>x.Id)
+      
+       <!--用水单位-->
+       <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.CustomerId)</label>
+   	        @Html.DropDownListFor(model => model.CustomerId, ViewBag.CustomerId as List<SelectListItem>, htmlAttributes: new { @class = "form-control" }) 
+       </div>
+
+		<!--年份-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.Year)</label>
+            @Html.EditorFor(x => x.Year, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.Year) } })
+
+        </div>
+
+		<!--月份-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.Month)</label>
+            @Html.EditorFor(x => x.Month, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.Month) } })
+
+        </div>
+
+        <!--表号-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.meterId)</label>
+			@Html.EditorFor(x => x.meterId, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterId) } })
+      
+         </div>
+
+		<!--上期抄表日期-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.previousDate)</label>
+            @Html.EditorFor(x => x.previousDate, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.previousDate) } })
+
+        </div>
+
+		<!--上期表见-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.previousWater)</label>
+            @Html.EditorFor(x => x.previousWater, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.previousWater) } })
+
+        </div>
+
+		<!--本期表见-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.lastWater)</label>
+            @Html.EditorFor(x => x.lastWater, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.lastWater) } })
+
+        </div>
+
+		<!--本期用水量-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.water)</label>
+            @Html.EditorFor(x => x.water, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.water) } })
+
+        </div>
+
+       <!--抄表日期-->
+       <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.RecordDate)</label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.RecordDate, 
+                         new { htmlAttributes = new { @class = "form-control datepicker hasDatepicker",
+                               placeholder = Html.DisplayNameFor(x => x.RecordDate ) } })
+               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			 </div>
+         </div>
+
+        <!--抄表人-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.User)</label>
+			@Html.EditorFor(x => x.User, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.User) } })
+      
+         </div>
+
+        <!--抄表方式-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.Type)</label>
+			@Html.EditorFor(x => x.Type, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Type) } })
+      
+         </div>
+
+		
+      <!--是否删除-->
+      <div class="col-xs-12 col-md-6">
+              <label class="form-label text-danger">@Html.DisplayNameFor(model => model.IsDelete)</label>
+              <div class="custom-control custom-checkbox">
+                 <input id="@Html.IdFor(model => model.IsDelete)"
+                       name="@Html.NameFor(model => model.IsDelete)"
+                       value="true" @(Model.IsDelete ? "checked=\"checked\"" : "")
+                       class="custom-control-input"
+                       tabindex="6"
+                       type="checkbox" />
+                <label class="custom-control-label" for="@Html.IdFor(model => model.IsDelete)">@Html.DisplayNameFor(model => model.IsDelete)</label>
+            </div>
+      </div>
+
+	    
+</div>
+

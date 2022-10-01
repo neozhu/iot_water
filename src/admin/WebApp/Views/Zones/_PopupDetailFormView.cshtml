@@ -1,0 +1,238 @@
+﻿﻿@model WebApp.Models.Zone
+<!-- 弹出编辑窗体表单 -->
+ <div id="zonedetailwindow" class="easyui-window" 
+      title="明细数据" 
+      data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'icon-more',
+                    footer:'#windowfooter',
+                    closeDuration:200,
+                    closeAnimation:'slide',
+                    openDuration:300,
+                    openAnimation:'slide',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(zonehasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="row align-items-center m-0">
+      <div class="col">
+        <div class="btn-group btn-group-sm">
+          <button name="saveitembutton" onclick="savezoneitem()" class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm" id="deleteitem-btn-group">
+          <button onclick="deletezoneitem()" class="btn btn-danger">
+            <i class="fal fa-times"></i> @Html.L("Delete")
+          </button>
+        </div>
+      
+      </div>
+      <div class="col d-flex">
+
+      </div>
+    </div>
+  </div>
+ <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="panel-content">
+           <form id="zone_form" 
+              class="easyui-form form-horizontal padding-10" 
+              method="post" 
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+  @Html.AntiForgeryToken()
+   <!--Primary Key-->
+  @Html.HiddenFor(model=>model.Id)
+   <fieldset class="form-group">
+   <div class="row m-1">
+
+   <!--区域名称-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Name)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Name)" 
+				   name="@Html.NameFor(model => model.Name)" 
+				   value="@Html.ValueFor(model => model.Name)"
+				   tabindex="0" required
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Name)',
+								 required:true, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+   <!--描述-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Description)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Description)" 
+				   name="@Html.NameFor(model => model.Description)" 
+				   value="@Html.ValueFor(model => model.Description)"
+				   tabindex="1" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Description)',
+								 required:false, 
+                                 validType: 'length[0,150]'
+                                 " />
+       </div>
+				   
+
+   <!--geo数据-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.GeoJSON)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.GeoJSON)" 
+				   name="@Html.NameFor(model => model.GeoJSON)" 
+				   value="@Html.ValueFor(model => model.GeoJSON)"
+				   tabindex="2" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.GeoJSON)',
+								 required:false, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+	    </div> 
+      </fieldset>
+   </form>
+    </div>
+    </div>
+</div>
+<div id="windowfooter" style="padding:5px;">&nbsp;</div>
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+    //判断新增编辑状态
+    var MODELSTATE = 'Added';
+    var zoneid = null;
+    function openzonedetailwindow(data,state) {
+         MODELSTATE = state;
+         initzonedetailview();
+         zoneid = (data.Id || 0);
+         $('#zonedetailwindow').window('open');
+         $('#zone_form').form('reset');
+         $('#zone_form').form('load', data);
+             }
+  //删除当前记录
+  function deletezoneitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/Zones/Delete/${zoneid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $dg.datagrid('reload');
+            $('#zonedetailwindow').window('close');
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+    //async 保存数据
+    async function savezoneitem() { 
+      const $zoneform = $('#zone_form');
+      if ($zoneform.form('enableValidation').form('validate')) {
+            let zone = $zoneform.serializeJSON();
+            let url = '/Zones/Edit';
+            //判断是新增或是修改方法
+            if (MODELSTATE === 'Added') {
+                url = '/Zones/Create';
+            }
+            var token = $('input[name="__RequestVerificationToken"]', $zoneform).val();
+            $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        __RequestVerificationToken: token,
+                        zone:zone
+                    },
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+                })
+                .done(response => {
+                    $.messager.progress('close');
+                    if (response.success) {
+                        hook = false;
+                        $zoneform.form('disableValidation');
+                        $dg.datagrid('reload');
+                        $('#zonedetailwindow').window("close");
+                        toastr.success("保存成功");  
+                    } else {
+                        $.messager.alert("错误",   response.err, "error");
+                    }
+                    })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                       $.messager.progress('close');
+                       $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                    });
+        }
+    }
+    //关闭窗口
+    function closezonedetailwindow() {
+        $('#zonedetailwindow').window('close');
+    }
+    //todo
+    function todo() {
+         console.log('todo.....');
+    }
+     //判断是否有没有保存的记录
+     function zonehasmodified() {
+            return hook;
+
+     }
+
+
+function initzonedetailview() {
+  //判断是否显示功能按钮
+  if (MODELSTATE === 'Added') {
+    $('#deleteitem-btn-group').hide();
+  } else {
+    $('#deleteitem-btn-group').show();
+  }
+
+//回车光标移动到下个输入控件
+}
+</script>
+

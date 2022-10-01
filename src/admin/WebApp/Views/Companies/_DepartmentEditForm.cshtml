@@ -1,0 +1,113 @@
+﻿
+
+@model WebApp.Models.Department
+<div id="departmentdlg" hidden="hidden" class="easyui-dialog"
+     title="Department" style="padding:15px"
+     data-options="
+                iconCls: 'icon-more',
+                modal:true,
+                closed:true,
+                cache: false,
+                resizable:true,
+                width:760,
+                height:420,
+                /*toolbar: [], 注解*/
+                onOpen:function(){
+                   $('#department_form').form('disableValidation');
+                },
+                buttons: [{
+                    text:'确认',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        confirm_departmentform();
+                    }
+                },{
+                    text:'取消',
+                    handler:function(){
+                        $('#departmentdlg').dialog('close');
+                    }
+                }]
+            ">
+ <div class="widget-body">
+    <form id="department_form" class="bv-form" novalidate="novalidate">
+        <fieldset>
+          <div class="form-group">
+            <div class="row">
+    <!--Id-->
+	@Html.HiddenFor(model => model.Id)		
+             
+    <!--部门名称-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.Name)</label>
+		<input id="@Html.IdFor(model => model.Name)" 
+							name="@Html.NameFor(model => model.Name)" 
+							value="@Html.ValueFor(model => model.Name)"
+							tabindex="1" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Name)',
+     						 required:false ,validType:'length[1,10]'" />
+    </div>
+             
+    <!--部门主管-->
+    <div class="col-sm-12 col-md-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.Manager)</label>
+		<input id="@Html.IdFor(model => model.Manager)" 
+							name="@Html.NameFor(model => model.Manager)" 
+							value="@Html.ValueFor(model => model.Manager)"
+							tabindex="2" 
+			     			class="easyui-textbox" 
+							type="text" 
+                            style="width:100%"
+							data-options="prompt:'@Html.DisplayNameFor(model => model.Manager)',
+     						 required:false ,validType:'length[0,10]'" />
+    </div>
+             
+      <!--所在公司-->
+      <input type="hidden" id="CompanyName" name="CompanyName" value="">
+	  <input id="@Html.IdFor(model => model.CompanyId)"
+			       name="@Html.NameFor(model => model.CompanyId)"
+				   value="@Html.ValueFor(model => model.CompanyId)"
+                   type="hidden" />
+             
+  
+           </div>
+         </div>
+       </fieldset>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+     var form_state = 'Added';
+     var current_index = -1;
+     var department = {};
+ 
+     function open_departmentdlg(index, row, state) {
+         form_state = state;
+         current_index = index;
+         department = row;
+         $('#departmentdlg').dialog('open');
+         if (form_state === 'Added') {
+             $('#departmentdlg').dialog('setTitle', '新增明细');
+         } else {
+             $('#departmentdlg').dialog('setTitle', '修改明细');
+         }
+         $('#department_form').form('reset');
+         $('#department_form').form('load', department);
+     }
+     function confirm_departmentform() {
+         $departmentform = $('#department_form');
+         if ($departmentform.form('enableValidation').form('validate')) {
+             department = $departmentform.serializeJSON();
+             if (form_state === 'Added') {
+                 $(document).trigger('department_form.add', [current_index, department])
+             } else {
+                 $(document).trigger('department_form.edit', [current_index, department])
+             }
+             $('#departmentdlg').dialog('close');
+         }
+     }
+ </script>
+
+ 

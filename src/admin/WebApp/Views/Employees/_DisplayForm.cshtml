@@ -1,0 +1,144 @@
+﻿﻿@model WebApp.Models.Employee
+<!-- begin master section -->
+<div class="row">
+    <div class="col col-lg-12 col-md-12">
+<!--begin employee form  -->
+<form id="employee_form" class="smart-form" method="post" novalidate >
+@Html.AntiForgeryToken()
+  <input type="hidden" id="@Html.IdFor(model => model.Id)" 
+                       name="@Html.NameFor(model => model.Id)" 
+                       value="@Html.ValueFor(model => model.Id)" />
+ <fieldset>
+     <div class="row">
+			              <!--姓名-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Name)</span> </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Name)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--职位-->
+            <section class="col col-6">
+            <label class="label">@Html.DisplayNameFor(model => model.Title) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Title)
+            </label>
+            </section>
+ 		 
+	   </div>
+	    
+     <div class="row">
+			              <!--联系电话-->
+            <section class="col col-6">
+            <label class="label">@Html.DisplayNameFor(model => model.PhoneNumber) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.PhoneNumber)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--微信-->
+            <section class="col col-6">
+            <label class="label">@Html.DisplayNameFor(model => model.WX) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.WX)
+            </label>
+            </section>
+ 		 
+	   </div>
+	    
+     <div class="row">
+			              <!--性别-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Sex)</span> </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Sex)
+            </label>
+            </section>
+ 		 
+	    
+			  			<!--年龄-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Age)</span> </label>
+            <label class="label">
+            @Html.DisplayFor(model => model.Age)
+			    </label>
+            </section>
+		 
+	   </div>
+	    
+     <div class="row">
+			              <!--出生日期-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Brithday)</span> </label>
+            <label class="label">
+            
+			@Html.DisplayFor(model => model.Brithday)
+			    </label>
+            </section>
+			  		 
+	    
+			              <!--入职日期-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.EntryDate)</span> </label>
+            <label class="label">
+            
+			@Html.DisplayFor(model => model.EntryDate)
+			    </label>
+            </section>
+			  		 
+	   </div>
+	    
+     <div class="row">
+			  			  <!--是否已离职-->
+              <section class="col col-6">
+              <label class="label"><span class="required">@Html.DisplayNameFor(model => model.IsDeleted)</span> </label>
+              <label class="label">
+                @Html.DisplayFor(model => model.IsDeleted)
+            </label>
+            </section>
+		 
+	    
+			              <!--离职日期-->
+            <section class="col col-6">
+            <label class="label">@Html.DisplayNameFor(model => model.LeaveDate) </label>
+            <label class="label">
+            
+			@Html.DisplayFor(model => model.LeaveDate)
+			    </label>
+            </section>
+			  		 
+	   </div>
+	    
+     <div class="row">
+            <!--公司-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.CompanyId)</span> </label>
+            <label class="label">
+			      @Html.DisplayFor(model => model.CompanyId)
+			</label>
+            </section>
+			 
+	    
+            <!--部门-->
+            <section class="col col-6">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.DepartmentId)</span> </label>
+            <label class="label">
+			      @Html.DisplayFor(model => model.DepartmentId)
+			</label>
+            </section>
+			 
+	   </div>
+	    
+	    
+</fieldset>
+</form>
+<!-- end employee form  -->
+</div>
+</div>
+<!-- end master section -->
+<!--========================================================================================-->
+
+

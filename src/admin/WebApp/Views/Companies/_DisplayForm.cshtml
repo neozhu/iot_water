@@ -1,0 +1,80 @@
+﻿﻿@model WebApp.Models.Company
+<!-- begin master section -->
+<div class="row">
+    <div class="col col-lg-12 col-md-12">
+<!--begin company form  -->
+<form id="company_form" class="smart-form" method="post" novalidate >
+@Html.AntiForgeryToken()
+  <input type="hidden" id="@Html.IdFor(model => model.Id)" 
+                       name="@Html.NameFor(model => model.Id)" 
+                       value="@Html.ValueFor(model => model.Id)" />
+ <fieldset>
+     <div class="row">
+			              <!--名称-->
+            <section class="col col-3">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Name)</span> </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Name)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--组织代码-->
+            <section class="col col-3">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Code)</span> </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Code)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--地址-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.Address) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Address)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--联系人-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.Contect) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Contect)
+            </label>
+            </section>
+ 		 
+	   </div>
+	    
+     <div class="row">
+			              <!--联系电话-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.PhoneNumber) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.PhoneNumber)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--注册日期-->
+            <section class="col col-3">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.RegisterDate)</span> </label>
+            <label class="label">
+            
+			@Html.DisplayFor(model => model.RegisterDate)
+			    </label>
+            </section>
+			  		 
+	    
+   </div>
+	    
+</fieldset>
+</form>
+<!-- end company form  -->
+</div>
+</div>
+<!-- end master section -->
+<!--========================================================================================-->
+
+

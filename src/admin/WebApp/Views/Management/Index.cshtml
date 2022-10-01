@@ -1,0 +1,120 @@
+﻿
+@using WebApp.Models
+@model ManagementViewModel
+
+@{
+  ViewData["Title"] = "角色分配";
+  ViewData["PageName"] = "management";
+  ViewData["Heading"] = "<i class='fal fa-users text-primary'></i>  角色分配";
+  ViewData["Category1"] = "系统管理";
+  ViewData["PageDescription"] = "";
+}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card border  m-auto m-lg-0">
+      @Html.Partial("_AddRolePartial", new RoleViewModel())
+      <ul class="list-group list-group-flush">
+        @foreach (var role in Model.Roles)
+        {
+          <li class="list-group-item d-flex">
+            <div class="flex-grow-1 align-self-center"> @role.Name </div>
+            <form action="/management/roles/@role.Id" method="get" class="flex-shrink-1 text-right" role="form">
+              @Html.AntiForgeryToken()
+              <button type="submit" value="删除" class="btn btn-sm btn-danger">删除</button>
+            </form>
+          </li>
+        }
+      </ul>
+    </div>
+
+  </div>
+  <div class="col-md-9">
+    <div class="card border  m-auto m-lg-0">
+      <div class="card-header bg-trans-gradient py-2 pr-2 d-flex align-items-center flex-wrap">
+        <!-- we wrap header title inside a span tag with utility padding -->
+        <div class="card-title text-white">分配角色</div>
+
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="account-table" class="table table-bordered">
+            <thead>
+              <tr>
+                <th>账号</th>
+                <th>所属角色</th>
+                <th>追加角色</th>
+                <th>删除角色</th>
+              </tr>
+            </thead>
+            @foreach (var user in Model.Users)
+            {
+              @Html.Partial("_AccountRecordPartial", new AccountRecordViewModel { User = user, Roles = Model.Roles })
+            }
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+@section ScriptsBlock {
+  <script src="/Scripts/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+  <script type="text/javascript">
+    //上传导入参数设定
+    const entityname = "management";
+    $(document).ready(function () {
+      $('#addrolesform').bootstrapValidator({
+        feedbackIcons: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+          Name: {
+            validators: {
+              notEmpty: {
+                message: '请输入新的角色'
+              }
+            }
+          }
+        }
+      });
+      $('#adduserform').bootstrapValidator({
+        feedbackIcons: {
+          valid: 'glyphicon glyphicon-ok',
+          invalid: 'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+          Name: {
+            validators: {
+              notEmpty: {
+                message: '请输入新的账号'
+              }
+            }
+          },
+          Email: {
+            validators: {
+              notEmpty: {
+                message: '请输入邮件地址'
+              },
+              emailAddress: {
+                message: '请输入有效的邮件地址'
+              }
+            }
+          },
+          Password: {
+            validators: {
+              notEmpty: {
+                message: '请输入密码'
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+
+}

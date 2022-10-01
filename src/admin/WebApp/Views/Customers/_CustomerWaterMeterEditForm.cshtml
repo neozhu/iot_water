@@ -1,0 +1,270 @@
+﻿@model WebApp.Models.CustomerWaterMeter
+  <div id="customerwatermeterdlg" class="easyui-dialog"
+       title="CustomerWaterMeter" style="width:660px;height:280px; display:none"
+       data-options="
+                iconCls: 'icon-more',
+                title:'分配水表',
+                modal:true,
+                closed:true,
+                cache: false,
+                resizable:true,
+                width:660,
+                height:280,
+
+            ">
+    <!-- toolbar -->
+    <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+      <div class="row align-items-center m-0">
+        <div class="col">
+          <div class="btn-group btn-group-sm">
+            <button name="savewateritembutton" onclick="confirm_customerwatermeterform()" class="btn btn-default">
+              <i class="fal fa-save"></i> @Html.L("Save")
+            </button>
+          </div>
+
+
+        </div>
+        <div class="col d-flex">
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-container show">
+      <div class="panel-content p-0">
+        <form id="customerwatermeter_form" class="easyui-form form-horizontal" novalidate="novalidate"
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              $('button[name*=\'savewateritembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               $('button[name*=\'savewateritembutton\']').prop('disabled', true);
+                             }">
+          @Html.HiddenFor(model => model.Id)
+          @Html.HiddenFor(model => model.CustomerId)
+          @Html.HiddenFor(model => model.CustomerName)
+          @Html.HiddenFor(model => model.CustomerCode)
+          <fieldset class="form-group">
+            <div class="row m-1">
+              <!--部门-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Dept)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.Dept)"
+                       name="@Html.NameFor(model => model.Dept)"
+                       value="@Html.ValueFor(model => model.Dept)"
+                       tabindex="1"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Dept)',
+								 required:false,
+                                 validType: 'length[0,20]'
+                                 " />
+              </div>
+
+              <!--表号-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.meterId)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.meterId)"
+                       name="@Html.NameFor(model => model.meterId)"
+                       value="@Html.ValueFor(model => model.meterId)"
+                       tabindex="1"
+                       class="easyui-combogrid"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.meterId)',
+								                 required:false,
+                                 textField:'meterId',
+                                 idField:'meterId',
+                                 panelWidth: 500,
+                                 method: 'get',
+                                 pagination:true,
+                                 mode: 'remote',
+                                 remoteFilter: true,
+                                 clientPaging: false,
+                                 columns: [[
+                                    {field:'meterId',title:'表号',width:100},
+                                    {field:'Name',title:'表名',width:120},
+                                    {field:'LineNo',title:'表序号',width:80},
+                                    {field:'Name1',title:'出线名称',width:160},
+                                    {field:'CustomerName',title:'使用单位',width:160},
+                                 ]],
+                                 fitColumns: true,
+                                 validType: 'length[0,20]',
+                                 onSelect:function(index,row){
+                                   $('#customerwatermeter_form #meterName').textbox('setValue',row.Name);
+                                   $('#customerwatermeter_form #Points').textbox('setValue',row.Name1);
+                                   $('#customerwatermeter_form #Level').textbox('setValue',row.Level);
+                                   $('#customerwatermeter_form #ZoneName').textbox('setValue',row.ZoneName);
+                                   $('#customerwatermeter_form #Remark').textbox('setValue',row.address);
+                                 }
+                                 " />
+              </div>
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.meterName)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.meterName)"
+                       name="@Html.NameFor(model => model.meterName)"
+                       value="@Html.ValueFor(model => model.meterName)"
+                       tabindex="1"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.meterName)',
+								 required:false,readonly:true,
+                                 validType: 'length[0,128]'
+                                 " />
+              </div>
+              <!--增减项-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Negitive)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.Negitive)"
+                       name="@Html.NameFor(model => model.Negitive)"
+                       value="@Html.ValueFor(model => model.Negitive)"
+                       tabindex="1"
+                       class="easyui-combobox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Negitive)',
+								 required:false,validType: 'length[0,20]',data:negitivedatasource,panelHeight:'auto'
+                                 " />
+              </div>
+              <!--占比-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Ratio)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.Ratio)"
+                       name="@Html.NameFor(model => model.Ratio)"
+                       value="@Html.ValueFor(model => model.Ratio)"
+                       tabindex="1"
+                       class="easyui-numberbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Ratio)',
+								 required:false,min:0,max:1,precision:1
+                                 " />
+              </div>
+
+              <!--出线名称-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Points)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.Points)"
+                       name="@Html.NameFor(model => model.Points)"
+                       value="@Html.ValueFor(model => model.Points)"
+                       tabindex="1"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Points)',
+								 required:false,   validType: 'length[0,20]'
+                                 " />
+              </div>
+              <!--备注-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Remark)</label>
+              <div class="col-md-10 mb-1">
+                <input id="@Html.IdFor(model => model.Remark)"
+                       name="@Html.NameFor(model => model.Remark)"
+                       value="@Html.ValueFor(model => model.Remark)"
+                       tabindex="5"
+                       class="easyui-textbox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Remark)',
+								 required:false,     validType: 'length[0,150]'
+                                 " />
+              </div>
+
+              <!--层级-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Level)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.Level)"
+                       name="@Html.NameFor(model => model.Level)"
+                       value="@Html.ValueFor(model => model.Level)"
+                       tabindex="1"
+                       class="easyui-combobox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.Level)',
+								 required:false,data:waterleveldatasource,editable:false,panelHeight:'auto',
+                                 validType: 'length[0,20]'
+                                 " />
+              </div>
+              <!--区域-->
+              <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.ZoneName)</label>
+              <div class="col-md-4 mb-1">
+                <input id="@Html.IdFor(model => model.ZoneName)"
+                       name="@Html.NameFor(model => model.ZoneName)"
+                       value="@Html.ValueFor(model => model.ZoneName)"
+                       tabindex="1"
+                       class="easyui-combobox"
+                       style="width:100%"
+                       type="text"
+                       data-options="prompt:'@Html.DisplayNameFor(model => model.ZoneName)',
+								 required:false,textField:'Name',valueField:'Name',panelHeight:'auto',
+                                 validType: 'length[0,20]'
+                                 " />
+              </div>
+
+
+
+
+
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+<script type="text/javascript">
+  var water_form_state = 'Added';
+  var current_index = -1;
+  var customerwatermeter = {};
+
+  async function open_customerwatermeterdlg(index, row, state) {
+
+
+    water_form_state = state;
+    current_index = index;
+    customerwatermeter = row;
+    $('#customerwatermeterdlg').dialog('open');
+    $('#customerwatermeter_form').form('reset');
+    let url = '/Zones/GetComboData';
+    $('#customerwatermeter_form #ZoneName').combobox('reload', url);
+    url = '/WaterMeters/GetComboGridData';
+    $('#customerwatermeter_form #meterId').combogrid('grid').datagrid('load', url);
+    $('#customerwatermeter_form').form('load', row)
+    if (state == 'Modified') {
+      
+    } else {
+
+      $('#customerwatermeter_form #Ratio').numberbox('setValue', 1);
+    }
+    
+    
+  }
+  function confirm_customerwatermeterform() {
+    if ($('#customerwatermeter_form').form('enableValidation').form('validate')) {
+      let mywaters = [];
+      const customer = $('#customer_form').serializeJSON();
+      const customerwater = $('#customerwatermeter_form').serializeJSON();
+      customerwater.CustomerId = customer.Id;
+      customerwater.CustomerName = customer.Name;
+      mywaters.push(customerwater);
+      var url = '/Customers/CreateCustomerWaterMeters';
+      if (water_form_state == 'Modified') {
+        url = '/Customers/UpdateCustomerWaterMeters';
+      }
+      if (mywaters.length > 0) {
+        
+        $.post(url, { meters: mywaters }).done(res => {
+          if (res.success) {
+            $('#customerwatermeterdlg').dialog('close');
+            customerwatermeter_reload();
+            toastr.success('添加成功!');
+          } else {
+            $.messager.alert('添加失败', res.err, 'error');
+          }
+
+        });
+      }
+    }
+  }
+</script>
+

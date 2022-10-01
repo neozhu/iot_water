@@ -1,0 +1,55 @@
+﻿﻿@model WebApp.Models.ZoneWaterMeter
+  <div class="form-row">
+   @Html.HiddenFor(x=>x.Id)
+      
+       <!--所在区域-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.ZoneId)</label>
+   	        @Html.DropDownListFor(model => model.ZoneId, ViewBag.ZoneId as List<SelectListItem>, htmlAttributes: new { @class = "form-control" }) 
+       </div>
+
+		<!--关系-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.Direct)</label>
+            @Html.EditorFor(x => x.Direct, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.Direct) } })
+
+        </div>
+
+        <!--表号-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.meterId)</label>
+			@Html.EditorFor(x => x.meterId, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterId) } })
+      
+         </div>
+
+        <!--区域-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.ZoneName)</label>
+			@Html.EditorFor(x => x.ZoneName, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.ZoneName) } })
+      
+         </div>
+
+		<!--经度-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.longitude)</label>
+            @Html.EditorFor(x => x.longitude, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.longitude) } })
+
+        </div>
+
+		<!--维度-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.latitude)</label>
+            @Html.EditorFor(x => x.latitude, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.latitude) } })
+
+        </div>
+
+        <!--安装位置-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.Detail)</label>
+			@Html.EditorFor(x => x.Detail, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Detail) } })
+      
+         </div>
+
+	    
+</div>
+

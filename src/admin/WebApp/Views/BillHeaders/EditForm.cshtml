@@ -1,0 +1,176 @@
+﻿﻿@model WebApp.Models.BillHeader
+  <div class="form-row">
+   @Html.HiddenFor(x=>x.Id)
+         <!--账单编号-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.BillNo)</label>
+			@Html.EditorFor(x => x.BillNo, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.BillNo) } })
+      
+         </div>
+
+     
+       <!--用水单位-->
+       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.CustomerId)</label>
+   	        @Html.DropDownListFor(model => model.CustomerId, ViewBag.CustomerId as List<SelectListItem>, htmlAttributes: new { @class = "form-control" }) 
+       </div>
+
+        <!--单位名称-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.CustomerName)</label>
+			@Html.EditorFor(x => x.CustomerName, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.CustomerName) } })
+      
+         </div>
+
+        <!--客户类型-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.Category)</label>
+			@Html.EditorFor(x => x.Category, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Category) } })
+      
+         </div>
+
+		<!--水单价(元/m3)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.WaterPrice)</label>
+            @Html.EditorFor(x => x.WaterPrice, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.WaterPrice) } })
+
+        </div>
+
+		<!--水服务费单价(元/m3)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.ServicePrice)</label>
+            @Html.EditorFor(x => x.ServicePrice, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.ServicePrice) } })
+
+        </div>
+
+		<!--折扣-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.Discount)</label>
+            @Html.EditorFor(x => x.Discount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.Discount) } })
+
+        </div>
+
+       <!--账单日期-->
+       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.BillDate)</label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.BillDate, 
+                         new { htmlAttributes = new { @class = "form-control datepicker",
+                               placeholder = Html.DisplayNameFor(x => x.BillDate ) } })
+               <div class="input-group-append">
+                                                            <span class="input-group-text fs-xl">
+                                                                <i class="fal fa-calendar-alt"></i>
+                                                            </span>
+                                                        </div>
+			 </div>
+         </div>
+
+       <!--收费日期-->
+       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.ReceiptDate)</label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.ReceiptDate, 
+                         new { htmlAttributes = new { @class = "form-control datepicker",
+                               placeholder = Html.DisplayNameFor(x => x.ReceiptDate ) } })
+               <div class="input-group-append">
+                                                            <span class="input-group-text fs-xl">
+                                                                <i class="fal fa-calendar-alt"></i>
+                                                            </span>
+                                                        </div>
+			 </div>
+         </div>
+
+        <!--月份-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.Month)</label>
+			@Html.EditorFor(x => x.Month, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Month) } })
+      
+         </div>
+
+		<!--总水量(m3)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalWater)</label>
+            @Html.EditorFor(x => x.TotalWater, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.TotalWater) } })
+
+        </div>
+
+		<!--上个月总用水量(m3)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.LastTotalWater)</label>
+            @Html.EditorFor(x => x.LastTotalWater, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.LastTotalWater) } })
+
+        </div>
+
+		<!--环比(%)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.PerCent)</label>
+            @Html.EditorFor(x => x.PerCent, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.PerCent) } })
+
+        </div>
+
+		<!--总水价(元)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalWaterAmount)</label>
+            @Html.EditorFor(x => x.TotalWaterAmount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.TotalWaterAmount) } })
+
+        </div>
+
+		<!--总水服务费(元)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalServiceAmount)</label>
+            @Html.EditorFor(x => x.TotalServiceAmount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.TotalServiceAmount) } })
+
+        </div>
+
+		<!--补扣水量(m3)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.AdjustWater)</label>
+            @Html.EditorFor(x => x.AdjustWater, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.AdjustWater) } })
+
+        </div>
+
+		<!--补扣水费(元)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.AdjustWaterAmount)</label>
+            @Html.EditorFor(x => x.AdjustWaterAmount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.AdjustWaterAmount) } })
+
+        </div>
+
+		<!--补扣服务费(元)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.AdjustServiceAmount)</label>
+            @Html.EditorFor(x => x.AdjustServiceAmount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.AdjustServiceAmount) } })
+
+        </div>
+
+		<!--总费用(元)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalAmount)</label>
+            @Html.EditorFor(x => x.TotalAmount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.TotalAmount) } })
+
+        </div>
+
+		<!--总应收费用(元)-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.TotalReceivableAmount)</label>
+            @Html.EditorFor(x => x.TotalReceivableAmount, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.TotalReceivableAmount) } })
+
+        </div>
+
+        <!--状态-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label"> <span class="text-danger">*</span> @Html.DisplayNameFor(model => model.Status)</label>
+			@Html.EditorFor(x => x.Status, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Status) } })
+      
+         </div>
+
+        <!--备注-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <label class="form-label">  @Html.DisplayNameFor(model => model.Remark)</label>
+			@Html.EditorFor(x => x.Remark, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Remark) } })
+      
+         </div>
+
+	    
+</div>
+

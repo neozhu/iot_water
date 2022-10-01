@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+@Html.Partial("_CopyrightHeader")
+<html lang="zh" class="root-text-sm">
+<head>
+	@Html.Partial("_Head")
+	@RenderSection("HeadBlock", required: false)
+</head>
+<body class="mod-bg-1 mod-nav-link   @ViewBag.PreemptiveClass">
+  @Html.Partial("_ScriptsLoadingSaving")
+  <div class="page-wrapper">
+    <div class="page-inner">
+      @Html.Partial("_LeftPanel")
+      <div class="page-content-wrapper">
+        @Html.Partial("_PageHeader")
+        <main id="js-page-content" role="main" class="page-content">
+          @if (ViewBag.PreemptiveClass != null)
+          {
+          }
+          else
+          {
+            @Html.Partial("_PageBreadcrumb")
+            <div class="subheader">
+              @Html.Partial("_PageHeading")
+              @RenderSection("SubheaderBlock", required: false)
+            </div>
+          }
+          @RenderBody()
+        </main>
+        @Html.Partial("_PageContentOverlay")
+        @Html.Partial("_PageFooter")
+        @Html.Partial("_ColorProfileReference")
+      </div>
+    </div>
+  </div>
+  @{ Html.RenderPartialIf("_ChangePasswordPartial", Request.IsAuthenticated); }
+
+  @Html.Partial("_PageSettings")
+  @Html.Partial("_GoogleAnalytics")
+  @Html.Partial("_ScriptsBasePlugins")
+  @RenderSection("ScriptsBlock", required: false)
+</body>
+</html>

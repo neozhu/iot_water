@@ -1,0 +1,442 @@
+﻿
+@model WebApp.Models.CustomerWaterQuota
+
+<script type="text/javascript">
+    //是否开启行内编辑
+    var SUBEDITINLINE = false;
+   //初始化 CustomerWaterQuota datagrid
+   var $customerwaterquotadg = $('#customerwaterquota_datagrid');
+   //当前行记录
+   var customerwaterquota = {};
+   //datagrid CRUD method
+    var customerwaterquota_editIndex = undefined;
+    //取消
+    function customerwaterquota_reject() {
+		$customerwaterquotadg.datagrid('rejectChanges');
+		customerwaterquota_editIndex = undefined;
+        $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', true);
+        $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', true);
+        $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', true);
+    }
+    //重新加载数据
+    function customerwaterquota_reload() {
+			if (customerwaterquota_endEditing()) {
+				$customerwaterquotadg.datagrid('reload');
+			}
+	}
+    //关闭编辑状态
+	function customerwaterquota_endEditing() {
+			if (customerwaterquota_editIndex === undefined) {
+                return true; 
+            }
+			if ($customerwaterquotadg.datagrid('validateRow', customerwaterquota_editIndex)) {
+				$customerwaterquotadg.datagrid('endEdit', customerwaterquota_editIndex);
+				customerwaterquota_editIndex = undefined;
+                return true;
+			} else {
+				const invalidinput = $('input.validatebox-invalid',$customerwaterquotadg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+				return false;
+			}
+		}
+    //单击列开启编辑功能
+	function customerwaterquota_onClickCell(index, field) {
+			const _operates = ['_operate1', 'ck'];
+             $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', false);
+			if (!SUBEDITINLINE || $.inArray(field, _operates) >= 0) {
+				return false;
+			}
+			if (customerwaterquota_editIndex !== index) {
+				if (customerwaterquota_endEditing()) {
+					$customerwaterquotadg.datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+                    //customerwaterquota_editIndex = index;
+					var ed = $customerwaterquotadg.datagrid('getEditor', { index: index, field: field });
+					if (ed) {
+						($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+					}
+                    $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+                    $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', false);
+				} else {
+					$customerwaterquotadg.datagrid('selectRow', customerwaterquota_editIndex);
+				}
+			}
+		}
+    //双击弹出编辑当前行对话框
+    function customerwaterquota_onDblClickRow(index, row) {
+        if (!SUBEDITINLINE) {
+            open_customerwaterquotadlg(index, row, 'Modified');
+        }
+    }
+    //订阅对话框新增返回事件
+    $(document).on('customerwaterquota_form.add', (e, index,item) => {
+        $customerwaterquotadg.datagrid("insertRow",
+            {
+                index: 0,
+                row: item
+            });
+        $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+        $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', false);
+    });
+    //订阅对话框修改返回事件
+    $(document).on('customerwaterquota_form.edit', (e,index, item) => {
+        $customerwaterquotadg.datagrid('updateRow', {
+            index: index,
+            row: item
+        });
+        $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+        $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', false);
+    });
+    //新增记录
+  function customerwaterquota_append() {
+    const $customerform = $('#customer_form');
+    if ($customerform.form('enableValidation').form('validate')) {
+      $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+      $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', false);
+      $('button[name*=\'saveitembutton\']').prop('disabled', false);
+      const customer = $customerform.serializeJSON();
+      const item = {
+        Quota: 0,
+        Water: 0,
+        ForecastWater: 0,
+        RecordDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        CustomerName: customer.Name,
+        CustomerId: customer.Id
+      };
+      if (!SUBEDITINLINE) {
+        open_customerwaterquotadlg(0, item, 'Added');
+      } else {
+        if (customerwaterquota_endEditing()) {
+          //对必填字段进行默认值初始化
+          $customerwaterquotadg.datagrid('insertRow',
+            {
+              index: 0,
+              row: item
+            });
+          customerwaterquota_editIndex = 0;
+          $customerwaterquotadg.datagrid('selectRow', customerwaterquota_editIndex)
+            .datagrid('beginEdit', customerwaterquota_editIndex);
+        }
+      }
+    }
+  }
+    //删除编辑的行
+	function customerwaterquota_removeit() {
+		if (customerwaterquota_editIndex !== undefined) {  
+			$customerwaterquotadg.datagrid('cancelEdit', customerwaterquota_editIndex)
+					           .datagrid('deleteRow', customerwaterquota_editIndex);
+			customerwaterquota_editIndex = undefined;
+            $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', true);
+            $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+        } else {
+           const row = $customerwaterquotadg.datagrid('getSelected');
+           if(row){
+             const rowindex = $customerwaterquotadg.datagrid('getRowIndex', row);
+             $customerwaterquotadg.datagrid('deleteRow', rowindex);
+             $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', true);
+             $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+           }else{
+             $.messager.alert('提示', '没有选中删除的记录.', 'info');
+           }
+        }
+	}
+    //删除选中的行
+    function customerwaterquota_deletechecked() {
+            const rows = $customerwaterquotadg.datagrid('getChecked');
+            if (rows.length > 0) {
+                var id = rows.filter(item=>item.Id!=null).map(item => {
+                    return item.Id;
+                });
+                $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length}</span> 行记录?`,result => {
+                    if (result) {
+                        $.post('/CustomerWaterQuotas/DeleteChecked', { id: id })
+                         .done(response => {
+                            if (response.success) {
+                                $customerwaterquotadg.datagrid('reload');
+                            } else {
+                                $.messager.alert('错误', response.err,'error');
+                            }
+                         });
+                    }
+                });  
+            } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+            }
+      }
+  //获取修改的行
+  function customerwaterquota_getchanges() {
+    if (customerwaterquota_endEditing()) {
+      if ($customerwaterquotadg.datagrid('getChanges').length > 0) {
+        const inserted = $customerwaterquotadg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const deleted = $customerwaterquotadg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3;
+          return item;
+        });
+        const updated = $customerwaterquotadg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2;
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+          return !deleted.includes(item);
+        })).concat(deleted);
+        return { success: true, changed };
+      } else {
+        return { success: true, changed:undefined};
+      }
+    } else {
+      return { success: false,changed:undefined };
+    }
+  }
+  //提交修改的数据
+  function customerwaterquota_acceptchanges() {
+    $customerwaterquotadg.datagrid('acceptChanges');
+  }
+    //提交保存后台数据库
+	function customerwaterquota_accept() {
+      return new Promise((resolve, reject) => {
+			if (customerwaterquota_endEditing()) {
+				if ($customerwaterquotadg.datagrid('getChanges').length > 0) {
+					const inserted = $customerwaterquotadg.datagrid('getChanges', 'inserted').map(item => {
+                       item.TrackingState = 1;
+                       return item;
+                    });
+					const deleted = $customerwaterquotadg.datagrid('getChanges', 'deleted').map(item => {
+                       item.TrackingState = 3;
+                       return item;
+                    });
+					const updated = $customerwaterquotadg.datagrid('getChanges', 'updated').map(item => {
+                       item.TrackingState = 2;
+                       return item;
+                    });
+					//过滤已删除的重复项
+                    const changed = inserted.concat(updated.filter(item => {
+                           return !deleted.includes(item);
+                         })).concat(deleted);
+                   //console.table(changed);
+				  if (MODELSTATE === 'Added') {
+                    resolve({ success:true, changed });
+                  } else {
+                    $.post('/CustomerWaterQuotas/SaveData', {customerwaterquotas:changed})
+                     .done(response => {
+                        response.changed = undefined;
+                        resolve(response);
+						//console.log(response);f
+						if (response.success) {
+							toastr.success('保存成功'); 
+							$customerwaterquotadg.datagrid('acceptChanges');
+							$customerwaterquotadg.datagrid('reload');
+                             $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', true);
+                             $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', true);
+                             $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', true);
+						} else {
+                           $.messager.alert('错误', response.err ,'error');
+                        }
+					  })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+						//console.log(errorThrown);
+                        resolve({ success: false, err: errorThrown });
+						$.messager.alert('异常', errorThrown,'error');
+					  });
+                   }
+				} else {
+                  resolve({ success: true, changed: undefined});
+                }
+			} else {
+               resolve({ success: false });
+            }
+		});
+      }
+
+
+$(() => {
+    $customerwaterquotadg.datagrid({
+            rownumbers: true,
+            iconCls: 'fa fa-list',
+            idField: 'Id',
+            sortName: 'Id',
+            sortOrder: 'asc',
+            remoteFilter: true,
+            singleSelect: true,
+            checkOnSelect: false,
+		    selectOnCheck: false,
+            method: 'get',
+      pageList: [10,20, 50, 100],
+      pagination: true,
+      clientPaging: false,
+            onDblClickRow: customerwaterquota_onDblClickRow,
+            onClickCell: customerwaterquota_onClickCell,
+            onSelect: function(index,row) {
+              customerwaterquota = row;
+            },
+            onLoadSuccess: function (data) {
+              customerwaterquota_editIndex = undefined;
+            },
+            onBeginEdit: function (index, row) {
+               //const editors = $(this).datagrid('getEditors', index);
+  
+            },
+            onEndEdit: function (index, row) {
+
+             },
+             onBeforeEdit: function (index, row) {
+                 customerwaterquota_editIndex = index;
+                 row.editing = true;
+                 $(this).datagrid('refreshRow', index);
+                 $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', false);
+                 $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', false);
+                 $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', false);
+             },
+             onAfterEdit: function (index, row) {
+                   row.editing = false;
+                   customerwaterquota_editIndex = undefined;
+                   $(this).datagrid('refreshRow', index);
+             },
+             onCancelEdit: function (index, row) {
+                customerwaterquota_editIndex = undefined;
+                row.editing = false;
+                $(this).datagrid('refreshRow', index);
+               $('button[name*=\'customerwaterquotadeletebutton\']').prop('disabled', true);
+               $('button[name*=\'customerwaterquotasavebutton\']').prop('disabled', true);
+               $('button[name*=\'customerwaterquotacancelbutton\']').prop('disabled', true);
+            },
+            pagination: true,
+            striped: true,
+      columns: [[
+        { field: 'ck', checkbox: true },
+		      {field:'Id',title:'<span class="required">@Html.DisplayNameFor(model => model.Id)</span>', width:100 ,sortable:true,resizable:true, hidden:true},
+           {     /*年份*/
+                 field:'Year', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Year)</span>', 
+                 width:80, 
+                 align:'right',
+                 editor:{
+                        type:'numberbox',
+                        options:{ prompt:'@Html.DisplayNameFor(model => model.Year)',
+                                  required:true,
+                                  validType:'integer',
+                                  
+                                 } 
+                        },
+                sortable:true,
+                resizable:true,
+                hidden:false
+
+			},
+           {     /*月份*/
+                 field:'Month', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Month)</span>', 
+                 width:60, 
+                 align:'right',
+                 editor:{
+                        type:'numberbox',
+                        options:{ prompt:'@Html.DisplayNameFor(model => model.Month)',
+                                  required:true,
+                                  validType:'integer',
+                                  
+                                 } 
+                        },
+                sortable:true,
+                resizable:true,
+                hidden:false,
+                formatter:intformatter
+			},
+			{    /*用水定额(月)*/
+                 field:'Quota', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Quota)</span>', 
+                 width:100, 
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{ prompt:'@Html.DisplayNameFor(model => model.Quota)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+                                  
+                                 } 
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*已用水(吨)*/
+                 field:'Water', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Water)</span>', 
+                 width:100, 
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{ prompt:'@Html.DisplayNameFor(model => model.Water)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+                                  
+                                 } 
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+			{    /*预测用水量(吨)*/
+                 field:'ForecastWater', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.ForecastWater)</span>', 
+                 width:120, 
+                 align:'right',
+                 hidden:false,
+                 editor:{
+                        type:'numberbox',
+                        options:{ prompt:'@Html.DisplayNameFor(model => model.ForecastWater)',
+                                  required:true,
+                                  precision:2,
+                                  validType:'decimal',
+                                  
+                                 } 
+                        },
+                sortable:true,
+                resizable:true,
+                formatter:numberformatter
+			},
+            {   /*计算日期*/
+                field:'RecordDate', 
+                title:'<span class="required">@Html.DisplayNameFor(model => model.RecordDate)</span>', 
+                width:100, 
+                align:'right', 
+                hidden:false,
+                editor:{
+                      type:'datebox',
+                      options:{prompt:'@Html.DisplayNameFor(model => model.RecordDate)',required:true}  
+                      },
+                sortable:true, 
+                resizable:true, 
+                formatter:dateformatter 
+			}
+            ]]
+            });
+            //初始化 datagrid filter
+            $customerwaterquotadg.datagrid('enableFilter',[
+				
+				{     /*计算日期*/
+					  field: 'RecordDate',
+					  type: 'dateRange',
+					  options: {
+					  }
+				  },
+				{     /*是否删除*/
+					  field: 'IsDelete',
+					  type: 'booleanfilter'
+     			 },
+		   ]);
+  });
+      
+</script>
+
+
+ 

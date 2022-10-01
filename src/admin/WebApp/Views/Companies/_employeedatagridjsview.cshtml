@@ -1,0 +1,570 @@
+﻿
+@model WebApp.Models.Employee
+
+<script type="text/javascript">
+    //是否开启行内编辑
+    const SUBEDITINLINE = true;
+   //初始化 Employee datagrid
+   var $employeedg = $('#employee_datagrid');
+   //当前行记录
+   var employee = {};
+   //datagrid CRUD method
+    var employee_editIndex = undefined;
+    //取消
+    function employee_reject() {
+		$employeedg.datagrid('rejectChanges');
+		employee_editIndex = undefined;
+        $('button[name*=\'employeecancelbutton\']').prop('disabled', true);
+        $('button[name*=\'employeedeletebutton\']').prop('disabled', true);
+        $('button[name*=\'employeesavebutton\']').prop('disabled', true);
+    }
+    //重新加载数据
+    function employee_reload() {
+			if (employee_endEditing()) {
+				$employeedg.datagrid('reload');
+			}
+	}
+    //关闭编辑状态
+	function employee_endEditing() {
+			if (employee_editIndex === undefined) {
+                return true; 
+            }
+			if ($employeedg.datagrid('validateRow', employee_editIndex)) {
+				$employeedg.datagrid('endEdit', employee_editIndex);
+				employee_editIndex = undefined;
+                return true;
+			} else {
+				const invalidinput = $('input.validatebox-invalid',$employeedg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+				return false;
+			}
+		}
+    //单击列开启编辑功能
+	function employee_onClickCell(index, field) {
+			const _operates = ['_operate1', 'ck'];
+             $('button[name*=\'employeedeletebutton\']').prop('disabled', false);
+			if (!SUBEDITINLINE || $.inArray(field, _operates) >= 0) {
+				return false;
+			}
+			if (employee_editIndex !== index) {
+				if (employee_endEditing()) {
+					$employeedg.datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+                    //employee_editIndex = index;
+					var ed = $employeedg.datagrid('getEditor', { index: index, field: field });
+					if (ed) {
+						($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+					}
+                    $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+                    $('button[name*=\'employeecancelbutton\']').prop('disabled', false);
+				} else {
+					$employeedg.datagrid('selectRow', employee_editIndex);
+				}
+			}
+		}
+    //双击弹出编辑当前行对话框
+    function employee_onDblClickRow(index, row) {
+        if (!SUBEDITINLINE) {
+            open_employeedlg(index, row, 'Modified');
+        }
+    }
+    //订阅对话框新增返回事件
+    $(document).on('employee_form.add', (e, index,item) => {
+        $employeedg.datagrid("insertRow",
+            {
+                index: 0,
+                row: item
+            });
+        $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+        $('button[name*=\'employeecancelbutton\']').prop('disabled', false);
+    });
+    //订阅对话框修改返回事件
+    $(document).on('employee_form.edit', (e,index, item) => {
+        $employeedg.datagrid('updateRow', {
+            index: index,
+            row: item
+        });
+        $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+        $('button[name*=\'employeecancelbutton\']').prop('disabled', false);
+    });
+    //新增记录
+    function employee_append() {
+       const $companyform = $('#company_form');
+       if ($companyform.form('enableValidation').form('validate')) {
+          $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+          $('button[name*=\'employeecancelbutton\']').prop('disabled', false);
+          $('button[name*=\'saveitembutton\']').prop('disabled', false);
+          const company = $companyform.serializeJSON();
+       const item = {
+          Title: '员工', 
+Sex: '男', 
+Age: 25, 
+Brithday: '1995/10/10', 
+EntryDate: moment().format('YYYY-MM-DD HH:mm:ss'), 
+IsDeleted: false, 
+LeaveDate: null, 
+CompanyId: 1, 
+DepartmentId: null, 
+
+          CompanyId:company.Id
+        };
+      if (!SUBEDITINLINE) {
+        open_employeedlg(0, item, 'Added');
+      } else {
+			if (employee_endEditing()) {
+				//对必填字段进行默认值初始化
+				$employeedg.datagrid('insertRow', 
+                               { index: 0,
+                                  row: item 
+                               });
+				employee_editIndex = 0;
+				$employeedg.datagrid('selectRow', employee_editIndex)
+						.datagrid('beginEdit', employee_editIndex);
+			}
+        }
+        }
+	 }
+    //删除编辑的行
+	function employee_removeit() {
+		if (employee_editIndex !== undefined) {  
+			$employeedg.datagrid('cancelEdit', employee_editIndex)
+					           .datagrid('deleteRow', employee_editIndex);
+			employee_editIndex = undefined;
+            $('button[name*=\'employeedeletebutton\']').prop('disabled', true);
+            $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+        } else {
+           const row = $employeedg.datagrid('getSelected');
+           if(row){
+             const rowindex = $employeedg.datagrid('getRowIndex', row);
+             $employeedg.datagrid('deleteRow', rowindex);
+             $('button[name*=\'employeedeletebutton\']').prop('disabled', true);
+             $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+           }else{
+             $.messager.alert('提示', '没有选中删除的记录.', 'info');
+           }
+        }
+	}
+    //删除选中的行
+    function employee_deletechecked() {
+            const rows = $employeedg.datagrid('getChecked');
+            if (rows.length > 0) {
+                var id = rows.filter(item=>item.Id!=null).map(item => {
+                    return item.Id;
+                });
+                $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length}</span> 行记录?`,result => {
+                    if (result) {
+                        $.post('/Employees/DeleteChecked', { id: id })
+                         .done(response => {
+                            if (response.success) {
+                                $employeedg.datagrid('reload');
+                            } else {
+                                $.messager.alert('错误', response.err,'error');
+                            }
+                         });
+                    }
+                });  
+            } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+            }
+      }
+  //获取修改的行
+  function employee_getchanges() {
+    if (employee_endEditing()) {
+      if ($employeedg.datagrid('getChanges').length > 0) {
+        const inserted = $employeedg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const deleted = $employeedg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3;
+          return item;
+        });
+        const updated = $employeedg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2;
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+          return !deleted.includes(item);
+        })).concat(deleted);
+        return { success: true, changed };
+      } else {
+        return { success: true, changed:undefined};
+      }
+    } else {
+      return { success: false,changed:undefined };
+    }
+  }
+  //提交修改的数据
+  function employee_acceptchanges() {
+    $employeedg.datagrid('acceptChanges');
+  }
+    //提交保存后台数据库
+	function employee_accept() {
+      return new Promise((resolve, reject) => {
+			if (employee_endEditing()) {
+				if ($employeedg.datagrid('getChanges').length > 0) {
+					const inserted = $employeedg.datagrid('getChanges', 'inserted').map(item => {
+                       item.TrackingState = 1;
+                       return item;
+                    });
+					const deleted = $employeedg.datagrid('getChanges', 'deleted').map(item => {
+                       item.TrackingState = 3;
+                       return item;
+                    });
+					const updated = $employeedg.datagrid('getChanges', 'updated').map(item => {
+                       item.TrackingState = 2;
+                       return item;
+                    });
+					//过滤已删除的重复项
+                    const changed = inserted.concat(updated.filter(item => {
+                           return !deleted.includes(item);
+                         })).concat(deleted);
+                   //console.table(changed);
+				  if (MODELSTATE === 'Added') {
+                    resolve({ success:true, changed });
+                  } else {
+                    $.post('/Employees/SaveData', {employees:changed})
+                     .done(response => {
+                        response.changed = undefined;
+                        resolve(response);
+						//console.log(response);f
+						if (response.success) {
+							toastr.success('保存成功'); 
+							$employeedg.datagrid('acceptChanges');
+							$employeedg.datagrid('reload');
+                             $('button[name*=\'employeecancelbutton\']').prop('disabled', true);
+                             $('button[name*=\'employeedeletebutton\']').prop('disabled', true);
+                             $('button[name*=\'employeesavebutton\']').prop('disabled', true);
+						} else {
+                           $.messager.alert('错误', response.err ,'error');
+                        }
+					  })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+						//console.log(errorThrown);
+                        resolve({ success: false, err: errorThrown });
+						$.messager.alert('异常', errorThrown,'error');
+					  });
+                   }
+				} else {
+                  resolve({ success: true, changed: undefined});
+                }
+			} else {
+               resolve({ success: false });
+            }
+		});
+      }
+
+
+$(() => {
+    $employeedg.datagrid({
+            rownumbers: true,
+            iconCls: 'fa fa-list',
+            idField: 'Id',
+            sortName: 'Id',
+            sortOrder: 'asc',
+            remoteFilter: true,
+            singleSelect: true,
+            checkOnSelect: false,
+		    selectOnCheck: false,
+            method: 'get',
+            onDblClickRow: employee_onDblClickRow,
+            onClickCell: employee_onClickCell,
+            onSelect: function(index,row) {
+              employee = row;
+            },
+            onLoadSuccess: function (data) {
+              employee_editIndex = undefined;
+            },
+            onBeginEdit: function (index, row) {
+               //const editors = $(this).datagrid('getEditors', index);
+				        const departmentid = $(this).datagrid('getEditor', { index: index, field: 'DepartmentId' });
+				        $(departmentid.target).combobox('options')
+                             .onSelect = (item) => {
+                               row['DepartmentId'] = item.Id;
+                               row['DepartmentName'] = item.Name;
+                             };	
+                        $(departmentid.target).combobox('textbox')
+                             .bind('keydown', (e)=> {
+                               if (e.keyCode === 13) {
+                                 $(e.target).emulateTab();
+                               }
+                         });
+  
+            },
+            onEndEdit: function (index, row) {
+
+             },
+             onBeforeEdit: function (index, row) {
+                 employee_editIndex = index;
+                 row.editing = true;
+                 $(this).datagrid('refreshRow', index);
+                 $('button[name*=\'employeedeletebutton\']').prop('disabled', false);
+                 $('button[name*=\'employeesavebutton\']').prop('disabled', false);
+                 $('button[name*=\'employeecancelbutton\']').prop('disabled', false);
+             },
+             onAfterEdit: function (index, row) {
+                   row.editing = false;
+                   employee_editIndex = undefined;
+                   $(this).datagrid('refreshRow', index);
+             },
+             onCancelEdit: function (index, row) {
+                employee_editIndex = undefined;
+                row.editing = false;
+                $(this).datagrid('refreshRow', index);
+               $('button[name*=\'employeedeletebutton\']').prop('disabled', true);
+               $('button[name*=\'employeesavebutton\']').prop('disabled', true);
+               $('button[name*=\'employeecancelbutton\']').prop('disabled', true);
+            },
+            pagination: true,
+            striped: true,
+            columns: [[
+		      {field:'Id',title:'<span class="required">@Html.DisplayNameFor(model => model.Id)</span>', width:100 ,sortable:true,resizable:true, hidden:true},
+			{    /*姓名*/
+                 field:'Name', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Name)</span>', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.Name)',required:true, validType: 'length[0,20]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+			{    /*职位*/
+                 field:'Title', 
+                 title:'@Html.DisplayNameFor(model => model.Title)', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.Title)',required:false, validType: 'length[0,30]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+			{    /*联系电话*/
+                 field:'PhoneNumber', 
+                 title:'@Html.DisplayNameFor(model => model.PhoneNumber)', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.PhoneNumber)',required:false, validType: 'length[0,30]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+			{    /*微信*/
+                 field:'WX', 
+                 title:'@Html.DisplayNameFor(model => model.WX)', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.WX)',required:false, validType: 'length[0,30]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+			{    /*性别*/
+                 field:'Sex', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Sex)</span>', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.Sex)',required:true, validType: 'length[0,10]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+           {     /*年龄*/
+                 field:'Age', 
+                 title:'<span class="required">@Html.DisplayNameFor(model => model.Age)</span>', 
+                 width:100, 
+                 align:'right',
+                 editor:{
+                        type:'numberbox',
+                        options:{ prompt:'@Html.DisplayNameFor(model => model.Age)',
+                                  required:true,
+                                  validType:'integer',
+                                  
+                                 } 
+                        },
+                sortable:true,
+                resizable:true,
+                hidden:false,
+                formatter:intformatter
+			},
+            {   /*出生日期*/
+                field:'Brithday', 
+                title:'<span class="required">@Html.DisplayNameFor(model => model.Brithday)</span>', 
+                width:100, 
+                align:'right', 
+                hidden:false,
+                editor:{
+                      type:'datebox',
+                      options:{prompt:'@Html.DisplayNameFor(model => model.Brithday)',required:true}  
+                      },
+                sortable:true, 
+                resizable:true, 
+                formatter:dateformatter 
+			} ,
+            {   /*入职日期*/
+                field:'EntryDate', 
+                title:'<span class="required">@Html.DisplayNameFor(model => model.EntryDate)</span>', 
+                width:100, 
+                align:'right', 
+                hidden:false,
+                editor:{
+                      type:'datebox',
+                      options:{prompt:'@Html.DisplayNameFor(model => model.EntryDate)',required:true}  
+                      },
+                sortable:true, 
+                resizable:true, 
+                formatter:dateformatter 
+			} ,
+			{  /*是否已离职*/
+               field:'IsDeleted', 
+               title:'<span class="required">@Html.DisplayNameFor(model => model.IsDeleted)</span>', 
+               width:90, 
+               align:'center',
+               hidden:false,
+               editor:{
+                      type:'booleaneditor',
+                      options:{
+                                 prompt:'@Html.DisplayNameFor(model => model.IsDeleted)', 
+                                 required:true
+                               } 
+                      },
+                formatter:booleanformatter,
+                sortable:true, 
+                resizable:true 
+			},
+            {   /*离职日期*/
+                field:'LeaveDate', 
+                title:'@Html.DisplayNameFor(model => model.LeaveDate)', 
+                width:100, 
+                align:'right', 
+                hidden:false,
+                editor:{
+                      type:'datebox',
+                      options:{prompt:'@Html.DisplayNameFor(model => model.LeaveDate)',required:false}  
+                      },
+                sortable:true, 
+                resizable:true, 
+                formatter:dateformatter 
+			} ,
+			{   /*部门*/
+                field:'DepartmentId',
+                title:'<span class="required">@Html.DisplayNameFor(model => model.DepartmentId)</span>',
+                width:160, 
+                sortable:true, 
+                resizable:true,
+                hidden:false,
+                formatter:function(value,row) {
+				        return row.DepartmentName;
+					},
+			    editor:{
+					    type:'combobox',
+					    options:{
+								prompt:'@Html.DisplayNameFor(model => model.DepartmentId)' ,
+                                mode: 'remote',
+                                editable: false,
+								valueField:'Id',
+								textField:'Name',
+								method:'get',
+								url:'/Companies/GetDepartments',
+								required:true
+							}
+						}
+			},
+            ]]
+            });
+            //初始化 datagrid filter
+            $employeedg.datagrid('enableFilter',[
+				{    /*年龄*/
+					  field: 'Age',
+					  type: 'numberbox',
+					  op:['equal','notequal','less','lessorequal','greater','greaterorequal']
+				  },
+				{     /*出生日期*/
+					  field: 'Brithday',
+					  type: 'dateRange',
+					  options: {
+						  onChange: function (value) {
+							    $employeedg.datagrid('addFilterRule', {
+									  field: 'Brithday',
+									  op: 'between',
+									  value: value
+								  });
+							    $employeedg.datagrid('doFilter');
+						  }
+					  }
+				  },
+				{     /*入职日期*/
+					  field: 'EntryDate',
+					  type: 'dateRange',
+					  options: {
+						  onChange: function (value) {
+							    $employeedg.datagrid('addFilterRule', {
+									  field: 'EntryDate',
+									  op: 'between',
+									  value: value
+								  });
+							    $employeedg.datagrid('doFilter');
+						  }
+					  }
+				  },
+				{     /*离职日期*/
+					  field: 'LeaveDate',
+					  type: 'dateRange',
+					  options: {
+						  onChange: function (value) {
+							    $employeedg.datagrid('addFilterRule', {
+									  field: 'LeaveDate',
+									  op: 'between',
+									  value: value
+								  });
+							    $employeedg.datagrid('doFilter');
+						  }
+					  }
+				  },
+				{     /*是否已离职*/
+					  field: 'IsDeleted',
+					  type: 'booleanfilter'
+     			 },
+		   {
+				 field: 'DepartmentId',
+				 type:'combobox',
+				 options:{
+								valueField:'Id',
+								textField:'Name',
+								method:'get',
+								url:'/Companies/GetDepartments',
+								onChange: function (value) {
+								if (value == '') {
+									$employeedg.datagrid('removeFilterRule', 'DepartmentId');
+								} else {
+									$employeedg.datagrid('addFilterRule', {
+										field: 'DepartmentId',
+										op: 'equal',
+										value: value
+								});
+							}
+							$employeedg.datagrid('doFilter');
+						}
+					}
+		   },
+		   ]);
+  });
+      
+</script>
+
+
+ 

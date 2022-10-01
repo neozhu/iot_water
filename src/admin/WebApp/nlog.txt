@@ -1,0 +1,399 @@
+2020-03-23 11:19:36.0644|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 11:23:17.9469|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 11:27:42.8580|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 11:30:33.9664|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 11:31:18.5633|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 11:33:16.3737|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 11:33:37.7889|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 12:18:14.8290|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 12:21:06.4569|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:07:53.7134|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:11:10.0562|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:12:15.0330|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:14:23.6815|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:23:45.8973|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:24:13.4050|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:24:27.8680|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:28:58.4690|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:29:56.4698|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-23 13:34:08.8122|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-24 07:35:56.7580|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-24 07:37:20.6782|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-24 07:38:37.8356|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-24 07:41:17.7788|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-24 19:55:57.6739|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-skins.css' was not found or does not implement IController.
+2020-03-24 19:55:57.6739|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/bootstrap.css' was not found or does not implement IController.
+2020-03-24 19:55:57.6739|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/font-awesome.css' was not found or does not implement IController.
+2020-03-24 19:55:57.6739|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-production.css' was not found or does not implement IController.
+2020-03-24 19:55:57.6739|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-rtl.css' was not found or does not implement IController.
+2020-03-24 19:55:57.6739|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-production-plugins.css' was not found or does not implement IController.
+2020-03-24 19:55:58.0123|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/lockscreen.css' was not found or does not implement IController.
+2020-03-24 19:55:58.0123|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/demo.css' was not found or does not implement IController.
+2020-03-25 09:56:49.0372|FATAL|WebApp.MvcApplication|???????????????
+2020-03-25 09:57:39.3859|FATAL|WebApp.MvcApplication|???????????????
+2020-03-25 09:58:31.0521|FATAL|WebApp.MvcApplication|???????????????
+2020-03-25 09:59:43.0282|FATAL|WebApp.MvcApplication|???????????????
+2020-03-25 10:00:47.9268|FATAL|WebApp.MvcApplication|???????????????
+2020-03-25 19:45:51.6790|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-production.css' was not found or does not implement IController.
+2020-03-25 19:45:51.6790|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-production-plugins.css' was not found or does not implement IController.
+2020-03-25 19:45:51.6790|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/font-awesome.css' was not found or does not implement IController.
+2020-03-25 19:45:51.6790|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/bootstrap.css' was not found or does not implement IController.
+2020-03-25 19:45:51.6790|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-skins.css' was not found or does not implement IController.
+2020-03-25 19:45:51.6790|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/smartadmin-rtl.css' was not found or does not implement IController.
+2020-03-25 19:45:52.0158|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/demo.css' was not found or does not implement IController.
+2020-03-25 19:45:52.0158|FATAL|WebApp.MvcApplication|The controller for path '/Content/css/lockscreen.css' was not found or does not implement IController.
+2020-03-25 19:54:05.7292|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 19:55:05.4994|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 19:55:10.2222|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 20:04:11.5805|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 20:05:52.1946|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 20:09:28.2764|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 20:10:07.3676|FATAL|WebApp.MvcApplication|Invalid object name 'dbo.WaterMeters'.
+2020-03-25 20:49:42.2608|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 20:51:20.2771|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 20:53:28.7658|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 20:57:32.2900|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 20:58:24.8873|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 20:58:59.5591|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 20:59:39.0505|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 22:51:36.4056|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 22:52:31.7720|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 22:59:46.1578|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 23:03:11.8853|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 23:10:20.6947|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-25 23:12:29.2359|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 08:55:45.9025|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:11:17.4686|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:11:56.2304|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:27:18.8749|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:27:49.0725|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:31:50.0778|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:31:52.4680|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:32:03.9674|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:32:27.0198|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:37:33.1872|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:38:09.2179|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:39:06.5834|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:40:49.3665|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:41:33.6179|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:44:40.5833|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 09:46:06.6732|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 12:00:53.5011|FATAL|WebApp.MvcApplication|Method not found: 'System.DateTime WebApp.Models.CustomerWaterQuota.get_RecordDate()'.
+2020-03-26 13:21:55.3136|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:23:05.4197|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:24:36.5683|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:26:27.1520|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:27:24.8169|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:28:53.3662|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:37:04.5127|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:37:34.5703|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:54:31.7836|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:56:28.5805|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 13:59:08.1487|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:00:16.3713|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:01:01.4663|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:01:58.0371|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:02:11.5216|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:02:52.4452|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:03:53.5498|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:05:30.5882|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:07:55.0896|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:09:12.2365|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 14:12:42.4164|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:00:56.9976|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:01:25.6059|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:02:03.7262|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:04:29.9770|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:07:20.5610|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:09:03.8793|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:11:17.3310|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:11:56.5038|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:12:51.7237|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:13:59.9753|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:16:16.0896|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:17:04.3408|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:18:34.9616|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:19:51.0946|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:20:04.1720|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:21:33.2639|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:23:39.8521|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:25:01.6197|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:25:36.7518|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 16:28:47.0266|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 19:50:27.1660|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-26 19:56:06.7925|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-28 10:21:34.4372|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-28 10:22:27.3676|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-28 10:27:19.2210|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-28 11:03:36.3019|FATAL|WebApp.MvcApplication|The controller for path '/sm/3a884fe0bdb97cb3a94b410e67cf38fdc248890d5581232077b3e6241e25cd21.map' was not found or does not implement IController.
+2020-03-28 12:19:14.2879|FATAL|WebApp.MvcApplication|A public action method 'UpdateMonthWater' was not found on controller 'WebApp.Controllers.CustomerWaterRecordsController'.
+2020-03-28 20:29:31.9717|FATAL|WebApp.MvcApplication|Incorrect syntax near 'dbo'.
+2020-03-28 20:30:34.5875|FATAL|WebApp.MvcApplication|Invalid column name 'ForecastWater'.
+2020-03-29 19:01:24.6813|FATAL|WebApp.MvcApplication|Must declare the scalar variable "@year".
+2020-03-29 19:41:45.0883|FATAL|WebApp.MvcApplication|Value cannot be null.
+Parameter name: id
+2020-03-29 19:41:46.5265|FATAL|WebApp.MvcApplication|Value cannot be null.
+Parameter name: id
+2020-04-02 09:36:15.0310|FATAL|WebApp.MvcApplication|A public action method 'Indexw' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2020-04-02 09:42:41.3513|FATAL|WebApp.MvcApplication|A public action method 'Indexw' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2020-04-02 19:23:54.0240|FATAL|WebApp.MvcApplication|Cannot convert type 'int' to 'string'
+2020-04-03 09:07:11.7008|FATAL|WebApp.MvcApplication|UserId not found.
+2020-04-03 09:07:26.7678|FATAL|WebApp.MvcApplication|UserId not found.
+2020-04-07 08:01:21.2279|FATAL|WebApp.MvcApplication|Please set the ExcelPackage.LicenseContext property. See https://epplussoftware.com/developers/licenseexception
+2020-04-07 08:02:08.7000|FATAL|WebApp.MvcApplication|Please set the ExcelPackage.LicenseContext property. See https://epplussoftware.com/developers/licenseexception
+2020-04-15 08:34:56.3660|FATAL|WebApp.MvcApplication|d:\tfsonline\Nb_Iot\src\Water.Solution.V4\admin\WebApp\Views\Shared\_Layout.cshtml(35): error CS1502: The best overloaded method match for 'System.Web.WebPages.WebPageExecutingBase.Write(System.Web.WebPages.HelperResult)' has some invalid arguments
+2020-04-15 08:35:53.5992|FATAL|WebApp.MvcApplication|d:\tfsonline\Nb_Iot\src\Water.Solution.V4\admin\WebApp\Views\Shared\_Layout.cshtml(35): error CS1502: The best overloaded method match for 'System.Web.WebPages.WebPageExecutingBase.Write(System.Web.WebPages.HelperResult)' has some invalid arguments
+2020-04-25 08:02:34.3449|FATAL|WebApp.MvcApplication|A public action method 'ChartView' was not found on controller 'WebApp.Controllers.WaterMetersController'.
+2020-04-25 08:44:06.8840|FATAL|WebApp.MvcApplication|A public action method 'ChartVieww' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2020-04-25 08:44:30.6003|FATAL|WebApp.MvcApplication|A public action method 'ChartVieww' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2020-04-25 11:24:32.9222|FATAL|WebApp.MvcApplication|The following sections have been defined but have not been rendered for the layout page "~/Views/Shared/_Layout.cshtml": "Scripts".
+2020-04-28 21:55:32.7496|FATAL|WebApp.MvcApplication|Non-static field requires a target.
+2020-05-24 07:37:37.1610|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetWaterMeterLoc(Int32)' in 'WebApp.Controllers.ZoneWaterMetersController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+Parameter name: parameters
+2020-05-24 07:39:42.8048|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetWaterMeterLoc(Int32)' in 'WebApp.Controllers.ZoneWaterMetersController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+Parameter name: parameters
+2020-05-25 19:39:28.0282|FATAL|WebApp.MvcApplication|The controller for path '/api1/WaterChart/GetTotalMainWaterMonth' was not found or does not implement IController.
+2020-05-25 19:46:01.5084|FATAL|WebApp.MvcApplication|This request has been blocked because sensitive information could be disclosed to third party web sites when this is used in a GET request. To allow GET requests, set JsonRequestBehavior to AllowGet.
+2020-05-25 19:46:24.4529|FATAL|WebApp.MvcApplication|This request has been blocked because sensitive information could be disclosed to third party web sites when this is used in a GET request. To allow GET requests, set JsonRequestBehavior to AllowGet.
+2020-09-12 20:25:26.1731|FATAL|WebApp.MvcApplication|A public action method 'Stop' was not found on controller 'WebApp.Controllers.CustomerWaterMetersController'.
+2020-11-03 20:34:24.7670|FATAL|WebApp.MvcApplication|d:\projects\Nb_Iot\src\Water.Solution.V4\admin\WebApp\Views\OrgCharts\Index.cshtml(80): error CS1003: Syntax error, ',' expected
+2020-11-18 19:01:04.6700|FATAL|WebApp.MvcApplication|The model backing the 'StoreContext' context has changed since the database was created. Consider using Code First Migrations to update the database (http://go.microsoft.com/fwlink/?LinkId=238269).
+2020-11-18 19:09:24.6758|FATAL|WebApp.MvcApplication|??????????“LinqKit, Version=1.1.20.0, Culture=neutral, PublicKeyToken=bc217f8844052a91”?????????????????????????????? (???? HRESULT:0x80131040)
+2020-11-18 19:09:27.9705|FATAL|WebApp.MvcApplication|??????????“LinqKit, Version=1.1.20.0, Culture=neutral, PublicKeyToken=bc217f8844052a91”?????????????????????????????? (???? HRESULT:0x80131040)
+2020-11-18 19:09:49.6991|FATAL|WebApp.MvcApplication|??????????“LinqKit, Version=1.1.20.0, Culture=neutral, PublicKeyToken=bc217f8844052a91”?????????????????????????????? (???? HRESULT:0x80131040)
+2020-11-22 11:21:55.4976|FATAL|WebApp.MvcApplication|Column 'dbo.Customers.Type' is invalid in the select list because it is not contained in either an aggregate function or the GROUP BY clause.
+2020-11-22 12:35:06.8630|FATAL|WebApp.MvcApplication|Must declare the scalar variable "@zonename".
+2021-01-27 20:58:57.6287|FATAL|WebApp.MvcApplication|A public action method 'DisableSelected' was not found on controller 'WebApp.Controllers.CustomersController'.
+2021-01-27 20:58:59.6683|FATAL|WebApp.MvcApplication|A public action method 'EnableSelected' was not found on controller 'WebApp.Controllers.CustomersController'.
+2021-01-27 20:59:01.8679|FATAL|WebApp.MvcApplication|A public action method 'EnableSelected' was not found on controller 'WebApp.Controllers.CustomersController'.
+2021-02-10 20:23:41.8484|FATAL|WebApp.MvcApplication|A public action method 'url' was not found on controller 'WebApp.Controllers.CustomersController'.
+2021-02-10 20:36:08.3061|FATAL|WebApp.MvcApplication|?????:“System.Decimal WebApp.Models.WaterMeter.get_temperature()”?
+2021-02-10 21:31:43.6973|FATAL|WebApp.MvcApplication|??????“WebApp.Models.CustomerWaterMeter”????????????
+2021-02-10 21:32:14.0206|FATAL|WebApp.MvcApplication|??????“WebApp.Models.CustomerWaterMeter”????????????
+2021-02-10 21:32:36.2864|FATAL|WebApp.MvcApplication|??????“WebApp.Models.CustomerWaterMeter”????????????
+2021-02-20 18:46:55.2865|FATAL|WebApp.MvcApplication|A public action method 'GetDataByBillId' was not found on controller 'WebApp.Controllers.BillDetailsController'.
+2021-02-20 21:09:46.8836|FATAL|WebApp.MvcApplication|A public action method 'GetDataByBillId' was not found on controller 'WebApp.Controllers.BillDetailsController'.
+2021-02-20 21:09:52.9382|FATAL|WebApp.MvcApplication|A public action method 'GetDataByBillId' was not found on controller 'WebApp.Controllers.BillDetailsController'.
+2021-02-20 21:09:52.9382|FATAL|WebApp.MvcApplication|A public action method 'GetDataByBillId' was not found on controller 'WebApp.Controllers.BillDetailsController'.
+2021-02-20 21:10:07.2034|FATAL|WebApp.MvcApplication|A public action method 'GetDataByBillId' was not found on controller 'WebApp.Controllers.BillDetailsController'.
+2021-03-01 20:59:11.7339|FATAL|WebApp.MvcApplication|?????:“System.DateTime WebApp.Models.WaterManualRecord.get_LastRecordDate()”?
+2021-03-01 21:01:04.7068|FATAL|WebApp.MvcApplication|?????:“System.DateTime WebApp.Models.WaterManualRecord.get_LastRecordDate()”?
+2021-03-06 18:23:15.7902|FATAL|WebApp.MvcApplication|The model backing the 'StoreContext' context has changed since the database was created. Consider using Code First Migrations to update the database (http://go.microsoft.com/fwlink/?LinkId=238269).
+2021-03-06 19:24:38.2612|FATAL|WebApp.MvcApplication|There is no ViewData item of type 'IEnumerable<SelectListItem>' that has the key 'endday'.
+2021-03-06 20:40:21.3080|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'day' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GenerateBills(System.String, Int32)' in 'WebApp.Controllers.BillHeadersController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-06 20:40:49.9848|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'day' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GenerateBills(System.String, Int32)' in 'WebApp.Controllers.BillHeadersController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-06 20:42:10.2196|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'day' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GenerateBills(System.String, Int32)' in 'WebApp.Controllers.BillHeadersController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-06 20:42:40.9999|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'day' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GenerateBills(System.String, Int32)' in 'WebApp.Controllers.BillHeadersController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-14 10:38:28.9550|FATAL|WebApp.MvcApplication|??????????
+2021-03-14 10:38:35.5741|FATAL|WebApp.MvcApplication|A public action method 'ExportExcel' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2021-03-14 10:39:52.8043|FATAL|WebApp.MvcApplication|??????????
+2021-03-21 13:30:45.7296|FATAL|WebApp.MvcApplication|A public action method 'BillHeaders' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-21 13:30:48.7022|FATAL|WebApp.MvcApplication|A public action method 'BillHeaders' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-25 20:57:54.1744|FATAL|WebApp.MvcApplication|A public action method 'Index' was not found on controller 'WebApp.Controllers.ZonesController'.
+2021-03-26 21:35:24.2998|FATAL|WebApp.MvcApplication|A public action method 'GetData' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2021-03-26 21:35:38.0381|FATAL|WebApp.MvcApplication|A public action method 'GetData' was not found on controller 'WebApp.Controllers.CustomerWaterMetersController'.
+2021-03-26 21:37:09.1352|FATAL|WebApp.MvcApplication|Unexpected character encountered while parsing value: {. Path '[0].value', line 1, position 40.
+2021-03-26 21:37:22.3598|FATAL|WebApp.MvcApplication|Unexpected character encountered while parsing value: {. Path '[0].value', line 1, position 40.
+2021-03-26 21:38:30.3766|FATAL|WebApp.MvcApplication|Unexpected character encountered while parsing value: {. Path '[0].value', line 1, position 40.
+2021-03-27 09:19:54.7758|FATAL|WebApp.MvcApplication|The model backing the 'StoreContext' context has changed since the database was created. Consider using Code First Migrations to update the database (http://go.microsoft.com/fwlink/?LinkId=238269).
+2021-03-27 09:23:07.2289|FATAL|WebApp.MvcApplication|A public action method 'Detail' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 09:23:43.3701|FATAL|WebApp.MvcApplication|d:\devops\Nb_Iot\src\Water.Solution.V4-1.26(??????)\admin\WebApp\Views\BillHeaders\_DisplayForm.cshtml(142): error CS1501: No overload for method 'ToString' takes 1 arguments
+2021-03-27 20:56:01.9648|FATAL|WebApp.MvcApplication|The model backing the 'StoreContext' context has changed since the database was created. Consider using Code First Migrations to update the database (http://go.microsoft.com/fwlink/?LinkId=238269).
+2021-03-27 21:21:23.9729|FATAL|WebApp.MvcApplication|The controller for path '/Billheads/Details/33' was not found or does not implement IController.
+2021-03-27 21:37:55.8777|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:58.3190|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:58.4776|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:58.6438|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:58.8119|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:58.9781|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:59.1322|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:59.2954|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:59.4545|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-27 21:37:59.6187|FATAL|WebApp.MvcApplication|A public action method 'SendToCustomer' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-28 11:43:59.9429|FATAL|WebApp.MvcApplication|A public action method 'ChangeWatePrice' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-03-28 17:27:13.8818|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyday(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:27:17.6080|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyhour(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:27:19.1620|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyday(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:28:07.8720|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyday(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:28:13.2866|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyhour(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:28:22.0428|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyday(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:29:32.8530|FATAL|ASP.global_asax|The parameters dictionary contains a null entry for parameter 'dt1' of non-nullable type 'System.DateTime' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] GetSummarywaterbyhour(System.DateTime, System.DateTime)' in 'WebApp.Controllers.api.WaterChartController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-03-28 17:51:10.1542|FATAL|ASP.global_asax|Invalid column name 'date'.
+Invalid column name 'date'.
+Invalid column name 'date'.
+2021-03-28 17:52:00.5404|FATAL|WebApp.MvcApplication|Invalid column name 'date'.
+Invalid column name 'date'.
+Invalid column name 'date'.
+2021-03-28 17:53:57.3691|FATAL|WebApp.MvcApplication|Invalid column name 'date'.
+2021-03-28 17:54:12.3021|FATAL|WebApp.MvcApplication|Invalid column name 'date'.
+2021-03-28 17:54:57.0909|FATAL|WebApp.MvcApplication|vs_previous_water can't  convert string to decimal
+2021-03-28 17:55:04.4201|FATAL|WebApp.MvcApplication|vs_previous_water can't  convert string to decimal
+2021-03-28 17:56:15.3788|FATAL|WebApp.MvcApplication|vs_previous_water can't  convert string to decimal
+2021-03-28 18:02:21.9474|FATAL|WebApp.MvcApplication|vs_previous_water can't  convert string to decimal
+2021-03-28 18:06:16.9284|FATAL|WebApp.MvcApplication|vs_previous_water can't  convert string to decimal
+2021-03-30 22:24:27.7359|FATAL|WebApp.MvcApplication|d:\devops\Nb_Iot\src\Water.Solution.V4-1.26(??????)\admin\WebApp\Views\DataTableImportMappings\Index.cshtml(476): error CS1061: 'WebApp.Models.DataTableImportMapping' does not contain a definition for 'IsExportable' and no extension method 'IsExportable' accepting a first argument of type 'WebApp.Models.DataTableImportMapping' could be found (are you missing a using directive or an assembly reference?)
+2021-03-30 22:25:44.6945|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:28:21.1081|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:29:45.0717|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:29:48.8377|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:29:52.9144|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:30:07.8123|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:30:31.5112|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:30:35.4682|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:32:18.3982|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:32:35.4286|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:32:38.9777|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:32:54.8237|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:33:29.3945|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:33:38.0236|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:34:15.2538|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:35:11.6090|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:35:26.3901|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:35:39.1588|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:36:48.1801|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:37:02.8012|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:37:11.1431|FATAL|WebApp.MvcApplication|????????????????
+2021-03-30 22:38:17.4729|FATAL|WebApp.MvcApplication|????????????????
+2021-04-03 20:27:50.1648|FATAL|WebApp.MvcApplication|No property or field 'hb1' exists in type 'WaterManualReport'
+2021-04-03 20:42:48.8184|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-04-03 20:42:49.8743|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-04-03 20:42:51.9204|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-04-03 20:42:52.6381|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-04-03 20:42:53.6160|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-04-03 20:43:04.9594|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-04-03 20:43:40.9292|FATAL|WebApp.MvcApplication|The specified type member 'LastRatio' is not supported in LINQ to Entities. Only initializers, entity members, and entity navigation properties are supported.
+2021-05-02 14:19:33.4800|FATAL|WebApp.MvcApplication|There is no ViewData item of type 'IEnumerable<SelectListItem>' that has the key 'endday'.
+2021-05-05 13:09:29.4388|FATAL|WebApp.MvcApplication|Incorrect syntax near '='.
+2021-05-05 13:09:47.9593|FATAL|WebApp.MvcApplication|Incorrect syntax near '='.
+2021-05-05 13:10:04.5423|FATAL|WebApp.MvcApplication|Incorrect syntax near '='.
+2021-06-06 11:09:57.9900|FATAL|WebApp.MvcApplication|A public action method 'GetMinAnalyseData' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2021-06-06 11:10:23.6113|FATAL|WebApp.MvcApplication|A public action method 'GetMinAnalyseData' was not found on controller 'WebApp.Controllers.WaterMeterRecordsController'.
+2021-06-06 11:23:18.7267|FATAL|WebApp.MvcApplication|Invalid column name 'Id'.
+2021-06-06 11:23:35.3850|FATAL|WebApp.MvcApplication|Invalid column name 'Id'.
+2021-06-06 11:46:06.3789|FATAL|WebApp.MvcApplication|???“System.Int32”??????????“System.String”??????“Boolean Contains(System.String)”
+2021-06-16 18:39:26.4363|FATAL|WebApp.MvcApplication|A public action method 'PrintPreview' was not found on controller 'WebApp.Controllers.BillHeadersController'.
+2021-06-16 19:08:58.8792|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:08:58.8953|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:08:58.9763|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:08:58.9934|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:08:59.0294|FATAL|WebApp.MvcApplication|The controller for path '/_fr/preview.getReport' was not found or does not implement IController.
+2021-06-16 19:08:59.0644|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:16:29.2280|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:16:29.2280|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:16:29.3070|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:16:29.3403|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-16 19:16:29.3799|FATAL|WebApp.MvcApplication|The controller for path '/_fr/preview.getReport' was not found or does not implement IController.
+2021-06-16 19:16:29.4140|FATAL|WebApp.MvcApplication|The controller for path '/_fr/resources.getResource' was not found or does not implement IController.
+2021-06-17 07:24:59.9107|FATAL|WebApp.MvcApplication|(Text3): Error CS0103: The name 'JSON' does not exist in the current context
+(Text4): Error CS0103: The name 'JSON' does not exist in the current context
+(Text6): Error CS0103: The name 'JSON' does not exist in the current context
+(Text10): Error CS0103: The name 'JSON' does not exist in the current context
+(Text11): Error CS0103: The name 'JSON' does not exist in the current context
+(Text12): Error CS0103: The name 'JSON' does not exist in the current context
+(Text14): Error CS0103: The name 'JSON' does not exist in the current context
+(Text16): Error CS0103: The name 'JSON' does not exist in the current context
+(Text17): Error CS0103: The name 'JSON' does not exist in the current context
+(Text18): Error CS0103: The name 'JSON' does not exist in the current context
+(Text19): Error CS0103: The name 'JSON' does not exist in the current context
+(Text26): Error CS0103: The name 'JSON' does not exist in the current context
+(Text7): Error CS0103: The name 'JSON' does not exist in the current context
+(Text8): Error CS0103: The name 'JSON' does not exist in the current context
+(Text20): Error CS0103: The name 'JSON' does not exist in the current context
+(Text21): Error CS0103: The name 'JSON' does not exist in the current context
+(Text22): Error CS0103: The name 'JSON' does not exist in the current context
+(Text23): Error CS0103: The name 'JSON' does not exist in the current context
+(Text24): Error CS0103: The name 'JSON' does not exist in the current context
+(Text25): Error CS0103: The name 'JSON' does not exist in the current context
+
+2021-06-17 07:28:54.0299|FATAL|WebApp.MvcApplication|??? 0 ???,???????????????
+2021-06-17 07:30:32.6169|FATAL|WebApp.MvcApplication|??????????
+2021-10-14 18:52:49.1562|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:12:00.8638|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:40:17.4249|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:42:31.1748|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:42:35.7969|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:46:45.1991|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:48:18.4779|FATAL|WebApp.MvcApplication|??? null ???“decimal”,????????? null ????
+2021-10-14 19:50:21.2092|FATAL|WebApp.MvcApplication|“System.Dynamic.ExpandoObject”???“zoneId”???
+2021-10-14 19:58:56.3294|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:58:57.7712|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:58:59.2309|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:00.2699|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:01.8329|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:03.0719|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:04.2231|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:08.1507|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:13.0158|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:14.2994|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:15.3912|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:17.2029|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:18.3023|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 19:59:19.4480|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:00:44.1304|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:00:48.5223|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:02:06.1508|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:02:08.7971|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:02:41.9587|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:02:45.6951|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:02:46.9619|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:02:48.8301|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:05:07.8642|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:05:59.8176|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:06:06.5387|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:07:38.5738|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:09:58.7098|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:10:01.9419|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:10:05.6447|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-14 20:10:11.2372|FATAL|WebApp.MvcApplication|The parameters dictionary contains a null entry for parameter 'zoneid' of non-nullable type 'System.Int32' for method 'System.Threading.Tasks.Task`1[System.Web.Mvc.JsonResult] UpdateMeterLoc(Int32, System.String, System.Decimal, System.Decimal)' in 'WebApp.Controllers.ZonesController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+???: parameters
+2021-10-15 20:18:17.4450|FATAL|WebApp.MvcApplication|???????? "@dt1"?
+2021-11-14 09:57:46.2169|FATAL|WebApp.MvcApplication|Invalid column name 'longitude'.
+Invalid column name 'longitude'.
+Invalid column name 'latitude'.
+2021-11-14 09:58:01.1821|FATAL|WebApp.MvcApplication|Invalid column name 'longitude'.
+2021-11-14 09:58:01.2092|FATAL|WebApp.MvcApplication|Invalid column name 'longitude'.
+Invalid column name 'longitude'.
+Invalid column name 'latitude'.
+2021-11-14 09:58:54.6043|FATAL|WebApp.MvcApplication|Invalid column name 'longitude'.
+2021-11-18 19:17:34.0074|FATAL|WebApp.MvcApplication|d:\devops\Nb_Iot\src\Water.Solution.V4-1.26(delivery)-branch\admin\WebApp\Views\Shared\_Layout.cshtml(35): error CS1061: 'System.Web.Mvc.HtmlHelper<dynamic>' does not contain a definition for 'RenderPartialIf' and no extension method 'RenderPartialIf' accepting a first argument of type 'System.Web.Mvc.HtmlHelper<dynamic>' could be found (are you missing a using directive or an assembly reference?)
+2021-11-20 08:07:46.1513|FATAL|WebApp.MvcApplication|?????“System.Exception”????

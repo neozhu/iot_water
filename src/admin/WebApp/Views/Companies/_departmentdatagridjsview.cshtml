@@ -1,0 +1,339 @@
+﻿
+@model WebApp.Models.Department
+
+<script type="text/javascript">
+    //是否开启行内编辑
+    const SUBEDITINLINE = true;
+   //初始化 Department datagrid
+   var $departmentdg = $('#department_datagrid');
+   //当前行记录
+   var department = {};
+   //datagrid CRUD method
+    var department_editIndex = undefined;
+    //取消
+    function department_reject() {
+		$departmentdg.datagrid('rejectChanges');
+		department_editIndex = undefined;
+        $('button[name*=\'departmentcancelbutton\']').prop('disabled', true);
+        $('button[name*=\'departmentdeletebutton\']').prop('disabled', true);
+        $('button[name*=\'departmentsavebutton\']').prop('disabled', true);
+    }
+    //重新加载数据
+    function department_reload() {
+			if (department_endEditing()) {
+				$departmentdg.datagrid('reload');
+			}
+	}
+    //关闭编辑状态
+	function department_endEditing() {
+			if (department_editIndex === undefined) {
+                return true; 
+            }
+			if ($departmentdg.datagrid('validateRow', department_editIndex)) {
+				$departmentdg.datagrid('endEdit', department_editIndex);
+				department_editIndex = undefined;
+                return true;
+			} else {
+				const invalidinput = $('input.validatebox-invalid',$departmentdg.datagrid('getPanel'));
+                const fieldnames = invalidinput.map((index, item) => {
+                  return $(item).attr('placeholder') || $(item).attr('id');
+                });
+                $.messager.alert('提示', `${Array.from(fieldnames)} 输入有误.`, 'error');
+				return false;
+			}
+		}
+    //单击列开启编辑功能
+	function department_onClickCell(index, field) {
+			const _operates = ['_operate1', 'ck'];
+             $('button[name*=\'departmentdeletebutton\']').prop('disabled', false);
+			if (!SUBEDITINLINE || $.inArray(field, _operates) >= 0) {
+				return false;
+			}
+			if (department_editIndex !== index) {
+				if (department_endEditing()) {
+					$departmentdg.datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+                    //department_editIndex = index;
+					var ed = $departmentdg.datagrid('getEditor', { index: index, field: field });
+					if (ed) {
+						($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+					}
+                    $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+                    $('button[name*=\'departmentcancelbutton\']').prop('disabled', false);
+				} else {
+					$departmentdg.datagrid('selectRow', department_editIndex);
+				}
+			}
+		}
+    //双击弹出编辑当前行对话框
+    function department_onDblClickRow(index, row) {
+        if (!SUBEDITINLINE) {
+            open_departmentdlg(index, row, 'Modified');
+        }
+    }
+    //订阅对话框新增返回事件
+    $(document).on('department_form.add', (e, index,item) => {
+        $departmentdg.datagrid("insertRow",
+            {
+                index: 0,
+                row: item
+            });
+        $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+        $('button[name*=\'departmentcancelbutton\']').prop('disabled', false);
+    });
+    //订阅对话框修改返回事件
+    $(document).on('department_form.edit', (e,index, item) => {
+        $departmentdg.datagrid('updateRow', {
+            index: index,
+            row: item
+        });
+        $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+        $('button[name*=\'departmentcancelbutton\']').prop('disabled', false);
+    });
+    //新增记录
+    function department_append() {
+       const $companyform = $('#company_form');
+       if ($companyform.form('enableValidation').form('validate')) {
+          $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+          $('button[name*=\'departmentcancelbutton\']').prop('disabled', false);
+          $('button[name*=\'saveitembutton\']').prop('disabled', false);
+          const company = $companyform.serializeJSON();
+       const item = {
+          
+          CompanyId:company.Id
+        };
+      if (!SUBEDITINLINE) {
+        open_departmentdlg(0, item, 'Added');
+      } else {
+			if (department_endEditing()) {
+				//对必填字段进行默认值初始化
+				$departmentdg.datagrid('insertRow', 
+                               { index: 0,
+                                  row: item 
+                               });
+				department_editIndex = 0;
+				$departmentdg.datagrid('selectRow', department_editIndex)
+						.datagrid('beginEdit', department_editIndex);
+			}
+        }
+        }
+	 }
+    //删除编辑的行
+	function department_removeit() {
+		if (department_editIndex !== undefined) {  
+			$departmentdg.datagrid('cancelEdit', department_editIndex)
+					           .datagrid('deleteRow', department_editIndex);
+			department_editIndex = undefined;
+            $('button[name*=\'departmentdeletebutton\']').prop('disabled', true);
+            $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+        } else {
+           const row = $departmentdg.datagrid('getSelected');
+           if(row){
+             const rowindex = $departmentdg.datagrid('getRowIndex', row);
+             $departmentdg.datagrid('deleteRow', rowindex);
+             $('button[name*=\'departmentdeletebutton\']').prop('disabled', true);
+             $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+           }else{
+             $.messager.alert('提示', '没有选中删除的记录.', 'info');
+           }
+        }
+	}
+    //删除选中的行
+    function department_deletechecked() {
+            const rows = $departmentdg.datagrid('getChecked');
+            if (rows.length > 0) {
+                var id = rows.filter(item=>item.Id!=null).map(item => {
+                    return item.Id;
+                });
+                $.messager.confirm('确认', `你确定要删除这 <span class='badge badge-icon position-relative'>${id.length}</span> 行记录?`,result => {
+                    if (result) {
+                        $.post('/Departments/DeleteChecked', { id: id })
+                         .done(response => {
+                            if (response.success) {
+                                $departmentdg.datagrid('reload');
+                            } else {
+                                $.messager.alert('错误', response.err,'error');
+                            }
+                         });
+                    }
+                });  
+            } else {
+                $.messager.alert('提示', '请先选择要删除的记录!','question');
+            }
+      }
+  //获取修改的行
+  function department_getchanges() {
+    if (department_endEditing()) {
+      if ($departmentdg.datagrid('getChanges').length > 0) {
+        const inserted = $departmentdg.datagrid('getChanges', 'inserted').map(item => {
+          item.TrackingState = 1;
+          return item;
+        });
+        const deleted = $departmentdg.datagrid('getChanges', 'deleted').map(item => {
+          item.TrackingState = 3;
+          return item;
+        });
+        const updated = $departmentdg.datagrid('getChanges', 'updated').map(item => {
+          item.TrackingState = 2;
+          return item;
+        });
+        //过滤已删除的重复项
+        const changed = inserted.concat(updated.filter(item => {
+          return !deleted.includes(item);
+        })).concat(deleted);
+        return { success: true, changed };
+      } else {
+        return { success: true, changed:undefined};
+      }
+    } else {
+      return { success: false,changed:undefined };
+    }
+  }
+  //提交修改的数据
+  function department_acceptchanges() {
+    $departmentdg.datagrid('acceptChanges');
+  }
+    //提交保存后台数据库
+	function department_accept() {
+      return new Promise((resolve, reject) => {
+			if (department_endEditing()) {
+				if ($departmentdg.datagrid('getChanges').length > 0) {
+					const inserted = $departmentdg.datagrid('getChanges', 'inserted').map(item => {
+                       item.TrackingState = 1;
+                       return item;
+                    });
+					const deleted = $departmentdg.datagrid('getChanges', 'deleted').map(item => {
+                       item.TrackingState = 3;
+                       return item;
+                    });
+					const updated = $departmentdg.datagrid('getChanges', 'updated').map(item => {
+                       item.TrackingState = 2;
+                       return item;
+                    });
+					//过滤已删除的重复项
+                    const changed = inserted.concat(updated.filter(item => {
+                           return !deleted.includes(item);
+                         })).concat(deleted);
+                   //console.table(changed);
+				  if (MODELSTATE === 'Added') {
+                    resolve({ success:true, changed });
+                  } else {
+                    $.post('/Departments/SaveData', {departments:changed})
+                     .done(response => {
+                        response.changed = undefined;
+                        resolve(response);
+						//console.log(response);f
+						if (response.success) {
+							toastr.success('保存成功'); 
+							$departmentdg.datagrid('acceptChanges');
+							$departmentdg.datagrid('reload');
+                             $('button[name*=\'departmentcancelbutton\']').prop('disabled', true);
+                             $('button[name*=\'departmentdeletebutton\']').prop('disabled', true);
+                             $('button[name*=\'departmentsavebutton\']').prop('disabled', true);
+						} else {
+                           $.messager.alert('错误', response.err ,'error');
+                        }
+					  })
+                      .fail((jqXHR, textStatus, errorThrown) => {
+						//console.log(errorThrown);
+                        resolve({ success: false, err: errorThrown });
+						$.messager.alert('异常', errorThrown,'error');
+					  });
+                   }
+				} else {
+                  resolve({ success: true, changed: undefined});
+                }
+			} else {
+               resolve({ success: false });
+            }
+		});
+      }
+
+
+$(() => {
+    $departmentdg.datagrid({
+            rownumbers: true,
+            iconCls: 'fa fa-list',
+            idField: 'Id',
+            sortName: 'Id',
+            sortOrder: 'asc',
+            remoteFilter: true,
+            singleSelect: true,
+            checkOnSelect: false,
+		    selectOnCheck: false,
+            method: 'get',
+            onDblClickRow: department_onDblClickRow,
+            onClickCell: department_onClickCell,
+            onSelect: function(index,row) {
+              department = row;
+            },
+            onLoadSuccess: function (data) {
+              department_editIndex = undefined;
+            },
+            onBeginEdit: function (index, row) {
+               //const editors = $(this).datagrid('getEditors', index);
+  
+            },
+            onEndEdit: function (index, row) {
+
+             },
+             onBeforeEdit: function (index, row) {
+                 department_editIndex = index;
+                 row.editing = true;
+                 $(this).datagrid('refreshRow', index);
+                 $('button[name*=\'departmentdeletebutton\']').prop('disabled', false);
+                 $('button[name*=\'departmentsavebutton\']').prop('disabled', false);
+                 $('button[name*=\'departmentcancelbutton\']').prop('disabled', false);
+             },
+             onAfterEdit: function (index, row) {
+                   row.editing = false;
+                   department_editIndex = undefined;
+                   $(this).datagrid('refreshRow', index);
+             },
+             onCancelEdit: function (index, row) {
+                department_editIndex = undefined;
+                row.editing = false;
+                $(this).datagrid('refreshRow', index);
+               $('button[name*=\'departmentdeletebutton\']').prop('disabled', true);
+               $('button[name*=\'departmentsavebutton\']').prop('disabled', true);
+               $('button[name*=\'departmentcancelbutton\']').prop('disabled', true);
+            },
+            pagination: true,
+            striped: true,
+            columns: [[
+		      {field:'Id',title:'<span class="required">@Html.DisplayNameFor(model => model.Id)</span>', width:100 ,sortable:true,resizable:true, hidden:true},
+			{    /*部门名称*/
+                 field:'Name', 
+                 title:'@Html.DisplayNameFor(model => model.Name)', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.Name)',required:false, validType: 'length[1,10]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+			{    /*部门主管*/
+                 field:'Manager', 
+                 title:'@Html.DisplayNameFor(model => model.Manager)', 
+                 width:120,
+                 editor:{
+                          type:'textbox',
+                          options:{ prompt:'@Html.DisplayNameFor(model => model.Manager)',required:false, validType: 'length[0,10]' }  
+                       },
+                 sortable:true,
+                 hidden:false,
+                 resizable:true 
+			},
+            ]]
+            });
+            //初始化 datagrid filter
+            $departmentdg.datagrid('enableFilter',[
+		   ]);
+  });
+      
+</script>
+
+
+ 

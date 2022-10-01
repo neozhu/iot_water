@@ -1,0 +1,101 @@
+﻿﻿@model WebApp.Models.WaterMeterRecord
+  <div class="form-row">
+   @Html.HiddenFor(x=>x.Id)
+         <!--水表状态-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.meterStatus)</label>
+			@Html.EditorFor(x => x.meterStatus, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterStatus) } })
+      
+         </div>
+
+       <!--采集时间-->
+       <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.datetime)</label>
+            <div class="input-group">
+			  @Html.EditorFor(x => x.datetime, 
+                         new { htmlAttributes = new { @class = "form-control datepicker hasDatepicker",
+                               placeholder = Html.DisplayNameFor(x => x.datetime ) } })
+               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			 </div>
+         </div>
+
+        <!--表号-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.meterId)</label>
+			@Html.EditorFor(x => x.meterId, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.meterId) } })
+      
+         </div>
+
+		<!--水表当前读数(吨)-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.water)</label>
+            @Html.EditorFor(x => x.water, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.water) } })
+
+        </div>
+
+		<!--累计流量-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.reverseWater)</label>
+            @Html.EditorFor(x => x.reverseWater, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.reverseWater) } })
+
+        </div>
+
+		<!--温度-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.temperature)</label>
+            @Html.EditorFor(x => x.temperature, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.temperature) } })
+
+        </div>
+
+		<!--瞬时流量-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.flowrate)</label>
+            @Html.EditorFor(x => x.flowrate, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.flowrate) } })
+
+        </div>
+
+		<!--压力 (bar)-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.pressure)</label>
+            @Html.EditorFor(x => x.pressure, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.pressure) } })
+
+        </div>
+
+		<!--电压-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label text-danger">@Html.DisplayNameFor(model => model.voltage)</label>
+            @Html.EditorFor(x => x.voltage, new { htmlAttributes = new { @class = "form-control",@type="number", placeholder = Html.DisplayNameFor(x => x.voltage) } })
+
+        </div>
+
+        <!--阀门状态-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.valveStatus)</label>
+			@Html.EditorFor(x => x.valveStatus, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.valveStatus) } })
+      
+         </div>
+
+        <!--用户编号-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.userId)</label>
+			@Html.EditorFor(x => x.userId, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.userId) } })
+      
+         </div>
+
+        <!--IMEI-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.imei)</label>
+			@Html.EditorFor(x => x.imei, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.imei) } })
+      
+         </div>
+
+        <!--所属单位-->
+        <div class="col-xs-12 col-md-6">
+            <label class="form-label ">@Html.DisplayNameFor(model => model.OrgName)</label>
+			@Html.EditorFor(x => x.OrgName, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.OrgName) } })
+      
+         </div>
+
+	    
+</div>
+

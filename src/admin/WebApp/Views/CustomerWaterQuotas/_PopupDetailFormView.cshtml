@@ -1,0 +1,394 @@
+﻿﻿@model WebApp.Models.CustomerWaterQuota
+<!-- 弹出编辑窗体表单 -->
+ <div id="customerwaterquotadetailwindow" class="easyui-window" 
+      title="明细数据" 
+      data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'icon-more',
+                    footer:'#windowfooter',
+                    closeDuration:200,
+                    closeAnimation:'slide',
+                    openDuration:300,
+                    openAnimation:'slide',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(customerwaterquotahasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="row align-items-center m-0">
+      <div class="col">
+        <div class="btn-group btn-group-sm">
+          <button name="saveitembutton" onclick="savecustomerwaterquotaitem()" class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm" id="deleteitem-btn-group">
+          <button onclick="deletecustomerwaterquotaitem()" class="btn btn-danger">
+            <i class="fal fa-times"></i> @Html.L("Delete")
+          </button>
+        </div>
+      
+      </div>
+      <div class="col d-flex">
+
+      </div>
+    </div>
+  </div>
+ <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="panel-content">
+           <form id="customerwaterquota_form" 
+              class="easyui-form form-horizontal padding-10" 
+              method="post" 
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+  @Html.AntiForgeryToken()
+   <!--Primary Key-->
+  @Html.HiddenFor(model=>model.Id)
+   <fieldset class="form-group">
+   <div class="row m-1">
+
+    <!--用水单位-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.CustomerId)</label>
+		<div class="col-md-4 mb-1">   	
+            <input id="@Html.IdFor(model => model.CustomerId)"
+			       name="@Html.NameFor(model => model.CustomerId)"
+				   value="@Html.ValueFor(model => model.CustomerId)"
+                   tabindex="0" required
+              	   class="easyui-combobox"      
+                   style="width:100%"
+                   data-options="prompt:'@Html.DisplayNameFor(model => model.CustomerId)' ,
+						required:true ,
+						valueField: 'Id',
+						textField:  'Name' ,
+                        validateOnCreate:false,
+                        validateOnBlur:true,
+                        validType:'combocheck[\'#CustomerId\',\'请选择用水单位\']',
+						url: '/CustomerWaterQuotas/GetCustomers' ,
+						onSelect: function(item){
+						  //console.log(item);
+				        }">
+       </div>
+	   
+   <!--年份-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Year)</label>
+	   <div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Year)"
+				   name="@Html.NameFor(model => model.Year)" 
+				   value="@Html.ValueFor(model => model.Year)"
+				   tabindex="1" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Year)',
+								 required:true,formatter:intformatter,
+                                 
+                                 " />
+      </div>
+				   
+
+   <!--月份-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Month)</label>
+	   <div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.Month)"
+				   name="@Html.NameFor(model => model.Month)" 
+				   value="@Html.ValueFor(model => model.Month)"
+				   tabindex="2" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Month)',
+								 required:true,formatter:intformatter,
+                                 
+                                 " />
+      </div>
+				   
+   <!--用水定额(月)-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Quota)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.Quota)"
+				   name="@Html.NameFor(model => model.Quota)" 
+				   value="@Html.ValueFor(model => model.Quota)"
+				   tabindex="3" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Quota)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--已用水(吨)-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Water)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.Water)"
+				   name="@Html.NameFor(model => model.Water)" 
+				   value="@Html.ValueFor(model => model.Water)"
+				   tabindex="4" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.Water)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+   <!--预测用水量(吨)-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.ForecastWater)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.ForecastWater)"
+				   name="@Html.NameFor(model => model.ForecastWater)" 
+				   value="@Html.ValueFor(model => model.ForecastWater)"
+				   tabindex="5" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.ForecastWater)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--计算日期-->
+        <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.RecordDate)</label>
+		<div class="col-md-4 mb-1">  
+                <input id="@Html.IdFor(model => model.RecordDate)" 
+			       name="@Html.NameFor(model => model.RecordDate)"
+                   value="@Html.ValueFor(model => model.RecordDate)"
+           		   tabindex="6"  required
+				   class="easyui-datebox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.RecordDate)',
+								 required:true,
+								 formatter:dateformatter" />
+     </div>
+				   
+   <!--单位名称-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.CustomerName)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.CustomerName)" 
+				   name="@Html.NameFor(model => model.CustomerName)" 
+				   value="@Html.ValueFor(model => model.CustomerName)"
+				   tabindex="7" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.CustomerName)',
+								 required:false, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+
+     <!--是否删除-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.IsDelete)</label>
+	   <div class="col-md-4 mb-1">      
+               <div class="custom-control custom-checkbox">
+                            <input id="@Html.IdFor(model => model.IsDelete)"
+                                   name="@Html.NameFor(model => model.IsDelete)"
+                                   value="true" @(Model.IsDelete ? "checked=\"checked\"" : "")
+                                   data-unchecked-value="false"
+                                   tabindex="8"
+                                   class="custom-control-input"
+                                   type="checkbox" />
+                            <label class="custom-control-label" for="@Html.NameFor(model => model.IsDelete)"> @Html.DisplayNameFor(model => model.IsDelete)</label>
+              </div>
+        </div>
+				   
+	    </div> 
+      </fieldset>
+   </form>
+    </div>
+    </div>
+</div>
+<div id="windowfooter" style="padding:5px;">&nbsp;</div>
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+    //判断新增编辑状态
+    var MODELSTATE = 'Added';
+    var customerwaterquotaid = null;
+    function opencustomerwaterquotadetailwindow(data,state) {
+         MODELSTATE = state;
+         initcustomerwaterquotadetailview();
+         customerwaterquotaid = (data.Id || 0);
+         $('#customerwaterquotadetailwindow').window('open');
+         $('#customerwaterquota_form').form('reset');
+         $('#customerwaterquota_form').form('load', data);
+             }
+  //删除当前记录
+  function deletecustomerwaterquotaitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/CustomerWaterQuotas/Delete/${customerwaterquotaid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $dg.datagrid('reload');
+            $('#customerwaterquotadetailwindow').window('close');
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+    //async 保存数据
+    async function savecustomerwaterquotaitem() { 
+      const $customerwaterquotaform = $('#customerwaterquota_form');
+      if ($customerwaterquotaform.form('enableValidation').form('validate')) {
+            let customerwaterquota = $customerwaterquotaform.serializeJSON();
+            let url = '/CustomerWaterQuotas/Edit';
+            //判断是新增或是修改方法
+            if (MODELSTATE === 'Added') {
+                url = '/CustomerWaterQuotas/Create';
+            }
+            var token = $('input[name="__RequestVerificationToken"]', $customerwaterquotaform).val();
+            $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        __RequestVerificationToken: token,
+                        customerwaterquota:customerwaterquota
+                    },
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+                })
+                .done(response => {
+                    $.messager.progress('close');
+                    if (response.success) {
+                        hook = false;
+                        $customerwaterquotaform.form('disableValidation');
+                        $dg.datagrid('reload');
+                        $('#customerwaterquotadetailwindow').window("close");
+                        toastr.success("保存成功");  
+                    } else {
+                        $.messager.alert("错误",   response.err, "error");
+                    }
+                    })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                       $.messager.progress('close');
+                       $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                    });
+        }
+    }
+    //关闭窗口
+    function closecustomerwaterquotadetailwindow() {
+        $('#customerwaterquotadetailwindow').window('close');
+    }
+    //todo
+    function todo() {
+         console.log('todo.....');
+    }
+     //判断是否有没有保存的记录
+     function customerwaterquotahasmodified() {
+            return hook;
+
+     }
+
+
+function initcustomerwaterquotadetailview() {
+  //判断是否显示功能按钮
+  if (MODELSTATE === 'Added') {
+    $('#deleteitem-btn-group').hide();
+  } else {
+    $('#deleteitem-btn-group').show();
+  }
+
+//回车光标移动到下个输入控件
+    //如果是枚举类型需要把numberbox改成combobox
+    //年份
+	$('#Year').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //月份
+	$('#Month').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //用水定额(月)
+	$('#Quota').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //已用水(吨)
+	$('#Water').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //预测用水量(吨)
+	$('#ForecastWater').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //日期类型 计算日期
+	$('#RecordDate').datebox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //用水单位默认外键使用combobox,也可以使用combogrid
+	$('#CustomerId').combobox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+}
+</script>
+

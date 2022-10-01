@@ -1,0 +1,218 @@
+﻿@{
+  ViewData["Title"] = "地图展示";
+  ViewData["PageName"] = "Zone";
+  ViewData["Heading"] = "<i class='fal fa-map-marked-alt text-primary'></i>  地图展示";
+  ViewData["Category1"] = "远程监控";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <style>
+  #mapcontainer {
+  height: 100%;
+  width: 100%;
+  }
+  .info {
+  max-width:200px;
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: .25rem;
+  position:absolute;
+  float:left;
+  top: 4rem;
+  /*background-color: white;*/
+  min-width: 22rem;
+  border-width: 0;
+  right: 1rem;
+  z-index:100;
+  /*box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);*/
+  }
+  .info_label {
+  max-width: 90px;
+  padding: .75rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: .25rem;
+  position: absolute;
+  float: left;
+  top: 4rem;
+  background-color: white;
+  min-width: 13rem;
+  border-width: 0;
+  right: 1rem;
+  z-index: 100;
+  box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+  display:none;
+  }
+    .amap-marker-label {
+      border: none !important
+    }
+    .content-window-card {
+      position: relative;
+      width: 23rem;
+      padding: 0.75rem 0 0 1.25rem;
+      box-shadow: none;
+      bottom: 0;
+      left: 0;
+    }
+    p.input-item {
+        margin-bottom:5px
+    }
+    span.field {
+        width:90px
+    }
+  </style>
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel" style="height:45rem">
+      <div class="panel-hdr">
+        <h2>
+          地图展示
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show " style="height:100%">
+        <div  class="panel-content m-0 p-0  " style="height: 100% ">
+          <div id="mapcontainer"    />
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+@section ScriptsBlock {
+  <script type="text/javascript"
+          src="https://webapi.amap.com/maps?v=1.4.15&key=5f37b68c9bb76cbf1262a78331807e63"></script>
+
+  <script>
+    document.addEventListener('smartPanel.onFullscreen', () => {
+      var height = $(window).height();
+      //console.log(height);
+    })
+
+    var map = {};
+    var markers = [];
+    $(() => {
+      map = new AMap.Map('mapcontainer', {
+        resizeEnable: true, //是否监控地图容器尺寸变化
+        zoom: 18, //初始化地图层级
+      });
+      map.on('zoomchange', function (e) {
+        const zoom = map.getZoom();
+        console.log(zoom)
+        if (zoom >= 16) {
+          $('.info_label').show();
+        } else {
+          $('.info_label').hide();
+        }
+      });
+      //定位
+      var options = {
+        'showButton': true,//是否显示定位按钮
+        'buttonPosition': 'LB',//定位按钮的位置
+        /* LT LB RT RB */
+        'buttonOffset': new AMap.Pixel(10, 20),//定位按钮距离对应角落的距离
+        'showCircle': true,//是否显示定位精度圈
+        'circleOptions': {//定位精度圈的样式
+          'strokeColor': '#0093FF',
+          'noSelect': true,
+          'strokeOpacity': 0.5,
+          'strokeWeight': 1,
+          'fillColor': '#02B0FF',
+          'fillOpacity': 0.25
+        }
+      }
+      AMap.plugin(["AMap.Geolocation"], function () {
+        var geolocation = new AMap.Geolocation(options);
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition()
+      });
+
+      $.get('/ZoneWaterMeters/GetAllWaterMeterLoc').done(res => {
+        console.log(res);
+        res.forEach(meter => {
+          marker = new AMap.Marker({
+            extData: {
+              "meter": meter,
+              "zoneid": meter.zoneId
+            },
+            icon: "/Content/img/marker.png",
+            position: [meter.longitude, meter.latitude],
+            draggable: false,
+            cursor: 'move',
+            // 设置拖拽效果
+            raiseOnDrag: true,
+            offset: new AMap.Pixel(0,0)
+          });
+          const fal = meter.direct == 1 ? "fa-sign-in-alt" : "fa-sign-out-alt";
+          const btn = meter.direct == 1 ? "btn-primary" : "btn-success";
+          marker.setLabel({
+            offset: new AMap.Pixel(-10, - 40),  //设置文本标注偏移量
+            content: `<div class='info_label' id='${meter.meterId}'>
+                      <div class="d-flex mt-2 mb-1 fs-xs text-primary">
+                            表号:${meter.meterId}
+                            表显:${meter.water}
+                            
+                  </a>
+                      </div>
+                 
+                      <div class="d-flex mt-2 mb-1 fs-xs text-primary">
+                            用水点：${meter.zoneName ||''}
+                      </div>
+                      
+                      </div>`, //设置文本标注内容
+            direction: 'right' //设置文本标注方位
+          });
+          //
+          marker.on('click', function (e){
+            const meterid = e.target.getExtData().meter.meterId;
+            const position = e.target.getPosition()
+            console.log(meterid, position);
+            openInfo(meterid, position)
+          })
+          marker.on('mouseover', function (e) {
+            const meterid = e.target.getExtData().meter.meterId;
+       
+            $('#' + meterid).show()
+          });
+          marker.on('mouseout', function (e) {
+            const meterid = e.target.getExtData().meter.meterId;
+          
+            $('#' + meterid).hide()
+          });
+          marker.setMap(map);
+
+          //打开详细信息窗体
+          //在指定位置打开信息窗体
+          async function openInfo(meterid, position) {
+            //构建信息窗体中显示的内容
+            var meter = await $.get(`/WaterMeters/GetMeterWith?meterid=${meterid}`);
+            var info = [];
+            info.push("<div class='input-card content-window-card'><div></div> ");
+            info.push(`<div style=\"padding:7px 0px 0px 0px;\"><h4>水表信息 <a href='/WaterMeterRecords/SummaryChartView?meterid=${meterid}' target="_blank" class=\"btn btn-outline-primary btn-sm btn-icon waves-effect waves-themed\"> <i class=\"fal fa-analytics\"></i> </a></h4>`);
+            info.push("<div class='row'>");
+            info.push(`<div class="col-6">表号 : ${meter.meterId} </div>  <div class="col-6"> 水表状态 : ${meter.Status || ''}</div>`);
+            info.push("</div><div class='row'>");
+            info.push(`<div class="col-6">口径 : ${meter.meterSize || ''}</div>   <div class="col-6">类型 : ${meter.meterType || ''}</div>`);
+            info.push("</div>");
+            info.push("<div class='row'>");
+            info.push(`<div class="col-12">使用单位 :</span> ${meter.CustomerName || ''}</div>`);
+              info.push(`</div >`);
+              info.push(`</div >`);
+
+            infoWindow = new AMap.InfoWindow({
+              content: info.join(""),  //使用默认信息窗体框样式，显示信息内容
+              offset: new AMap.Pixel(12, -3)
+            });
+
+            infoWindow.open(map, position);
+          }
+        });
+      });
+
+    })
+    </script>
+}

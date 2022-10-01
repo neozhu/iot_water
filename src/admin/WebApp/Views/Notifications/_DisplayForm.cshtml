@@ -1,0 +1,98 @@
+﻿﻿@model WebApp.Models.Notification
+<!-- begin master section -->
+<div class="row">
+    <div class="col col-lg-12 col-md-12">
+<!--begin notification form  -->
+<form id="notification_form" class="smart-form" method="post" novalidate >
+@Html.AntiForgeryToken()
+  <input type="hidden" id="@Html.IdFor(model => model.Id)" 
+                       name="@Html.NameFor(model => model.Id)" 
+                       value="@Html.ValueFor(model => model.Id)" />
+ <fieldset>
+     <div class="row">
+			              <!--主题-->
+            <section class="col col-3">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Title)</span> </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Title)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--消息内容-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.Content) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Content)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--链接-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.Link) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.Link)
+            </label>
+            </section>
+ 		 
+	    
+			  			  <!--已读-->
+              <section class="col col-3">
+              <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Read)</span> </label>
+              <label class="label">
+                @Html.DisplayFor(model => model.Read)
+            </label>
+            </section>
+		 
+	   </div>
+	    
+     <div class="row">
+			              <!--From-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.From) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.From)
+            </label>
+            </section>
+ 		 
+	    
+			              <!--From-->
+            <section class="col col-3">
+            <label class="label">@Html.DisplayNameFor(model => model.To) </label>
+            <label class="label">
+			 @Html.DisplayFor(model => model.To)
+            </label>
+            </section>
+ 		 
+	    
+			  			<!--类型-->
+            <section class="col col-3">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Group)</span> </label>
+            <label class="label">
+            @Html.DisplayFor(model => model.Group)
+			    </label>
+            </section>
+		 
+	    
+			              <!--发出时间-->
+            <section class="col col-3">
+            <label class="label"><span class="required">@Html.DisplayNameFor(model => model.Created)</span> </label>
+            <label class="label">
+            
+			@Html.DisplayFor(model => model.Created)
+			    </label>
+            </section>
+			  		 
+	   </div>
+	    
+	    
+</fieldset>
+</form>
+<!-- end notification form  -->
+</div>
+</div>
+<!-- end master section -->
+<!--========================================================================================-->
+
+

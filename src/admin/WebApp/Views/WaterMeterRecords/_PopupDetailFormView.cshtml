@@ -1,0 +1,462 @@
+﻿﻿@model WebApp.Models.WaterMeterRecord
+<!-- 弹出编辑窗体表单 -->
+ <div id="watermeterrecorddetailwindow" class="easyui-window" 
+      title="明细数据" 
+      data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'icon-more',
+                    footer:'#windowfooter',
+                    closeDuration:200,
+                    closeAnimation:'slide',
+                    openDuration:300,
+                    openAnimation:'slide',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(watermeterrecordhasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="row align-items-center m-0">
+      <div class="col">
+        <div class="btn-group btn-group-sm">
+          <button name="saveitembutton" onclick="savewatermeterrecorditem()" class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm" id="deleteitem-btn-group">
+          <button onclick="deletewatermeterrecorditem()" class="btn btn-danger">
+            <i class="fal fa-times"></i> @Html.L("Delete")
+          </button>
+        </div>
+      
+      </div>
+      <div class="col d-flex">
+
+      </div>
+    </div>
+  </div>
+ <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="panel-content">
+           <form id="watermeterrecord_form" 
+              class="easyui-form form-horizontal padding-10" 
+              method="post" 
+              data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+  @Html.AntiForgeryToken()
+   <!--Primary Key-->
+  @Html.HiddenFor(model=>model.Id)
+   <fieldset class="form-group">
+   <div class="row m-1">
+
+   <!--水表状态-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.meterStatus)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.meterStatus)" 
+				   name="@Html.NameFor(model => model.meterStatus)" 
+				   value="@Html.ValueFor(model => model.meterStatus)"
+				   tabindex="0" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.meterStatus)',
+								 required:false, 
+                                 validType: 'length[0,10]'
+                                 " />
+       </div>
+				   
+   <!--采集时间-->
+      <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.datetime)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.datetime)" 
+			       name="@Html.NameFor(model => model.datetime)" 
+                   value="@Html.ValueFor(model => model.datetime)"
+				   tabindex="1" required
+				   class="easyui-datetimebox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.datetime)',
+								 required:true,
+								 formatter:datetimeformatter" />
+    </div>
+				   
+
+   <!--表号-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.meterId)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.meterId)" 
+				   name="@Html.NameFor(model => model.meterId)" 
+				   value="@Html.ValueFor(model => model.meterId)"
+				   tabindex="2" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.meterId)',
+								 required:false, 
+                                 validType: 'length[0,20]'
+                                 " />
+       </div>
+				   
+   <!--水表当前读数(吨)-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.water)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.water)"
+				   name="@Html.NameFor(model => model.water)" 
+				   value="@Html.ValueFor(model => model.water)"
+				   tabindex="3" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.water)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--累计流量-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.reverseWater)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.reverseWater)"
+				   name="@Html.NameFor(model => model.reverseWater)" 
+				   value="@Html.ValueFor(model => model.reverseWater)"
+				   tabindex="4" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.reverseWater)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+   <!--温度-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.temperature)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.temperature)"
+				   name="@Html.NameFor(model => model.temperature)" 
+				   value="@Html.ValueFor(model => model.temperature)"
+				   tabindex="5" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.temperature)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--瞬时流量-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.flowrate)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.flowrate)"
+				   name="@Html.NameFor(model => model.flowrate)" 
+				   value="@Html.ValueFor(model => model.flowrate)"
+				   tabindex="6" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.flowrate)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+   <!--压力 (bar)-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.pressure)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.pressure)"
+				   name="@Html.NameFor(model => model.pressure)" 
+				   value="@Html.ValueFor(model => model.pressure)"
+				   tabindex="7" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.pressure)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+
+   <!--电压-->
+       <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.voltage)</label>
+	   <div class="col-md-4 mb-1">  
+             <input id="@Html.IdFor(model => model.voltage)"
+				   name="@Html.NameFor(model => model.voltage)" 
+				   value="@Html.ValueFor(model => model.voltage)"
+				   tabindex="8" 
+				   class="easyui-numberspinner" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.voltage)',
+								 required:true,formatter:numberformatter,
+                                 precision:2,
+                                 
+                                 "  />
+
+        </div>
+				   
+   <!--阀门状态-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.valveStatus)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.valveStatus)" 
+				   name="@Html.NameFor(model => model.valveStatus)" 
+				   value="@Html.ValueFor(model => model.valveStatus)"
+				   tabindex="9" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.valveStatus)',
+								 required:false, 
+                                 validType: 'length[0,20]'
+                                 " />
+       </div>
+				   
+
+   <!--用户编号-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.userId)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.userId)" 
+				   name="@Html.NameFor(model => model.userId)" 
+				   value="@Html.ValueFor(model => model.userId)"
+				   tabindex="10" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.userId)',
+								 required:false, 
+                                 validType: 'length[0,20]'
+                                 " />
+       </div>
+				   
+   <!--IMEI-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.imei)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.imei)" 
+				   name="@Html.NameFor(model => model.imei)" 
+				   value="@Html.ValueFor(model => model.imei)"
+				   tabindex="11" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.imei)',
+								 required:false, 
+                                 validType: 'length[0,50]'
+                                 " />
+       </div>
+				   
+
+   <!--所属单位-->
+        <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.OrgName)</label>
+		<div class="col-md-4 mb-1">  
+			<input id="@Html.IdFor(model => model.OrgName)" 
+				   name="@Html.NameFor(model => model.OrgName)" 
+				   value="@Html.ValueFor(model => model.OrgName)"
+				   tabindex="12" 
+				   class="easyui-textbox" 
+                   style="width:100%"
+				   type="text" 
+				   data-options="prompt:'@Html.DisplayNameFor(model => model.OrgName)',
+								 required:false, 
+                                 validType: 'length[0,80]'
+                                 " />
+       </div>
+				   
+	    </div> 
+      </fieldset>
+   </form>
+    </div>
+    </div>
+</div>
+<div id="windowfooter" style="padding:5px;">&nbsp;</div>
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+    //判断新增编辑状态
+    var MODELSTATE = 'Added';
+    var watermeterrecordid = null;
+    function openwatermeterrecorddetailwindow(data,state) {
+         MODELSTATE = state;
+         initwatermeterrecorddetailview();
+         watermeterrecordid = (data.Id || 0);
+         $('#watermeterrecorddetailwindow').window('open');
+         $('#watermeterrecord_form').form('reset');
+         $('#watermeterrecord_form').form('load', data);
+             }
+  //删除当前记录
+  function deletewatermeterrecorditem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/WaterMeterRecords/Delete/${watermeterrecordid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $dg.datagrid('reload');
+            $('#watermeterrecorddetailwindow').window('close');
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+    //async 保存数据
+    async function savewatermeterrecorditem() { 
+      const $watermeterrecordform = $('#watermeterrecord_form');
+      if ($watermeterrecordform.form('enableValidation').form('validate')) {
+            let watermeterrecord = $watermeterrecordform.serializeJSON();
+            let url = '/WaterMeterRecords/Edit';
+            //判断是新增或是修改方法
+            if (MODELSTATE === 'Added') {
+                url = '/WaterMeterRecords/Create';
+            }
+            var token = $('input[name="__RequestVerificationToken"]', $watermeterrecordform).val();
+            $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval:200});
+            $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        __RequestVerificationToken: token,
+                        watermeterrecord:watermeterrecord
+                    },
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+                })
+                .done(response => {
+                    $.messager.progress('close');
+                    if (response.success) {
+                        hook = false;
+                        $watermeterrecordform.form('disableValidation');
+                        $dg.datagrid('reload');
+                        $('#watermeterrecorddetailwindow').window("close");
+                        toastr.success("保存成功");  
+                    } else {
+                        $.messager.alert("错误",   response.err, "error");
+                    }
+                    })
+                .fail((jqXHR, textStatus, errorThrown) => {
+                       $.messager.progress('close');
+                       $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+                    });
+        }
+    }
+    //关闭窗口
+    function closewatermeterrecorddetailwindow() {
+        $('#watermeterrecorddetailwindow').window('close');
+    }
+    //todo
+    function todo() {
+         console.log('todo.....');
+    }
+     //判断是否有没有保存的记录
+     function watermeterrecordhasmodified() {
+            return hook;
+
+     }
+
+
+function initwatermeterrecorddetailview() {
+  //判断是否显示功能按钮
+  if (MODELSTATE === 'Added') {
+    $('#deleteitem-btn-group').hide();
+  } else {
+    $('#deleteitem-btn-group').show();
+  }
+
+//回车光标移动到下个输入控件
+    //如果是枚举类型需要把numberbox改成combobox
+    //水表当前读数(吨)
+	$('#water').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //累计流量
+	$('#reverseWater').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //温度
+	$('#temperature').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //瞬时流量
+	$('#flowrate').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //压力 (bar)
+	$('#pressure').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //如果是枚举类型需要把numberbox改成combobox
+    //电压
+	$('#voltage').numberbox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //日期类型 采集时间
+	$('#datetime').datebox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+}
+</script>
+

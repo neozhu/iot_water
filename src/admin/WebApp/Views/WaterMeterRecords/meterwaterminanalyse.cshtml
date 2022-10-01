@@ -1,0 +1,214 @@
+﻿@model WebApp.Models.WaterMeterRecord
+@{
+  ViewData["Title"] = "水表每天用水量分析";
+  ViewData["PageName"] = "WaterMeterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i> 每天的数据进行分析，计算小时最小流量、当天平均流量、最小流量占平均流量的百分百、判断当天数据是否完整";
+  ViewData["Category1"] = "水务管理中心";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/font/font-fileuploader.css")" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/select2/select2.bundle.css" rel="stylesheet" />
+
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          水表每天用水量分析
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content">
+          <div class="table-responsive">
+            <table id="watermeterrecords_datagrid">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+@section ScriptsBlock {
+  <script src="@Fingerprint.Tag("/Scripts/plugin/numeral/numeral.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-ext.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-reset.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+  <script>
+    var defaultdate = moment().add(-1, 'days').format('YYYY/MM/DD') + "-" + moment().add(-1, 'days').format('YYYY/MM/DD')
+    $('#watermeterrecords_datagrid').datagrid(
+      {
+        height: 670,
+        rownumbers: true,
+        idField: 'meterid',
+        sortName: 'per',
+        sortOrder:'desc',
+        remoteFilter: true,
+        remoteSort: true,
+        singleSelect: false,
+        clientPaging: false,
+        pagination: true,
+        striped: true,
+        pageSize: 15,
+        pageList: [15, 20, 50, 100, 500, 2000],
+        filterRules: [{ field: 'date', op: 'between', value: defaultdate}],
+        columns: [[
+          {    /*表号*/
+            field: 'meterid',
+            title: '水表号',
+            width: 120,
+            hidden: false,
+            sortable: true,
+            resizable: true,
+            formatter: function (v) {
+              return `<a target="_blank" href='/WaterMeterRecords/SummaryChartView?meterid=${v}'>${v}</a>`
+            }
+          },
+          {    /*表号*/
+            field: 'name',
+            title: '水表名称',
+            width: 120,
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*表号*/
+            field: 'name1',
+            title: '水表出线名称',
+            width: 120,
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*水表当前读数(吨)*/
+            field: 'date',
+            title: '日期',
+            width: 120,
+            align: 'right',
+            hidden: false,
+            formatter: dateformatter,
+            sortable: true,
+            resizable: true
+          },
+          {    /*水表当前读数(吨)*/
+            field: 'times',
+            title: '取样次数(24)',
+            width: 120,
+            align: 'right',
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*水表当前读数(吨)*/
+            field: 'min',
+            title: '最低每小时',
+            width: 120,
+            align: 'right',
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*水表当前读数(吨)*/
+            field: 'avg',
+            title: '平均每小时',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*累计流量*/
+            field: 'per',
+            title: '占比',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: function (v) {
+              if (v != null) {
+                return numeral(v).format('0.0%')
+              } else {
+                return '空'
+              }
+            },
+            sortable: true,
+            resizable: true
+          },
+        ]]
+      }).datagrid('enableFilter', [
+        {   /*水表当前读数(吨)*/
+          field: 'times',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*水表当前读数(吨)*/
+          field: 'min',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*水表当前读数(吨)*/
+          field: 'avg',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*水表当前读数(吨)*/
+          field: 'per',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {     /*注册日期*/
+          field: 'date',
+          type: 'dateRange',
+          options: {
+            value: defaultdate,
+            onChange: value => {
+              $dg.datagrid('addFilterRule', {
+                field: 'date',
+                op: 'between',
+                value: value
+              });
+
+              $('#watermeterrecords_datagrid').datagrid('doFilter');
+            }
+          }
+        },
+      ])
+      .datagrid('load','/WaterMeterRecords/GetMinAnalyseData');
+  </script>
+
+
+
+
+}
+
+

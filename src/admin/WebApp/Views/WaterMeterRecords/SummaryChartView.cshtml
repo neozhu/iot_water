@@ -1,0 +1,1042 @@
+﻿@model WebApp.Models.WaterMeterRecord
+@{
+  ViewData["Title"] = "水表明细数据";
+  ViewData["PageName"] = "WaterMeterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  水表明细数据";
+  ViewData["Category1"] = "数据分析";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/select2/select2.bundle.css" rel="stylesheet" />
+  <link href="~/Scripts/plugin/bstreeview/css/bootstrap-treeview.css" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <style>
+    #mapcontainer {
+      height: 100%;
+      width: 100%;
+    }
+
+    .info {
+      max-width: 200px;
+      padding: .75rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: .25rem;
+      position: absolute;
+      float: left;
+      top: 4rem;
+      /*background-color: white;*/
+      min-width: 22rem;
+      border-width: 0;
+      right: 1rem;
+      z-index: 100;
+      /*box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);*/
+    }
+
+    .info_label {
+      max-width: 90px;
+      padding: .75rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: .25rem;
+      position: absolute;
+      float: left;
+      top: 4rem;
+      background-color: white;
+      min-width: 13rem;
+      border-width: 0;
+      right: 1rem;
+      z-index: 100;
+      box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+      display: none;
+    }
+
+    .amap-marker-label {
+      border: none !important
+    }
+
+    .content-window-card {
+      position: relative;
+      width: 23rem;
+      padding: 0.75rem 0 0 1.25rem;
+      box-shadow: none;
+      bottom: 0;
+      left: 0;
+    }
+
+    p.input-item {
+      margin-bottom: 5px
+    }
+
+    span.field {
+      width: 90px
+    }
+  </style>
+}
+<!-- Modal Right Small -->
+<div class="modal fade default-example-modal-right-sm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-right modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4">分组筛选</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fal fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="panel-12" class="panel">
+          <div class="panel-hdr border-faded border-top-0 border-right-0 border-left-0 shadow-0">
+            <h2>
+              分组 <span class="fw-300"></span>
+            </h2>
+            <div class="panel-toolbar pr-3 align-self-end">
+              <ul id="demo_panel-tabs" class="nav nav-tabs border-bottom-0 nav-tabs-clean" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#tab_default-1" role="tab">区域</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#tab_default-2" role="tab">业态</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel-container show">
+            <div id="tab-scroll" style="height: 460px">
+
+              <div class="panel-content">
+
+                <div class="tab-content">
+
+
+
+                  <div class="tab-pane active" id="tab_default-1" role="tabpanel">
+                    <div id="tree1"></div>
+                  </div>
+                  <div class="tab-pane" id="tab_default-2" role="tabpanel">
+                    <div id="tree2"></div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          汇总数据 <span class="fw-300"><i>图表</i></span>
+        </h2>
+        <div class="panel-toolbar ">
+          <span class="ml-1" style="width:60px">时间区间:</span>
+          <div class="input-daterange input-group" id="datepicker-5">
+            <input type="text" class="form-control" name="start" value="2020-01-01">
+            <div class="input-group-append input-group-prepend">
+              <span class="input-group-text fs-xl"><i class="fal fa-ellipsis-h"></i></span>
+            </div>
+            <input type="text" class="form-control" name="end" value="2020-01-01">
+          </div>
+
+        </div>
+        <div class="panel-toolbar ">
+          <button data-toggle="modal" data-target=".default-example-modal-right-sm" class="btn btn-primary ml-1 waves-effect waves-themed">
+            分组筛选
+          </button>
+        </div>
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content py-2 rounded-top border-faded border-left-0 border-right-0 border-top-0 text-muted d-flex justify-content-center">
+          <div class="btn-group btn-group-toggle mr-3" data-toggle="buttons" style="width:370px">
+            <button onclick="openmaplocation()" class="btn btn-info btn-icon waves-effect waves-themed">
+              <i class="fal fa-location-arrow"></i> 地图显示
+            </button>
+            <label id="grouplabel" onclick="showdetalrecord()" class="btn btn-info waves-effect waves-themed ">
+              A区
+            </label>
+            <label id="groupsum" class="btn btn-info waves-effect waves-themed ">
+              总用水 1000 吨
+            </label>
+
+          </div>
+          <div class="btn-group btn-group-toggle mr-3" data-toggle="buttons">
+            <label id="monthlabel" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option1"> 月
+            </label>
+            <label id="weeklabel" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option1"> 周
+            </label>
+            <label id="daylabel" class="btn btn-primary waves-effect waves-themed">
+              <input type="radio" name="options" id="option2"> 天
+            </label>
+            <label id="hourlabel" class="btn btn-primary waves-effect waves-themed active">
+              <input type="radio" name="options" id="option3"> 小时
+            </label>
+            <label id="minutelabel" class="btn btn-primary waves-effect waves-themed ">
+              <input type="radio" name="options" id="option4"> 20分钟
+            </label>
+          </div>
+
+          <div class="btn-group btn-group-toggle mr-2" data-toggle="buttons">
+            <label id="chtypelabel1" class="btn btn-secondary waves-effect waves-themed ">
+              <input type="radio" name="coptions" id="coption1"> 柱状图
+            </label>
+            <label id="chtypelabel2" class="btn btn-secondary waves-effect waves-themed ">
+              <input type="radio" name="coptions" id="coption1"> 折线图
+            </label>
+
+          </div>
+        </div>
+        <div class="panel-content">
+
+          <div id="chartcontainer" class="w-100 mt-4" style="height: 300px"></div>
+        </div>
+        <div class="panel-content py-2 rounded-top border-faded border-left-0 border-right-0 border-top-0 text-muted justify-content-center　mt-5">
+          <div class="row">
+            <div class="col-md-4 text-center" id="piediv1">
+              <h3 id="labelpie1"></h3>
+              <div id="pie1" class="w-100 mt-4 mb-2" style="height: 250px"></div>
+            </div>
+            <div class="col-md-4 text-center" id="piediv2">
+              <h3 id="labelpie2"></h3>
+              <div id="pie2" class="w-100 mt-4 mb-2" style="height: 250px"></div>
+            </div>
+            <div class="col-md-4 text-center" id="piediv3">
+              <h3 id="labelpie3"></h3>
+              <div id="pie3" class="w-100 mt-4" style="height: 250px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@{ Html.RenderPartial("_PopupMapView"); }
+
+<!--水表明细记录-->
+<div class="modal fade default-example-modal-left" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-left modal-lg ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4">水表用水明细</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fal fa-times"></i></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card mb-g">
+          <div class="card-body p-3">
+            <h5 class="text-success">
+              水表编号
+              <small class="mt-0 mb-3 text-muted">
+                单击按钮可获取水表实时流量情况
+              </small>
+
+            </h5>
+            <div id="progressbarjs" class="progress progress-xs d-flex mb-2 mt-1"></div>
+            <div class="row">
+              <div class="col" id="meterbuttons">
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-g" id="detailcard" style="display:none">
+          <div class="card-body p-3">
+            <h5>
+              <small class="mt-0 mb-3 text-muted">
+                实时流量情况
+              </small>
+              <span class="badge badge-primary fw-n position-absolute pos-top pos-right mt-3 mr-3">A</span>
+            </h5>
+
+            <table id="meterrecorddg">
+            </table>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+@section ScriptsBlock {
+  <script type="text/javascript"
+          src="https://webapi.amap.com/maps?v=1.4.15&key=5f37b68c9bb76cbf1262a78331807e63"></script>
+  <script src="~/Scripts/plugin/bstreeview/js/bootstrap-treeview.js"></script>
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.0.2/dist/g2.min.js"></script>
+  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
+  <script src="~/Scripts/dependency/moment/moment.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-datepicker/bootstrap-datepicker.zh-CN.min.js"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script src="~/Scripts/plugin/numeral/numeral.min.js"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="~/Scripts/plugin/progressbar/progressbar.min.js"></script>
+  <script type="text/javascript">
+    let searchParams = new URLSearchParams(window.location.search);
+    let inputmeterid = searchParams.get('meterid');
+    console.log(inputmeterid)
+    function showdetalrecord() {
+      //console.log('showdetalrecord', selected)
+      if (selected.length > 0) {
+        var meters = selected.split(',');
+        var bar = new ProgressBar.Line('#progressbarjs', {
+          strokeWidth: 4,
+          easing: 'easeInOut',
+          duration: 1400,
+          color: '#886ab5',
+          trailColor: '#eee',
+          trailWidth: 1,
+          svgStyle: { width: '100%', height: '100%' }
+        });
+
+        bar.animate(1.0);
+        $('.default-example-modal-left').modal('toggle')
+        $('#detailcard').hide()
+        $.post('/WaterMeters/MappingMeter', { meterid: meters }).done(res => {
+
+          $('#meterbuttons').empty();
+          res.map(item => {
+            $('#meterbuttons').append(` <a href="javascript:loadmeterdata('${item.meterId}')" class="btn btn-default btn-sm waves-effect waves-themed mb-1">${item.meterId}/${item.meterSize||''}</a>`)
+          })
+
+          bar.destroy();
+
+        })
+
+
+        //$meterrecorddg.datagrid('resize')
+      }
+    }
+    function loadmeterdata(meterid) {
+      if (!$('#detailcard').is(':visible')) {
+        $('#detailcard').show()
+      }
+      $meterrecorddg.datagrid('resize');
+      var url = '/WaterMeterRecords/GetRecordData?meterid=' + meterid ;
+      $meterrecorddg.datagrid('load',url)
+    }
+
+    function openmaplocation() {
+      var meterid = selected.split(',');
+      openamapwindow(meterid);
+    }
+    var $meterrecorddg = $('#meterrecorddg');
+    function initmeterrecorddg() {
+      $meterrecorddg.datagrid({
+        rownumbers: true,
+        checkOnSelect: false,
+        selectOnCheck: false,
+        idField: 'Id',
+        sortName: 'datetime',
+        sortOrder: 'desc',
+        remoteFilter: true,
+        singleSelect: false,
+        method: 'get',
+        pagination: true,
+        clientPaging: false,
+        striped: true,
+        pageList: [20, 50, 100, 500],
+        pageSize:20,
+        columns: [[
+          {    /*表号*/
+            field: 'meterId',
+            title: '@Html.DisplayNameFor(model => model.meterId)',
+            width: 90,
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*水表状态*/
+            field: 'meterStatus',
+            title: '@Html.DisplayNameFor(model => model.meterStatus)',
+            width: 90,
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*阀门状态*/
+            field: 'valveStatus',
+            title: '@Html.DisplayNameFor(model => model.valveStatus)',
+            width: 80,
+            hidden: false,
+            sortable: true,
+            resizable: true
+          },
+          {    /*水表当前读数(吨)*/
+            field: 'water',
+            title: '@Html.DisplayNameFor(model => model.water)',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: numberformatter,
+            sortable: true,
+            resizable: true
+          },
+          {    /*反向流量*/
+            field: 'reverseWater',
+            title: '@Html.DisplayNameFor(model => model.reverseWater)',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: numberformatter,
+            sortable: true,
+            resizable: true
+          },
+
+          {    /*瞬时流量*/
+            field: 'flowrate',
+            title: '@Html.DisplayNameFor(model => model.flowrate)',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: numberformatter,
+            sortable: true,
+            resizable: true
+          },
+          {    /*压力 (bar)*/
+            field: 'pressure',
+            title: '@Html.DisplayNameFor(model => model.pressure)',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: numberformatter,
+            sortable: true,
+            resizable: true
+          },
+          {    /*电压*/
+            field: 'voltage',
+            title: '@Html.DisplayNameFor(model => model.voltage)',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: numberformatter,
+            sortable: true,
+            resizable: true
+          },
+          {    /*温度*/
+            field: 'temperature',
+            title: '@Html.DisplayNameFor(model => model.temperature)',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            formatter: numberformatter,
+            sortable: true,
+            resizable: true
+          },
+          {   /*采集时间*/
+            field: 'datetime',
+            title: '@Html.DisplayNameFor(model => model.datetime)',
+            width: 150,
+            align: 'right',
+            hidden: false,
+            formatter: datetimeformatter,
+            sortable: true,
+            resizable: true
+          },
+         {   /*开通时间*/
+            field: 'openingdate',
+           title: '开通时间',
+            width: 100,
+            align: 'right',
+            hidden: false,
+            sortable: true,
+            resizable: true
+          }]]
+      }).datagrid('enableFilter', [
+        {
+          field: 'meterId',
+          type: 'textbox',
+          options: {
+            readonly:true
+          }
+        },
+        {   /*水表当前读数(吨)*/
+          field: 'water',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*累计流量*/
+          field: 'reverseWater',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*温度*/
+          field: 'temperature',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*瞬时流量*/
+          field: 'flowrate',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*压力 (bar)*/
+          field: 'pressure',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {   /*电压*/
+          field: 'voltage',
+          type: 'numberbox',
+          op: ['equal', 'notequal', 'less', 'lessorequal', 'greater', 'greaterorequal']
+        },
+        {     /*采集时间*/
+          field: 'datetime',
+          type: 'dateRange',
+          options: {
+          }
+        },
+      ]);
+    }
+    var selected = '';
+    $(document).ready(async function () {
+
+
+
+      initmeterrecorddg()
+      $('#tab-scroll').slimScroll(
+        {
+          height: '690px',
+          railVisible: true,
+          alwaysVisible: true
+        });
+
+      const chart = new G2.Chart({
+        container: 'chartcontainer',
+        autoFit: true,
+        height: 300,
+      });
+
+      const pie1 = new G2.Chart({
+        container: 'pie1',
+        autoFit: true,
+        height: 250,
+      });
+      const pie2 = new G2.Chart({
+        container: 'pie2',
+        autoFit: true,
+        height: 250,
+      });
+      const pie3 = new G2.Chart({
+        container: 'pie3',
+        autoFit: true,
+        height: 250,
+      });
+
+      var label = ''
+      var total = 0;
+
+      var data1 = await $.get('/CustomerWaterMeters/GetZoneTreeData');
+
+      selected = data1.list[0].data;
+      label = data1.list[0].text;
+      data1.list[0].selectable = true,
+        $('#tree1').treeview({
+          expandIcon: "fal fa-plus",
+          collapseIcon: "fal  fa-minus",
+          levels: 2,
+          data: data1.list,
+          onNodeSelected: async function (event, data) {
+            //console.log(event, data)
+            inputmeterid = '';
+            selected = data.data;
+            label = data.text;
+            var level = 0;
+            await querydata();
+            if (data.parentId != undefined) {
+              level = 1;
+              var p1 = $('#tree1').treeview('getNode', data.parentId);
+              if (p1.parentId != undefined) {
+                var p2 = $('#tree1').treeview('getNode', p1.parentId);
+                //console.log(p2)
+                level = 2;
+              }
+
+            } else {
+              level = 0
+            }
+            if (level == 0) {
+              $('#piediv1').show();
+              $('#piediv2').hide();
+              $('#piediv3').hide();
+              await querypercent1(1);
+            } else if (level == 1) {
+              $('#piediv1').show();
+              $('#piediv2').show();
+              $('#piediv3').hide();
+              var p1 = $('#tree1').treeview('getNode', data.parentId);
+              await querypercent1(1);
+              await querypercent2(1, p1.label);
+            } else if (level == 2) {
+              $('#piediv1').show();
+              $('#piediv2').show();
+              $('#piediv3').show();
+              var p1 = $('#tree1').treeview('getNode', data.parentId);
+              await querypercent2(1, p1.label);
+              var p3 = $('#tree1').treeview('getNode', p1.parentId);
+              await querypercent3(1,p3.label);
+            }
+          }
+        });
+
+      var data2 = await $.get('/CustomerWaterMeters/GetCTypeTreeData');
+      //console.log(data2);
+      data2.list[0].selectable = true,
+        $('#tree2').treeview({
+          expandIcon: "fal fa-plus",
+          collapseIcon: "fal  fa-minus",
+          levels: 2,
+          data: data2.list,
+          onNodeSelected: async function (event, data) {
+            inputmeterid = '';
+            label = data.text;
+            selected = data.data;
+            await querydata();
+            if (data.parentId != undefined) {
+              level = 1;
+              var p1 = $('#tree2').treeview('getNode', data.parentId);
+              if (p1.parentId != undefined) {
+                var p2 = $('#tree2').treeview('getNode', p1.parentId);
+                console.log(p2)
+                level = 2;
+              }
+
+            } else {
+              level = 0
+            }
+            if (level == 0) {
+              $('#piediv1').show();
+              $('#piediv2').hide();
+              $('#piediv3').hide();
+              await querypercent1(data);
+            } else if (level == 1) {
+              $('#piediv1').show();
+              $('#piediv2').show();
+              $('#piediv3').hide();
+
+              var p1 = $('#tree2').treeview('getNode', data.parentId);
+              await querypercent1(2);
+              await querypercent2(2, p1.label);
+            } else if (level == 2) {
+              $('#piediv1').show();
+              $('#piediv2').show();
+              $('#piediv3').show();
+              await querypercent1(2);
+              var p1 = $('#tree2').treeview('getNode', data.parentId);
+              var p3 = $('#tree2').treeview('getNode', p1.parentId);
+              await querypercent3(2, p3.label, p1.label);
+              await querypercent2(2, p3.label);
+            }
+
+          }
+        });
+
+
+
+      var dt1 = moment(moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00'));
+      var dt2 = moment(moment().format('YYYY-MM-DD 23:59:59'));
+      var dt1_2 = moment(moment().subtract(30, 'days').format('YYYY-MM-DD 00:00:00'));
+      var dt2_2 = moment(moment().format('YYYY-MM-DD 23:59:59'));
+      var group = 'hour'
+      var group2 = 'hour'
+      var chtype = 'interval';
+      await querydata();
+      var controls = {
+        leftArrow: '<i class="fal fa-angle-left" style="font-size: 1.25rem"></i>',
+        rightArrow: '<i class="fal fa-angle-right" style="font-size: 1.25rem"></i>'
+      }
+      $('#datepicker-5 input[name="start"]').val(moment().subtract(30, 'days').format('YYYY-MM-DD'));
+      $('#datepicker-5 input[name="end"]').val(moment().format('YYYY-MM-DD'));
+      $('#datepicker-5').datepicker(
+        {
+          language: "zh-CN",
+          format: 'yyyy-mm-dd',
+          todayHighlight: true,
+          autoclose: true,
+          templates: controls
+        })
+        .on('changeDate', async function (e) {
+          if (e.target.name == 'start') {
+            dt1 = e.target.value + ' 00:00:00';
+          } else {
+            dt2 = e.target.value + ' 23:59:59';
+          }
+          console.log(dt1, dt2)
+          await querydata();
+        });
+    
+
+      $('#hourlabel').on('click', async function () {
+        group = 'hour';
+        await querydata()
+      });
+      $('#minutelabel').on('click', async function () {
+        group = 'minute';
+        await querydata()
+      });
+      $('#daylabel').on('click', async function () {
+        group = 'day';
+        await querydata()
+      });
+      $('#weeklabel').on('click', async function () {
+        group = 'week';
+        await querydata()
+      });
+      $('#monthlabel').on('click', async function () {
+        group = 'month';
+        await querydata()
+      });
+
+      $('#chtypelabel1').on('click', async function () {
+        chtype = 'interval';
+        await querydata()
+      });
+      $('#chtypelabel2').on('click', async function () {
+        chtype = 'line';
+        await querydata()
+      });
+      //---------------------------------------------------------
+
+      async function querydata() {
+     
+        var meterid = [];
+        if (inputmeterid != '' && inputmeterid != null) {
+          
+          const node = data1.list.filter(x => {
+            var array = x.data.split(',');
+            return array.includes(inputmeterid);
+          });
+          console.log(node)
+          if (node.length == 0) {
+            const node2 = data2.list.filter(x => {
+              var array = x.data.split(',');
+              return array.includes(inputmeterid);
+            });
+            
+            if (node2.length > 0) {
+              const sub = node2[0].nodes.filter(x => {
+                var array = x.data.split(',');
+                return array.includes(inputmeterid);
+              })
+             
+              if (sub.length > 0) {
+                meterid = sub[0].data.split(',');
+                label = sub[0].text;
+              
+                $('#piediv1').show();
+                $('#piediv2').hide();
+                $('#piediv3').hide();
+                await querypercent2(sub[0]);
+                await querypercent1(node2[0]);
+
+              }
+            }
+          }
+          else if (node.length > 0) {
+            const sub = node[0].nodes.filter(x => {
+              var array = x.data.split(',');
+              return array.includes(inputmeterid);
+            })
+            if (sub.length > 0) {
+              meterid = sub[0].data.split(',');
+              label = sub[0].text;
+
+              $('#piediv1').show();
+              $('#piediv2').hide();
+              $('#piediv3').hide();
+              await querypercent2(sub[0]);
+              await querypercent1(node[0]);
+
+            }
+          }
+
+        } else {
+          meterid = selected.split(',');
+        }
+        const dialog = bootbox.dialog({
+          message: '<div class="text-center"><i class="fal fa-spinner fa-pulse fa-lg mr-1"></i> 正在获取数据...</div>',
+          closeButton: true
+        });
+        var data = [];
+        if (group == 'month') {
+          data = await $.get(`/WaterChart/GetSMeterDataByMonth`, { meterid: meterid.join(), dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        } else if (group == 'week') {
+          data = await $.get(`/WaterChart/GetSMeterDataByWeek`, { meterid: meterid.join(), dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        } else if (group == 'day') {
+          data = await $.get(`/WaterChart/GetSMeterDataByDay`, { meterid: meterid.join(), dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        }
+        else if (group == 'hour') {
+          data = await $.get(`/WaterChart/GetSMeterDataByHour`, { meterid: meterid.join(), dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        }
+        else if (group == 'minute') {
+          data = await $.get(`/WaterChart/GetSMeterDataByMinute`, { meterid: meterid.join(), dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') });
+        }
+        console.log(group, meterid,dt1,dt2,data)
+        total = data.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue.increment
+        }, 0)
+        $('#groupsum').html(`总用水：${numeral(total).format('0,0')} 吨`);
+        $('#grouplabel').html(label);
+        renderChart(data);
+        setTimeout(() => {
+            dialog.modal('hide')
+        }, 500);
+
+
+
+      }
+
+
+      function renderChart(data) {
+
+
+        chart.clear();
+        chart.data(data);
+        var margin = 1 / data.length;
+        chart.scale({
+          datetime: {
+            type: 'time',
+            tickCount: 8,
+            range: [margin / 2, 1 - margin / 2],
+            mask: 'YYYY-MM-DD HH:mm'
+          },
+          increment: {
+            alias: '流量(吨)',
+            nice: true,
+            min: 0
+          },
+          
+        },
+        {
+            nice: true,
+          });
+
+        chart.axis('increment', {
+          grid: null,
+          title: {},
+        });
+        ;
+
+
+        chart.tooltip({
+          showCrosshairs: true,
+          shared: true,
+        });
+
+
+
+        if (chtype == 'interval') {
+          chart
+            .interval()
+            .position('datetime*increment')
+            .color('l(100) 0:#0288D1 1:#B3E5FC');
+        }
+        else {
+          chart
+            .line()
+            .position('datetime*increment')
+            .color('l(100) 0:#0288D1 1:#B3E5FC');
+        }
+
+        chart.interaction('element-highlight');
+        chart.interaction('element-visible-filter');
+
+        chart.render();
+
+      }
+
+      async function querypercent1(index) {
+  
+
+        //console.log(s1, total, other)
+        if (index == 1) {
+          const array = await $.get('/WaterChart/GetZonePieData', { dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') })
+          console.log(array)
+          renderPie1(array);
+          $('#labelpie1').html(`区域占比分析`)
+        } else {
+          const array = await $.get('/WaterChart/GetCustomerTypePieData', { dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') })
+          renderPie1(array);
+          $('#labelpie1').html(`业态占比分析`)
+        }
+      }
+      async function querypercent2(index,type) {
+      
+        //console.log('querypercent2',s1, total, other)
+        if (index ==1) {
+          const array = await $.get('/WaterChart/GetZonePointPieData', {zonename:type, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') })
+          console.log(array)
+          renderPie2(array);
+          $('#labelpie2').html(`${type}占比分析`)
+        } else {
+         const array = await $.get('/WaterChart/GetCustomerPieData', { type: type, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') })
+          console.log(array)
+          renderPie2(array);
+          $('#labelpie2').html(`${type}占比分析`)
+        }
+      }
+      async function querypercent3(index,type,name) {
+        //console.log(s1, total, other)
+        if (total ==1) {
+         
+        } else {
+          const array = await $.get('/WaterChart/GetCustomerDeptPieData', { type: type,name:name, dt1: moment(dt1).format('YYYY-MM-DD 00:00'), dt2: moment(dt2).format('YYYY-MM-DD 23:59:59') })
+          console.log(array)
+          renderPie3(array);
+          $('#labelpie3').html(`${name}占比分析`)
+        }
+      }
+      function renderPie1(data) {
+        pie1.clear();
+        pie1.coordinate('theta', {
+          radius: 0.8,
+        });
+
+        pie1.data(data);
+
+        pie1.scale('percent', {
+          formatter: (val) => {
+            val = val + '%';
+            return val;
+          },
+        });
+
+        pie1.tooltip({
+          showTitle: false,
+          showMarkers: false,
+        });
+
+        pie1
+          .interval()
+          .position('total')
+          .color('type', ["#5B8FF9", "#CDDDFD", "#61DDAA", "#CDF3E4", "#65789B", "#CED4DE", "#F6BD16", "#FCEBB9", "#6F5EF9", "#D3CEFD", "#78D3F8", "#D3EEF9", "#9661BC", "#DECFEA", "#F6903D", "#FFE0C7", "#008685", "#BBDEDE", "#F08BB4", "#FFE0ED"])
+          .label('total', {
+            content: (data) => {
+              return `${data.type}: ${(data.percent).toFixed()}%`;
+            },
+          })
+          .adjust('stack')
+          .tooltip('type*total', (type, total) => {
+            total = total  + 'm3';
+            return {
+              name: type,
+              value: total,
+            };
+          });
+
+        pie1.interaction('element-single-selected');
+
+        pie1.render();
+      }
+      function renderPie2(data) {
+        pie2.clear();
+        pie2.coordinate('theta', {
+          radius: 0.8,
+        });
+
+        pie2.data(data);
+
+        pie2.scale('percent', {
+          formatter: (val) => {
+            val = val + '%';
+            return val;
+          },
+        });
+
+        pie2.tooltip({
+          showTitle: false,
+          showMarkers: false,
+        });
+
+        pie2
+          .interval()
+          .position('total')
+          .color('type', ["#5B8FF9", "#CDDDFD", "#61DDAA", "#CDF3E4", "#65789B", "#CED4DE", "#F6BD16", "#FCEBB9", "#6F5EF9", "#D3CEFD", "#78D3F8", "#D3EEF9", "#9661BC", "#DECFEA", "#F6903D", "#FFE0C7", "#008685", "#BBDEDE", "#F08BB4", "#FFE0ED"])
+          .label('total', {
+            content: (data) => {
+              return `${data.type}: ${(data.percent).toFixed()}%`;
+            },
+          })
+          .adjust('stack')
+          .tooltip('type*total', (type, total) => {
+            total = total + 'm3';
+            return {
+              name: type,
+              value: total,
+            };
+          });
+
+        pie2.interaction('element-single-selected');
+
+        pie2.render();
+      }
+      function renderPie3(data) {
+        pie3.clear();
+        pie3.coordinate('theta', {
+          radius: 0.75,
+        });
+
+        pie3.data(data);
+
+        pie3.scale('percent', {
+          formatter: (val) => {
+            val = val + '%';
+            return val;
+          },
+        });
+
+        pie3.tooltip({
+          showTitle: false,
+          showMarkers: false,
+        });
+
+        pie3
+          .interval()
+          .position('total')
+          .color('type', ["#5B8FF9", "#CDDDFD", "#61DDAA", "#CDF3E4", "#65789B", "#CED4DE", "#F6BD16", "#FCEBB9", "#6F5EF9", "#D3CEFD", "#78D3F8", "#D3EEF9", "#9661BC", "#DECFEA", "#F6903D", "#FFE0C7", "#008685", "#BBDEDE", "#F08BB4", "#FFE0ED"])
+          .label('total', {
+            content: (data) => {
+              return `${data.type}: ${(data.percent).toFixed()}%`;
+            },
+          })
+          .adjust('stack')
+          .tooltip('type*total', (type, total) => {
+            total = total + 'm3';
+            return {
+              name: type,
+              value: total,
+            };
+          });
+
+        pie3.interaction('element-single-selected');
+
+        pie3.render();
+      }
+
+    })
+  </script>
+
+}

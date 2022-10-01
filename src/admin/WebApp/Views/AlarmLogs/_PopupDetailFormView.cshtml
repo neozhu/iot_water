@@ -1,0 +1,386 @@
+﻿﻿@model WebApp.Models.AlarmLog
+<!-- 弹出编辑窗体表单 -->
+<div id="alarmlogdetailwindow" class="easyui-window"
+     title="明细数据"
+     data-options="modal:true,
+                    closed:true,
+                    minimizable:false,
+                    collapsible:false,
+                    maximized:false,
+                    iconCls:'icon-more',
+                    footer:'#windowfooter',
+                    closeDuration:200,
+                    closeAnimation:'slide',
+                    openDuration:300,
+                    openAnimation:'slide',
+                    onBeforeClose:function(){
+                      var that = $(this);
+                      if(alarmloghasmodified()){
+                        $.messager.confirm('确认','你确定要放弃保存修改的记录?',function(r){
+                        if (r){
+                          var opts = that.panel('options');
+                          var onBeforeClose = opts.onBeforeClose;
+                          opts.onBeforeClose = function(){};
+                          that.panel('close');
+                          opts.onBeforeClose = onBeforeClose;
+                          hook = false;
+                        }
+                        });
+                        return false;
+                      }
+                    },
+                    onOpen:function(){
+                       $(this).window('vcenter');
+                       $(this).window('hcenter');
+                    },
+                    onRestore:function(){
+                    },
+                    onMaximize:function(){
+                    }
+                    " style="width:800px;height:450px;display:none">
+  <!-- toolbar -->
+  <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-subtlelight-fade sticky-top">
+    <div class="row align-items-center m-0">
+      <div class="col">
+        <div class="btn-group btn-group-sm">
+          <button name="saveitembutton" onclick="savealarmlogitem()" class="btn btn-default">
+            <i class="fal fa-save"></i> @Html.L("Save")
+          </button>
+        </div>
+        <div class="btn-group btn-group-sm" id="deleteitem-btn-group">
+          <button onclick="deletealarmlogitem()" class="btn btn-danger">
+            <i class="fal fa-times"></i> @Html.L("Delete")
+          </button>
+        </div>
+
+      </div>
+      <div class="col d-flex">
+
+      </div>
+    </div>
+  </div>
+  <!-- panel container form  -->
+  <div class="panel-container show">
+    <div class="panel-content">
+      <form id="alarmlog_form"
+            class="easyui-form form-horizontal padding-10"
+            method="post"
+            data-options="novalidate:true,
+                            onChange: function(target){
+                              hook = true;
+                              $('button[name*=\'saveitembutton\']').prop('disabled', false);
+                             },
+                             onLoadSuccess:function(data){
+                               hook = false;
+                               $('button[name*=\'saveitembutton\']').prop('disabled', true);
+                             }">
+        @Html.AntiForgeryToken()
+        <!--Primary Key-->
+        @Html.HiddenFor(model => model.Id)
+        <fieldset class="form-group">
+          <div class="row m-1">
+
+            <!--发生时间-->
+            <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.InitDateTime)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.InitDateTime)"
+                     name="@Html.NameFor(model => model.InitDateTime)"
+                     value="@Html.ValueFor(model => model.InitDateTime)"
+                     tabindex="0" required
+                     class="easyui-datetimebox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.InitDateTime)',
+								 required:true,
+								 formatter:datetimeformatter" />
+            </div>
+
+            <!--对象-->
+            <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.DeviceId)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.DeviceId)"
+                     name="@Html.NameFor(model => model.DeviceId)"
+                     value="@Html.ValueFor(model => model.DeviceId)"
+                     tabindex="1" required
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.DeviceId)',
+								 required:true,
+                                 validType: 'length[0,50]'
+                                 " />
+            </div>
+
+
+            <!--报警内容-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Content)</label>
+            <div class="col-md-10 mb-1">
+              <input id="@Html.IdFor(model => model.Content)"
+                     name="@Html.NameFor(model => model.Content)"
+                     value="@Html.ValueFor(model => model.Content)"
+                     tabindex="2"
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.Content)',
+								 required:false,
+                                 validType: 'length[0,300]'
+                                 " />
+            </div>
+
+            <!--状态-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Status)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.Status)"
+                     name="@Html.NameFor(model => model.Status)"
+                     value="@Html.ValueFor(model => model.Status)"
+                     tabindex="3"
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.Status)',
+								 required:false,
+                                 validType: 'length[0,30]'
+                                 " />
+            </div>
+
+
+            <!--类型-->
+            <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Type)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.Type)"
+                     name="@Html.NameFor(model => model.Type)"
+                     value="@Html.ValueFor(model => model.Type)"
+                     tabindex="4" required
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.Type)',
+								 required:true,
+                                 validType: 'length[0,30]'
+                                 " />
+            </div>
+
+            <!--报警等级-->
+            <label class="col-md-2 mb-1 form-label text-right text-danger">@Html.DisplayNameFor(model => model.Level)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.Level)"
+                     name="@Html.NameFor(model => model.Level)"
+                     value="@Html.ValueFor(model => model.Level)"
+                     tabindex="5" required
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.Level)',
+								 required:true,
+                                 validType: 'length[0,30]'
+                                 " />
+            </div>
+
+
+            <!--提交人-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.User)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.User)"
+                     name="@Html.NameFor(model => model.User)"
+                     value="@Html.ValueFor(model => model.User)"
+                     tabindex="6"
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.User)',
+								 required:false,
+                                 validType: 'length[0,20]'
+                                 " />
+            </div>
+
+            <!--处理人-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.ToUser)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.ToUser)"
+                     name="@Html.NameFor(model => model.ToUser)"
+                     value="@Html.ValueFor(model => model.ToUser)"
+                     tabindex="7"
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.ToUser)',
+								 required:false,
+                                 validType: 'length[0,20]'
+                                 " />
+            </div>
+
+
+            <!--开始处理时间-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.BeginDateTime)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.BeginDateTime)"
+                     name="@Html.NameFor(model => model.BeginDateTime)"
+                     value="@Html.ValueFor(model => model.BeginDateTime)"
+                     tabindex="8"
+                     class="easyui-datetimebox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.BeginDateTime)',
+								 required:false,
+								 formatter:datetimeformatter" />
+            </div>
+            <!--处理结果-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.Result)</label>
+            <div class="col-md-10 mb-1">
+              <input id="@Html.IdFor(model => model.Result)"
+                     name="@Html.NameFor(model => model.Result)"
+                     value="@Html.ValueFor(model => model.Result)"
+                     tabindex="10"
+                     class="easyui-textbox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.Result)',
+								 required:false,
+                                 validType: 'length[0,300]'
+                                 " />
+            </div>
+            <!--完成时间-->
+            <label class="col-md-2 mb-1 form-label text-right ">@Html.DisplayNameFor(model => model.CompletedDateTime)</label>
+            <div class="col-md-4 mb-1">
+              <input id="@Html.IdFor(model => model.CompletedDateTime)"
+                     name="@Html.NameFor(model => model.CompletedDateTime)"
+                     value="@Html.ValueFor(model => model.CompletedDateTime)"
+                     tabindex="9"
+                     class="easyui-datetimebox"
+                     style="width:100%"
+                     type="text"
+                     data-options="prompt:'@Html.DisplayNameFor(model => model.CompletedDateTime)',
+								 required:false,
+								 formatter:datetimeformatter" />
+            </div>
+
+
+
+
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="windowfooter" style="padding:5px;">&nbsp;</div>
+<!-- 弹出窗体form表单 -->
+<!-- 弹出编辑对话框 -->
+<!--begin popup detailview javascript block -->
+<script type="text/javascript">
+  //判断新增编辑状态
+  var MODELSTATE = 'Added';
+  var alarmlogid = null;
+  function openalarmlogdetailwindow(data, state) {
+    MODELSTATE = state;
+    initalarmlogdetailview();
+    alarmlogid = (data.Id || 0);
+    $('#alarmlogdetailwindow').window('open');
+    $('#alarmlog_form').form('reset');
+    $('#alarmlog_form').form('load', data);
+  }
+  //删除当前记录
+  function deletealarmlogitem() {
+    $.messager.confirm('确认', '你确定要删除该记录?', result => {
+      if (result) {
+        const url = `/AlarmLogs/Delete/${alarmlogid}`;
+        $.get(url).done(res => {
+          if (res.success) {
+            toastr.success("删除成功");
+            $dg.datagrid('reload');
+            $('#alarmlogdetailwindow').window('close');
+          } else {
+            $.messager.alert('错误', res.err, 'error');
+          }
+        });
+      }
+    });
+  }
+  //async 保存数据
+  async function savealarmlogitem() {
+    const $alarmlogform = $('#alarmlog_form');
+    if ($alarmlogform.form('enableValidation').form('validate')) {
+      let alarmlog = $alarmlogform.serializeJSON();
+      let url = '/AlarmLogs/Edit';
+      //判断是新增或是修改方法
+      if (MODELSTATE === 'Added') {
+        url = '/AlarmLogs/Create';
+      }
+      var token = $('input[name="__RequestVerificationToken"]', $alarmlogform).val();
+      $.messager.progress({ title: '请等待', msg: '正在保存数据...', interval: 200 });
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+          __RequestVerificationToken: token,
+          alarmlog: alarmlog
+        },
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8'
+      })
+        .done(response => {
+          $.messager.progress('close');
+          if (response.success) {
+            hook = false;
+            $alarmlogform.form('disableValidation');
+
+            $('#alarmlogdetailwindow').window("close");
+            reload();
+            loadalarms();
+            toastr.success("保存成功");
+          } else {
+            $.messager.alert("错误", response.err, "error");
+          }
+        })
+        .fail((jqXHR, textStatus, errorThrown) => {
+          $.messager.progress('close');
+          $.messager.alert('异常', `${jqXHR.status}: ${jqXHR.statusText} `, 'error');
+        });
+    }
+  }
+  //关闭窗口
+  function closealarmlogdetailwindow() {
+    $('#alarmlogdetailwindow').window('close');
+  }
+  //todo
+  function todo() {
+    console.log('todo.....');
+  }
+  //判断是否有没有保存的记录
+  function alarmloghasmodified() {
+    return hook;
+
+  }
+
+
+  function initalarmlogdetailview() {
+    //判断是否显示功能按钮
+    if (MODELSTATE === 'Added') {
+      $('#deleteitem-btn-group').hide();
+    } else {
+      $('#deleteitem-btn-group').show();
+    }
+
+    //回车光标移动到下个输入控件
+    //日期类型 发生时间
+    $('#InitDateTime').datebox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //日期类型 开始处理时间
+    $('#BeginDateTime').datebox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+    //日期类型 完成时间
+    $('#CompletedDateTime').datebox('textbox').bind('keydown', function (e) {
+      if (e.keyCode == 13) {
+        $(e.target).emulateTab();
+      }
+    });
+  }
+</script>
+

@@ -1,0 +1,139 @@
+﻿﻿@model WebApp.Models.BillHeader
+
+<div class="container">
+  <div data-size="A4">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3 class="fw-300 display-4 fw-500 color-primary-600 keep-print-font pb-4 l-h-n m-0">
+          东部机场集团有限公司
+        </h3>
+        <div class="d-flex align-items-center mb-5">
+          <h2 class="keep-print-font fw-500 mb-0 text-primary flex-1 position-relative">
+
+            @Model.Month 水费通知单 @Model.BillNo
+            <!-- barcode demo only -->
+          </h2>
+        </div>
+
+        <div class="text-dark fw-700 h1 mb-g keep-print-font">
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="d-flex justify-content-between mb-2">
+      <div>
+        <strong>单位:</strong>
+        @Model.CustomerName
+      </div>
+      <div>
+        <strong>账单日期:</strong>
+        @Model.BillDate.ToString("yyyy-MM-dd")
+        <strong>缴费截至日:</strong>
+        @(Model.PaymentDate == null ? "" : Model.PaymentDate.Value.ToString("yyyy-MM-dd"))
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="row">
+      <div class="col-sm-12">
+        <table class=" table table-bordered">
+          <thead>
+            <tr>
+              <th class="fw-700">
+                水量(立方米)
+              </th>
+              <th class="fw-700">
+                单价(元/立方米)
+              </th>
+              <th class="fw-700">
+                水量金额(元)
+              </th>
+              <th class="fw-700">
+                服务费单价(元/立方米)
+              </th>
+              <th class="fw-700">
+                服务费金额(元)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>@Model.TotalWater.ToString("N") </td>
+              <td>@Model.WaterPrice </td>
+              <td>@Model.TotalWaterAmount.ToString("N") </td>
+              <td>@Model.ServicePrice </td>
+              <td>@Model.TotalServiceAmount.ToString("N") </td>
+            </tr>
+            <tr>
+              <td>应缴总额(元)</td>
+              <td colspan="2">@Model.TotalAmount</td>
+              <td colspan="2">大写:@Model.TotalAmount.ChineseMoney()</td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                备注 :<br>
+                @Model.Remark
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5">
+                附:水表抄见明细表<br>
+                <div class="table-responsive">
+                  <table class="table mt-5 table-clean">
+                    <thead>
+                      <tr>
+                        <th class="text-center border-top-0 table-scale-border-bottom fw-700">水表编号</th>
+                        <th class="border-top-0 table-scale-border-bottom fw-700">名称</th>
+                        <th class="border-top-0 table-scale-border-bottom fw-700">类型</th>
+                        <th class="border-top-0 table-scale-border-bottom fw-700">上月抄见数</th>
+                        <th class="border-top-0 table-scale-border-bottom fw-700">本月抄见数</th>
+                        <th class="border-top-0 table-scale-border-bottom fw-700">倍率</th>
+                        <th class="text-center border-top-0 table-scale-border-bottom fw-700">用水量</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach (var item in Model.BillDetails)
+                      {
+                      <tr>
+                        <td>@item.MeterId</td>
+                        <td>@item.MeterName</td>
+                        <td>@item.Negitive</td>
+                        <td>@item.Water1</td>
+                        <td>@item.Water2</td>
+                        <td>@item.Rate</td>
+                        <td>@item.Water.ToString("N")</td>
+                      </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-2">
+      <div>
+        <strong>制表人:</strong>
+        @Model.CreatedBy
+      </div>
+      <div>
+        <strong>制表时间:</strong>
+        @(Model.CreatedDate == null ? "" : Model.CreatedDate.Value.ToString("yyyy-MM-dd"))
+      </div>
+    </div>
+     
+  </div>
+  </div>

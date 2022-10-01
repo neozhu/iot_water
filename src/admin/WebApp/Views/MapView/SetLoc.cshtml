@@ -1,0 +1,428 @@
+﻿@{
+  ViewData["Title"] = "分配水表位置";
+  ViewData["PageName"] = "Zone";
+  ViewData["Heading"] = "<i class='fal fa-map-marked-alt text-primary'></i>  分配水表位置";
+  ViewData["Category1"] = "远程监控";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <style>
+    #mapcontainer {
+      height: 100%;
+      width: 100%;
+    }
+    .amap-marker-label {
+      border:none!important
+    }
+    .info {
+      max-width: 200px;
+      padding: .75rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: .25rem;
+      position: absolute;
+      float: left;
+      top: 4rem;
+      /*background-color: white;*/
+      min-width: 22rem;
+      border-width: 0;
+      right: 1rem;
+      z-index: 100;
+      /*box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);*/
+    }
+
+    .info_label {
+      max-width: 90px;
+      padding: .75rem 1.25rem;
+      margin-bottom: 1rem;
+      border-radius: .25rem;
+      position: absolute;
+      float: left;
+      top: 4rem;
+      background-color: white;
+      min-width: 13rem;
+      border-width: 0;
+      right: 1rem;
+      z-index: 100;
+      box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+      /*display:none;*/
+    }
+  </style>
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel" style="height:45rem">
+      <div class="panel-hdr">
+        <h2>
+          地图展示
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show " style="height:100%">
+        <div class="panel-content m-0 p-0  " style="height:100%">
+          <div id="mapcontainer" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="info">
+    <div class="card border m-auto m-lg-0 shadow-1 shadow-hover-5" style="max-width: 18rem;">
+      <div class="card-header bg-trans-gradient py-2 pr-2 d-flex align-items-center flex-wrap">
+        <div class="card-title text-white">添加用水点</div>
+      </div>
+      <div class="form-group p-2 m-0 rounded-top">
+        <input type="text" class="form-control  shadow-inset-2 m-0" id="js_list_filter" placeholder="水表编号">
+      </div>
+      <div id="tab-scroll" style="height: 260px">
+
+        <ul class="list-group list-group-flush" id="meterlist">
+        </ul>
+      </div>
+      <div class="card-body">
+        <a href="javascript:addwatermeter()" class="card-link">添加</a>
+        <a href="javascript:deletewatermeter()" class="card-link">删除</a>
+      </div>
+    </div>
+  </div>
+</div>
+@section ScriptsBlock {
+  <script type="text/javascript"
+          src="https://webapi.amap.com/maps?v=1.4.15&key=5f37b68c9bb76cbf1262a78331807e63"></script>
+
+  <script>
+    document.addEventListener('smartPanel.onFullscreen', () => {
+      var height = $(window).height();
+      //console.log(height);
+
+
+
+
+    })
+    $('#js_list_filter').on('change', () => {
+      const meterid = $('#js_list_filter').val();
+      loadwaterlist(meterid)
+    })
+    var zoneId = 1;
+    //加载水表
+    function loadwaterlist(meter) {
+      $('#meterlist').empty();
+      $.get(`/WaterMeters/GetWaterLoc?&meterid=${meter}`).done(res => {
+        $('#meterlist').empty();
+        waterlist = res;
+        res.forEach(item => {
+          const li = `<li id="${item.meterId}" class="list-group-item">${item.meterId} ${item.points || ''}</li>`;
+          $('#meterlist').append(li);
+        });
+
+      });
+
+    }
+    //加载已分配的水表
+    function loadlocmeterwater() {
+      $.get(`/ZoneWaterMeters/GetWaterMeterLoc`).done(res => {
+        //console.log(res);
+
+        res.forEach(meter => {
+          //console.log(meter)
+          const fal = meter.direct == 1 ? "fa-sign-in-alt" : "fa-sign-out-alt";
+          const btn = meter.direct == 1 ? "btn-primary" : "btn-success";
+          marker = new AMap.Marker({
+            extData: {
+              "meter": meter,
+              "zoneid": meter.zoneId
+            },
+            icon: "/Content/img/marker.png",
+            position: [meter.longitude, meter.latitude],
+            draggable: true,
+            cursor: 'move',
+            // 设置拖拽效果
+            raiseOnDrag: false,
+            offset: new AMap.Pixel(0,0)
+          });
+          marker.setLabel({
+            offset: new AMap.Pixel(-10, - 40),  //设置文本标注偏移量
+            content: `<div class='info_label'>
+                      <div class="mb-1" >
+                    表号：${meter.meterId} 表显:${meter.water}
+                    </div><div>
+                    </div>
+                     </div>`, //设置文本标注内容
+            direction: 'right' //设置文本标注方位
+          });
+          marker.setMap(map);
+          marker.on('dragend', function (e) {
+
+            const meter = e.target.getExtData().meter;
+            const zoneid = e.target.getExtData().zoneid;
+            const lnglat = e.lnglat;
+            $.post('/Zones/UpdateMeterLoc', {
+              zoneid: zoneid,
+              meterid: meter.meterId,
+              lng: lnglat.lng,
+              lat: lnglat.lat
+            }).done(res => {
+              //console.log(res);
+
+            })
+          })
+
+          markers.push(marker);
+        })
+
+      });
+
+    }
+    //修改方向
+    function changedirect(zoneid, meterid, direct) {
+      // console.log($("i", `#${zoneid}_${meterid}`), $(`#${zoneid}_${meterid}`).attr('class'))
+      $("i", `#${zoneid}_${meterid}`).toggleClass("fa-sign-in-alt fa-sign-out-alt");
+      if (direct == 1) {
+        direct = -1;
+        $.post('/Zones/ChangeDirect', {
+          zoneid: zoneid,
+          meterid: meterid,
+          direct: direct
+        }).done(res => {
+          $(`#${zoneid}_${meterid}`).removeClass('btn-primary').addClass('btn-success');
+          $(`#${zoneid}_${meterid}`).prop("href", `javascript:changedirect('${zoneid}','${meterid}',${direct});`)
+        })
+
+      } else {
+        direct = 1;
+        $.post('/Zones/ChangeDirect', {
+          zoneid: zoneid,
+          meterid: meterid,
+          direct: direct
+        }).done(res => {
+          $(`#${zoneid}_${meterid}`).removeClass('btn-success').addClass('btn-primary');
+          $(`#${zoneid}_${meterid}`).prop("href", `javascript:changedirect('${zoneid}','${meterid}',${direct});`)
+        })
+
+      }
+    }
+    //添加水表
+    function addwatermeter() {
+      if (waterlist.length > 0) {
+        const meter = waterlist.shift();
+        const center = map.getCenter();
+        console.log(center)
+        marker = new AMap.Marker({
+          extData: {
+            "meter": meter,
+            "zoneid": zoneId
+          },
+          icon: "/Content/img/marker.png",
+          position: [center.lng, center.lat],
+          draggable: true,
+          cursor: 'move',
+          // 设置拖拽效果
+          raiseOnDrag: false,
+          offset: new AMap.Pixel(0,0)
+        });
+        marker.setLabel({
+          offset: new AMap.Pixel(-10, - 40),  //设置文本标注偏移量
+          content: `<div class='info_label flex-column'>
+                     <div class="mb-1" >
+                    表号：${meter.meterId} 表显:${meter.water}
+    <a href="javascript:removemeter('${zoneId}','${meter.meterId}');" class="btn btn-danger btn-xs btn-icon waves-effect waves-themed float-right" >
+                                                          <i class="fal fa-times"></i>
+                                                      </a>
+                    </div>
+                   <div class="d-flex mt-2 mb-1 fs-xs ">
+                              用水点：${meter.points || ''}
+                        </div>
+                  <div>
+                    </div>
+                    </div>`, //设置文本标注内容
+          direction: 'right' //设置文本标注方位
+        });
+        marker.setMap(map);
+        marker.on('dragend', function (e) {
+
+          const meter = e.target.getExtData().meter;
+          const zoneid = e.target.getExtData().zoneid;
+          const lnglat = e.lnglat;
+          $.post('/Zones/UpdateMeterLoc', {
+            zoneid: zoneid,
+            meterid: meter.meterId,
+            lng: lnglat.lng,
+            lat: lnglat.lat
+          }).done(res => {
+            //console.log(res);
+
+          })
+        })
+
+        markers.push(marker);
+        $(`#meterlist #${meter.meterId}`).remove();
+        $.post('/Zones/AddWaterMeter', {
+          meterid: meter.meterId,
+          lng: center.lng,
+          lat: center.lat
+        }).done(res => {
+          //console.log(res);
+
+        })
+      }
+    }
+    //删除水表
+    function deletewatermeter() {
+      if (markers.length > 0) {
+        markers[markers.length - 1].setMap(null);
+        const remove = markers.pop();
+        //console.log(remove.getExtData().meter);
+        const meter = remove.getExtData().meter;
+        const zoneid = remove.getExtData().zoneid
+        $.post('/Zones/DeleteWaterMeter', {
+          zoneid: 0,
+          meterid: meter.meterId
+        }).done(res => {
+          //console.log(res);
+          const li = `<li id="${meter.meterId}" class="list-group-item">${meter.meterId}</li>`;
+          $('#meterlist').append(li);
+          waterlist.push(meter);
+        })
+
+
+
+      }
+    }
+    //删除水表
+    function removemeter(zoneid, meterId) {
+
+      $.post('/Zones/DeleteWaterMeter', {
+        zoneid: 0,
+        meterid: meterId
+      }).done(res => {
+        //console.log(res);
+
+        markers.forEach((item, index, object) => {
+
+          const meter = item.getExtData().meter;
+          const mzoneid = item.getExtData().zoneid
+
+          if (meter.meterId == meterId ) {
+            console.log(meter)
+            item.setMap(null);
+            const li = `<li id="${meterId}" class="list-group-item">${meterId}</li>`;
+            $('#meterlist').append(li);
+            object.splice(index, 1);
+            waterlist.push(meter);
+
+          }
+        });
+        //waterlist.push(meter);
+      })
+    }
+    var map = {};
+    var markers = [];
+    var waterlist = [];
+    $(() => {
+      $('#tab-scroll').slimScroll(
+        {
+          height: '340px',
+          railVisible: true,
+          alwaysVisible: true
+        });
+      loadwaterlist('');
+      //loadlocmeterwater(zoneId);
+
+
+      map = new AMap.Map('mapcontainer', {
+        resizeEnable: true, //是否监控地图容器尺寸变化
+        zoom: 18, //初始化地图层级
+      });
+      map.on('zoomchange', function (e) {
+        const zoom = map.getZoom();
+        console.log(zoom)
+        if (zoom >= 16) {
+          //$('.info_label').show();
+        } else {
+          //$('.info_label').hide();
+        }
+      });
+      //定位
+      var options = {
+        'showButton': true,//是否显示定位按钮
+        'buttonPosition': 'LB',//定位按钮的位置
+        /* LT LB RT RB */
+        'buttonOffset': new AMap.Pixel(10, 20),//定位按钮距离对应角落的距离
+        'showCircle': true,//是否显示定位精度圈
+        'circleOptions': {//定位精度圈的样式
+          'strokeColor': '#0093FF',
+          'noSelect': true,
+          'strokeOpacity': 0.5,
+          'strokeWeight': 1,
+          'fillColor': '#02B0FF',
+          'fillOpacity': 0.25
+        }
+      }
+      AMap.plugin(["AMap.Geolocation"], function () {
+        var geolocation = new AMap.Geolocation(options);
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition()
+      });
+
+      $.get('/ZoneWaterMeters/GetAllWaterMeterLoc').done(res => {
+        res.forEach(meter => {
+          marker = new AMap.Marker({
+            extData: {
+              "meter": meter,
+              "zoneid": meter.zoneId
+            },
+            icon: "/Content/img/marker.png",
+            position: [meter.longitude, meter.latitude],
+            draggable: true,
+            cursor: 'move',
+            // 设置拖拽效果
+            raiseOnDrag: false,
+            offset: new AMap.Pixel(0,0)
+          });
+          const fal = meter.direct == 1 ? "fa-sign-in-alt" : "fa-sign-out-alt";
+          const btn = meter.direct == 1 ? "btn-primary" : "btn-success";
+          marker.setLabel({
+            offset: new AMap.Pixel(-10, - 40),  //设置文本标注偏移量
+            content: `<div class='info_label flex-column'>
+                     <div class="mb-1" >
+                    表号：${meter.meterId} 表显:${meter.water}
+    <a href="javascript:removemeter('${zoneId}','${meter.meterId}');" class="btn btn-danger btn-xs btn-icon waves-effect waves-themed float-right" >
+                                                          <i class="fal fa-times"></i>
+                                                      </a>
+                    </div>
+                    <div class="d-flex mt-2 mb-1 fs-xs ">
+                              用水点：${meter.zoneName || ''}
+                        </div>
+                    <div>
+                    </div>
+                    </div>`, //设置文本标注内容
+            direction: 'right' //设置文本标注方位
+          });
+
+          marker.on('dragend', function (e) {
+
+            const meter = e.target.getExtData().meter;
+            const zoneid = e.target.getExtData().zoneid;
+            const lnglat = e.lnglat;
+            $.post('/Zones/UpdateMeterLoc', {
+              zoneid: zoneid,
+              meterid: meter.meterId,
+              lng: lnglat.lng,
+              lat: lnglat.lat
+            }).done(res => {
+              //console.log(res);
+
+            })
+          })
+
+          marker.setMap(map);
+          markers.push(marker);
+        });
+      });
+
+    })
+  </script>
+}

@@ -1,0 +1,318 @@
+﻿@model WebApp.Models.WaterMeterRecord
+@{
+  ViewData["Title"] = "分区水量统计";
+  ViewData["PageName"] = "WaterMeterRecord";
+  ViewData["Heading"] = "<i class='fal fa-window text-primary'></i>  分区水量统计";
+  ViewData["Category1"] = "水务管理中心";
+  ViewData["PageDescription"] = "";
+}
+@section HeadBlock {
+  <link href="@Fingerprint.Tag("/Content/css/notifications/toastr/toastr.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/easyui/themes/insdep/easyui.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Content/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader-theme-dragdrop.css")" rel="stylesheet" />
+  <link href="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/font/font-fileuploader.css")" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css" rel="stylesheet" />
+  <link href="~/Content/css/formplugins/select2/select2.bundle.css" rel="stylesheet" />
+  <style>
+    .select2-container{
+      z-index:99999
+    }
+  </style>
+}
+<div class="row">
+  <div class="col-lg-12 col-xl-12">
+    <div id="panel-1" class="panel">
+      <div class="panel-hdr">
+        <h2>
+          分区水量统计
+        </h2>
+        <div class="panel-toolbar">
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"><i class="fal fa-window-minimize"></i></button>
+          <button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="fal fa-expand"></i></button>
+          @*<button class="btn btn-panel bg-transparent fs-xl w-auto h-auto rounded-0" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"><i class="fal fa-times"></i></button>*@
+        </div>
+
+      </div>
+      <div class="panel-container show">
+        <div class="panel-content py-2 rounded-bottom border-faded border-left-0 border-right-0  text-muted bg-faded bg-subtlelight-fade ">
+          <div class="row no-gutters align-items-center">
+
+            <!-- 开启授权控制请参考 @@if (Html.IsAuthorize("Create") -->
+            <div class="col-2 p-2">
+              <input type="text" class="form-control" id="start" autocomplete="off" placeholder="起始日期" />
+            </div>
+            <div class="col-2 p-2">
+              <input type="text" class="form-control" id="end" autocomplete="off" placeholder="结束日期" />
+            </div>
+            
+            <div class="btn-group btn-group-sm">
+              <button id="querybtn" class="btn btn-primary"> <i class="fal fa-bolt"></i> 查询 </button>
+            </div>
+
+
+
+          </div>
+        </div>
+        <div class="panel-content">
+          <div class="table-responsive">
+            <table id="watermeterrecords_datagrid">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+@section ScriptsBlock {
+  <script src="@Fingerprint.Tag("/Scripts/plugin/numeral/numeral.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/FileSaver.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/filesaver/jquery.fileDownload.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/notifications/toastr/toastr.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.serializejson/jquery.serializejson.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/moment/moment-with-locales.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/plugin/jquery.fileuploader/jquery.fileuploader.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/jquery.easyui.min.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/datagrid-filter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-ext.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.easyui.component.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.extend.formatter.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/plugins/columns-reset.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/easyui/locale/easyui-lang-zh_CN.js")"></script>
+  <script src="@Fingerprint.Tag("/Scripts/jquery.custom.extend.js")"></script>
+  <script src="~/Scripts/formplugins/select2/select2.bundle.js"></script>
+  <script src="~/Scripts/formplugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+  <script>
+    (function ($) {
+      function pagerFilter(data) {
+        if ($.isArray(data)) {    // is array
+          data = {
+            total: data.length,
+            rows: data
+          }
+        }
+        var target = this;
+        var dg = $(target);
+        var state = dg.data('datagrid');
+        var opts = dg.datagrid('options');
+        if (!state.allRows) {
+          state.allRows = (data.rows);
+        }
+        if (!opts.remoteSort && opts.sortName) {
+          var names = opts.sortName.split(',');
+          var orders = opts.sortOrder.split(',');
+          state.allRows.sort(function (r1, r2) {
+            var r = 0;
+            for (var i = 0; i < names.length; i++) {
+              var sn = names[i];
+              var so = orders[i];
+              var col = $(target).datagrid('getColumnOption', sn);
+              var sortFunc = col.sorter || function (a, b) {
+                return a == b ? 0 : (a > b ? 1 : -1);
+              };
+              r = sortFunc(r1[sn], r2[sn]) * (so == 'asc' ? 1 : -1);
+              if (r != 0) {
+                return r;
+              }
+            }
+            return r;
+          });
+        }
+        var start = (opts.pageNumber - 1) * parseInt(opts.pageSize);
+        var end = start + parseInt(opts.pageSize);
+        data.rows = state.allRows.slice(start, end);
+        return data;
+      }
+
+      var loadDataMethod = $.fn.datagrid.methods.loadData;
+      var deleteRowMethod = $.fn.datagrid.methods.deleteRow;
+      $.extend($.fn.datagrid.methods, {
+        clientPaging: function (jq) {
+          return jq.each(function () {
+            var dg = $(this);
+            var state = dg.data('datagrid');
+            var opts = state.options;
+            opts.loadFilter = pagerFilter;
+            var onBeforeLoad = opts.onBeforeLoad;
+            opts.onBeforeLoad = function (param) {
+              state.allRows = null;
+              return onBeforeLoad.call(this, param);
+            }
+            var pager = dg.datagrid('getPager');
+            pager.pagination({
+              onSelectPage: function (pageNum, pageSize) {
+                opts.pageNumber = pageNum;
+                opts.pageSize = pageSize;
+                pager.pagination('refresh', {
+                  pageNumber: pageNum,
+                  pageSize: pageSize
+                });
+                dg.datagrid('loadData', state.allRows);
+              }
+            });
+            $(this).datagrid('loadData', state.data);
+            if (opts.url) {
+              $(this).datagrid('reload');
+            }
+          });
+        },
+        loadData: function (jq, data) {
+          jq.each(function () {
+            $(this).data('datagrid').allRows = null;
+          });
+          return loadDataMethod.call($.fn.datagrid.methods, jq, data);
+        },
+        deleteRow: function (jq, index) {
+          return jq.each(function () {
+            var row = $(this).datagrid('getRows')[index];
+            deleteRowMethod.call($.fn.datagrid.methods, $(this), index);
+            var state = $(this).data('datagrid');
+            if (state.options.loadFilter == pagerFilter) {
+              for (var i = 0; i < state.allRows.length; i++) {
+                if (state.allRows[i] == row) {
+                  state.allRows.splice(i, 1);
+                  break;
+                }
+              }
+              $(this).datagrid('loadData', state.allRows);
+            }
+          });
+        },
+        getAllRows: function (jq) {
+          return jq.data('datagrid').allRows;
+        }
+      })
+    })(jQuery);
+  </script>
+  <script type="text/javascript">
+    $('#start').datepicker(
+      {
+        language: "zh-CN",
+        format: 'yyyy-mm-dd',
+        todayHighlight: true,
+        autoclose: true,
+
+      })
+    $('#end').datepicker(
+      {
+        language: "zh-CN",
+        format: 'yyyy-mm-dd',
+        todayHighlight: true,
+        autoclose: true,
+
+      })
+
+    $('#querybtn').on('click', function () {
+      var meterid = $('#meterid').val();
+      var start = $('#start').val();
+      var end = $('#end').val();
+      if (start == '' || end == '') {
+        bootbox.alert("请输入查询的日期")
+      } else {
+        query(start, end);
+      }
+
+
+    });
+    $('#start').val(moment().add(-2, 'days').format('YYYY-MM-DD'));
+    $('#end').val(moment().add(-1, 'days').format('YYYY-MM-DD'));
+
+    function query(start, end) {
+      $.post('/WaterMeterRecords/QuerySummaryReport2', { start, end }).done(res => {
+
+        //$('#watermeterrecords_datagrid').datagrid('loadData', res)
+        $('#watermeterrecords_datagrid').datagrid(
+          {
+            height: 670,
+            data: res,
+            rownumbers: true,
+            idField: 'zoneName',
+            sortName: 'zoneName',
+            sortOrder: 'asc',
+            remoteFilter: false,
+            remoteSort: false,
+            singleSelect: false,
+            pagination: true,
+            striped: true,
+            pageSize: 15,
+            pageList: [15,  50, 100, 500, 2000],
+            columns: [[
+
+              {    /*表号*/
+                field: 'zoneName',
+                title: '区域',
+                width: 120,
+                hidden: false,
+                sortable: true,
+                resizable: true
+              },
+              {    /*水表当前读数(吨)*/
+                field: 'inwater',
+                title: '进水量',
+                width: 140,
+                align: 'right',
+                hidden: false,
+                formatter: numberformatter,
+                sortable: true,
+                resizable: true
+              },
+              {    /*水表当前读数(吨)*/
+                field: 'outwater',
+                title: '出水量',
+                width: 140,
+                align: 'right',
+                hidden: false,
+                formatter: numberformatter,
+                sortable: true,
+                resizable: true
+              },
+              {    /*水表当前读数(吨)*/
+                field: 'water',
+                title: '区域水量',
+                width: 140,
+                align: 'right',
+                hidden: false,
+                formatter: numberformatter,
+                sortable: true,
+                resizable: true
+              },
+              {    /*水表当前读数(吨)*/
+                field: 'rate',
+                title: '计量率%',
+                width: 100,
+                align: 'right',
+                hidden: false,
+                formatter: function (v, row, i) {
+                  if (v != null) {
+                    if (v > 0) {
+                      return `<span class="badge badge-success">${numeral(v).format('0.00%')}  </span>`
+                    } else {
+                      return `<span class="badge badge-danger">${numeral(v).format('0.00%')}  </span>`
+                    }
+                  }
+                },
+                sortable: true,
+                resizable: true
+              },
+            ]]
+          })
+          .datagrid('clientPaging');
+
+      })
+    }
+
+    query(moment().add(-2, 'days').format('YYYY-MM-DD'), moment().add(-1, 'days').format('YYYY-MM-DD'))
+
+  </script>
+
+
+
+}
+
+

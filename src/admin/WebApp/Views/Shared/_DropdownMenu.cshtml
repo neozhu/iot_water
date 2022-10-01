@@ -1,0 +1,55 @@
+﻿<div class="dropdown-header bg-trans-gradient d-flex flex-row py-4 rounded-top">
+  <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
+    <span class="mr-2">
+      <img src="~/Content/img/demo/avatars/@ViewBag.Avatar" class="rounded-circle profile-image" alt="@ViewBag.User">
+    </span>
+    <div class="info-card-text">
+      <div class="fs-lg text-truncate text-truncate-lg" id="user_fullname">@ViewBag.FullName</div>
+      <span class="text-truncate text-truncate-md opacity-80">@ViewBag.Email</span>
+    </div>
+  </div>
+</div>
+<div class="settings-panel">
+  <div class="list" id="nft">
+    <a href="#" onclick="return false;" class="btn btn-switch" data-action="toggle"
+       data-class="nav-function-top"></a>
+    <span class="onoffswitch-title">导航栏置顶</span>
+    <span class="onoffswitch-title-desc">将左窗格重新定位到顶部</span>
+  </div>
+</div>
+<div class="dropdown-divider m-0"></div>
+<a href="#" class="dropdown-item" data-action="app-changepassword">
+  <span data-i18n="drpdwn.changepassword">修改密码</span>
+</a>
+<a href="#" class="dropdown-item" data-action="app-reset">
+  <span data-i18n="drpdwn.reset_layout">重置布局</span>
+</a>
+
+<a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
+  <span data-i18n="drpdwn.settings">设置</span>
+</a>
+<div class="dropdown-divider m-0"></div>
+<a href="#" class="dropdown-item" data-action="app-fullscreen">
+  <span data-i18n="drpdwn.fullscreen">全屏</span>
+  <i class="float-right text-muted fw-n">F11</i>
+</a>
+<a href="#" class="dropdown-item" data-action="app-print">
+  <span data-i18n="drpdwn.print">打印</span>
+  <i class="float-right text-muted fw-n">Ctrl + P</i>
+</a>
+
+  <div class="dropdown-multilevel dropdown-multilevel-left">
+    <div class="dropdown-item" data-i18n="drpdwn.lang">
+      语言
+    </div>
+    <div class="dropdown-menu">
+      <a href="#?lang=en" class="dropdown-item active" data-action="lang" data-lang="en">English (US)</a>
+      <a href="#?lang=ch" class="dropdown-item" data-action="lang" data-lang="ch">中文</a>
+    </div>
+  </div>
+  <div class="dropdown-divider m-0"></div>
+
+  <a class="dropdown-item fw-500 pt-3 pb-3" href="/account/login">
+    <span data-i18n="drpdwn.page-logout">登出</span>
+    <span class="float-right fw-n">@ViewBag.Email</span>
+  </a>

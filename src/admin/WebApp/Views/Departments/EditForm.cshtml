@@ -1,0 +1,42 @@
+﻿﻿@model WebApp.Models.Department
+<!-- begin master section -->
+<div  class="main-form">
+<!--begin department form  -->
+<form id="department_form" method="post" novalidate="novalidate" >
+@Html.AntiForgeryToken()
+   @Html.HiddenFor(x=>x.Id)
+ <fieldset>
+ <div class="form-group form-group-sm">
+      <div class="row">
+
+        <!--部门名称-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label">@Html.DisplayNameFor(model => model.Name) </label>
+			@Html.EditorFor(x => x.Name, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Name) } })
+      
+         </div>
+
+        <!--部门主管-->
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label">@Html.DisplayNameFor(model => model.Manager) </label>
+			@Html.EditorFor(x => x.Manager, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(x => x.Manager) } })
+      
+         </div>
+
+     
+       <!--CompanyId-->
+       <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+            <label class="control-label"><span class="required">@Html.DisplayNameFor(model => model.CompanyId)</span> </label>
+   	        @Html.DropDownListFor(model => model.CompanyId, ViewBag.CompanyId as List<SelectListItem>, htmlAttributes: new { @class = "form-control" }) 
+       </div>
+	    
+   </div>
+  </div>
+</fieldset>
+</form>
+<!-- end department form  -->
+</div>
+
+<!-- end master section -->
+<!--========================================================================================-->
+
