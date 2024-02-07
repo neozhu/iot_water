@@ -26,7 +26,10 @@
 |4|部署及上线调试|完整部署到甲方指定服务器或云端|||	
 
 ## 在线演示
-https://iot.i247365.net
+[https://iot.i247365.net](https://water.blazorserver.com/)
+
+login: Demo
+Password: 123456
 
 ## 屏幕截图
 ![输入图片说明](doc/1.png)
